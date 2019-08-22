@@ -1,3 +1,8 @@
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
 .content {
     margin: 0;
     padding: 0;
@@ -35,17 +40,13 @@
     background-color: indianred;
 }
 
-.datasets, .toolbox {
+#datasets, #toolbox {
     padding: 15px;
     background-color: lightpink;
 }
 
-.datasets {
+#datasets {
     display: none;
-}
-
-.toolbox {
-    display: block;
 }
 
 .datasets a:link, .datasets a:active, .datasets a:visited {
@@ -60,8 +61,8 @@
 .info-panel {
     position: absolute;
     top: 100px;
-    right: 15%;
-    width: 20vw;
+    right: 5%;
+    width: 30vw;
     text-align: left;
 }
 
@@ -147,10 +148,19 @@
     animation-duration: 0.4s
 }
 
-
-
 /* Add Animation */
 @keyframes animatetop {
   from {top: -300px; opacity: 0}
   to {top: 0; opacity: 1}
+}
+
+table {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 14pt;
+}
+
+th, td {
+    padding-right: 15px;
+    height: 30px;
 }

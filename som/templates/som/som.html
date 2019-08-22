@@ -17,13 +17,13 @@
     <div class="side-menu">
         <h1>Dataset: {{ active_som.training_dataset_name }}</h1>
         <button class="collapsible" id="coll_ds" onclick="collapse(this.id, 'datasets')">Choose dataset</button>
-        <div class="datasets" id="datasets">
+        <div id="datasets">
             {% for som in all_soms %}
                 <a href="{% url 'som:som' %}">{{ som.training_dataset_name }}</a>
             {% endfor %}
         </div>
-        <button class="collapsible" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
-        <div class="toolbox active" id="toolbox">
+        <button class="collapsible active" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
+        <div id="toolbox" style="display: block;">
             Some fancy buttons will appear here...
         </div>
     </div>
@@ -52,12 +52,32 @@
                 <td>{{ active_som.training_dataset_name }}</td>
             </tr>
             <tr>
-                <th>Number of images:</th>
+                <th>Total number of images:</th>
                 <td>{{ active_som.number_of_images }}</td>
+            </tr>
+            <tr>
+                <th>Number of loaded cutout fits:</th>
+                <td>{{ active_som.n_cutouts }}</td>
+            </tr>
+            <tr>
+                <th>Number of loaded outliers:</th>
+                <td>{{ active_som.n_outliers }}</td>
             </tr>
             <tr>
                 <th>Number of channels:</th>
                 <td>{{ active_som.number_of_channels }}</td>
+            </tr>
+            <tr>
+                <th>Width:</th>
+                <td>{{ active_som.som_width|floatformat:0 }}</td>
+            </tr>
+            <tr>
+                <th>Height:</th>
+                <td>{{ active_som.som_height|floatformat:0 }}</td>
+            </tr>
+            <tr>
+                <th>Depth:</th>
+                <td>{{ active_som.som_depth|floatformat:0 }}</td>
             </tr>
         </table>
     </div>
