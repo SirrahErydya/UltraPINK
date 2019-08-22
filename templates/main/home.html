@@ -1,0 +1,39 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <div class="card">
+        <h1>Welcome to Light coral!</h1>
+        <p>
+            Light coral is a Python-based web application to visualize self-organizing maps <i>(SOMs)</i> created with
+            the <b>PINK</b> framework. PINK is a tool to generate <b>p</b>arallelized <b>in</b>variant <b>K</b>ohonen maps
+            structuring data according to their morphological features. Thus, a semi-automatic analysis of the data is possible.
+        </p>
+        <button type="button" class="action-button" href="">Learn more</button>
+    </div>
+
+    <div class="card-container">
+        <div class="card">
+            <h2>Inspect map</h2>
+            <p>Visit the map that is currently loaded. You will see a cluster of prototype images displaying all
+                morphologies in the dataset.</p>
+            <p>You can choose between different options to analyse the dataset.</p>
+            <button type="button" class="action-button" onclick="window.location.href='{% url 'som:som' %}'">Go</button>
+        </div>
+        <div class="card">
+            <h2>View loaded maps</h2>
+            <p>See all maps that were saved to the database. You can choose a map for inspection. The chosen map
+                will be remembered. Visit it over the <a href="{% url 'som:som' %}">Inspect SOM</a> page</p>
+            <button type="button" class="action-button" href="">Go</button>
+        </div>
+        <div class="card">
+            <h2>Create new map</h2>
+            <p>Upload the binary files created by PINK to save your SOM within this tool.
+                Afterwards you will be able to load and inspect the map.</p>
+            <button type="button" class="action-button" href="">Go</button>
+        </div>
+        <div class="card">
+            <h2>View sources</h2>
+            <p>View the sources for PINK and Light coral on GitHub.</p>
+            <button type="button" class="action-button" href="">Go</button>
+        </div>
+    </div>
+{% endblock %}

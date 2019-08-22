@@ -1,0 +1,156 @@
+.content {
+    margin: 0;
+    padding: 0;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.side-menu {
+    float: left;
+    width: 20vw;
+    height: calc(100vh - 100px);
+    background-color: darkgrey;
+    padding: 20px;
+}
+
+.collapsible {
+    font-family: Verdana, Arial, sans-serif;
+    width: 100%;
+    font-size: 15pt;
+    margin-top: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: lightcoral;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+.active, .collapsible:hover {
+    background-color: indianred;
+}
+
+.datasets, .toolbox {
+    padding: 15px;
+    background-color: lightpink;
+}
+
+.datasets {
+    display: none;
+}
+
+.toolbox {
+    display: block;
+}
+
+.datasets a:link, .datasets a:active, .datasets a:visited {
+    color: dimgrey;
+    text-decoration: none;
+}
+
+.datasets a:hover {
+    color: black;
+}
+
+.info-panel {
+    position: absolute;
+    top: 100px;
+    right: 15%;
+    width: 20vw;
+    text-align: left;
+}
+
+.som-container, .cutouts {
+    text-align: center;
+    display: grid;
+}
+
+.som-container {
+    padding-left: 20px;
+    padding-top: 20px;
+    width: 75vh;
+    height: 75vh;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    grid-gap: 0.5%;
+}
+
+.cutouts {
+
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    grid-template-columns: repeat(5, auto);
+    grid-template-rows: repeat(2, auto);
+    grid-gap: 10px;
+}
+
+.som-container img, .cutouts img {
+    width: 100%;
+    height: 100%;
+}
+
+.som-container img:hover {
+    cursor: pointer;
+}
+
+.tooltip {
+   position: relative;
+   display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+   visibility: hidden;
+   width: 50px;
+   background-color: lightcoral;
+   color: #fff;
+   text-align: center;
+   padding: 5px 0;
+   border-radius: 6px;
+
+   /* Position the tooltip text - see examples below! */
+   position: absolute;
+   z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+   visibility: visible;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    height: 100%;
+}
+
+.modal_window {
+    border-radius: 25px;
+    position: relative;
+    background-color: lavender;
+    color: black;
+    margin: 5% auto; /* 15% from the top and centered */
+    padding: 20px;
+    width: 80vw;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+
+
+/* Add Animation */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+}

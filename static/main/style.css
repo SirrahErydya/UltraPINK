@@ -1,0 +1,137 @@
+/* Style Sheet for the general web page layout */
+
+* {
+	padding-bottom: 0px;
+	padding-top: 0px;
+	margin: 0px;
+}
+
+body {
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.navbar {
+    height: 50px;
+}
+.navbar, .navbar ul {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    background-color: lightcoral;
+    z-index: 42;
+}
+
+.navbar ul {
+    color: white;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    list-style-type: none;
+}
+
+.navbar ul li {
+    margin-left: 15px;
+    margin-right: 15px;
+    display: inline-block;
+}
+
+.navbar ul li a:link, .navbar ul li a:visited, .navbar ul li a:active {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar ul li a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+
+.content {
+    min-height: calc(100vh - 215px); /* 50px navbar + 60px footer + 100px margin = 210 */
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.content h1 {
+    margin-bottom: 10px;
+}
+
+.card-container {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
+    grid-gap: 10px;
+}
+
+.card {
+    position: relative;
+    background-color: lavender;
+    padding: 35px;
+    border-radius: 25px;
+    min-height: 180px;
+    text-align: justify;
+}
+
+.card h2 {
+    margin-bottom: 5px;
+}
+
+.card a:link, .card a:visited, .card a:active {
+    color: lightcoral;
+    text-decoration: none;
+}
+
+.card a:hover {
+    color: hotpink;
+    text-decoration: underline;
+}
+
+.action-button {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-style: none;
+    min-width: 200px;
+    background-color: lightcoral;
+    color: white;
+    text-align: center;
+    font-family: Verdana, Arial, sans-serif;
+    cursor: pointer;
+}
+
+.footer {
+    height: 60px;
+}
+
+.footer, .footer ul {
+    background-color: lavender;
+    font-size: small;
+    text-align: center;
+}
+
+.footer ul {
+    color: grey;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    list-style-type: none;
+}
+
+.footer ul li {
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.footer ul li a:link, .footer ul li a:visited, .footer ul li a:active {
+    color: grey;
+    text-decoration: none;
+}
+
+.footer ul li a:hover {
+    color: grey;
+    text-decoration: underline;
+}

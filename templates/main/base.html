@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
+    {% block stylesheets %}<!-- Additional sheets added in subpages -->{% endblock %}
+    {% block javascript %}<!-- Additional scripts added in subpages -->{% endblock %}
+    <title>{% block title %}Light coral - A PINK web frontend{% endblock %}</title>
+</head>
+<body>
+    <div class="navbar">
+    {% block navbar %}
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="">About</a></li>
+            <li><a href="{% url 'som:som' %}">Inspect SOM</a></li>
+            <li><a href="">Create new SOM</a></li>
+        </ul>
+    {% endblock %}
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+    {% block footer %}
+        <ul>
+            <li>&copy 2019 by whomever has the copyright</li>
+            <li><a href="">Imprint</a></li>
+            <li><a href="">Contact</a></li>
+            <li><a href="">Related Projects</a></li>
+        </ul>
+    {% endblock %}
+    </div>
+</body>
+</html>

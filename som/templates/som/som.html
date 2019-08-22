@@ -1,0 +1,64 @@
+{% extends "main/base.html" %}
+
+{% block stylesheets %}
+    <!-- Aladin Lite CSS -->
+    <link rel="stylesheet" href="//aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'som/style.css' %}">
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    {% load static %}
+    <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static 'som/view_functions.js' %}"></script>
+    <script type="text/javascript" src="{% static 'som/som_basics.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="side-menu">
+        <h1>Dataset: {{ active_som.training_dataset_name }}</h1>
+        <button class="collapsible" id="coll_ds" onclick="collapse(this.id, 'datasets')">Choose dataset</button>
+        <div class="datasets" id="datasets">
+            {% for som in all_soms %}
+                <a href="{% url 'som:som' %}">{{ som.training_dataset_name }}</a>
+            {% endfor %}
+        </div>
+        <button class="collapsible" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
+        <div class="toolbox active" id="toolbox">
+            Some fancy buttons will appear here...
+        </div>
+    </div>
+    <div class="som-container">
+        {% for prototype in prototypes %}
+            <div class="tooltip">
+                {% load static %}
+                <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}"
+                    onclick="show_best_fits(this.id)">
+                <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
+                <div id="modal{{ prototype.proto_id}}" class="modal">
+                    <div class="modal_window">
+                        <h1>These are the 10 best fits for this prototype</h1>
+                        <div id="cutouts{{ prototype.proto_id }}" class="cutouts">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="info-panel">
+        <h2>Information about this map</h2>
+        <table>
+            <tr>
+                <th>Dataset:</th>
+                <td>{{ active_som.training_dataset_name }}</td>
+            </tr>
+            <tr>
+                <th>Number of images:</th>
+                <td>{{ active_som.number_of_images }}</td>
+            </tr>
+            <tr>
+                <th>Number of channels:</th>
+                <td>{{ active_som.number_of_channels }}</td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
