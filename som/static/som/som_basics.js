@@ -26,9 +26,15 @@ function show_best_fits(id) {
     var modal = document.getElementById('modal'+id);
     modal.style.display = 'block';
     var img_container = document.getElementById('cutouts'+id);
+    var url = "";
+    if(id === '-o') {
+        url = '/som/get_outliers/'+10
+    } else {
+        url = '/som/get_best_fits/'+id+'/'+10
+    }
     if(img_container.innerHTML === null || img_container.innerHTML.trim().length === 0) {
         $.ajax({
-            url: '/som/get_best_fits/'+id+'/'+10,
+            url: url,
             dataType: 'json',
             success: function (data) {
                 if (data.success) {

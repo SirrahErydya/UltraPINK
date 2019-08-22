@@ -150,7 +150,7 @@ class Command(BaseCommand):
                 plot_image(return_cutout(bindata_path, outlier_idx),
                            os.path.join(settings.MEDIA_ROOT, outlier_filename))
                 for i, row in enumerate(catalog):
-                    if i == cutout_idx:
+                    if i == outlier_idx:
                         csv_entry = row
                         break
 
@@ -161,7 +161,7 @@ class Command(BaseCommand):
                     ra=ra,
                     dec=dec,
                     csv_path=csv_path,
-                    csv_row_idx=cutout_idx,
+                    csv_row_idx=outlier_idx,
                     image=File(os.path.join(settings.MEDIA_ROOT, outlier_filename))
                 )
                 outlier_model.save()

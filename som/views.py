@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from som.models import Prototype, Distance, SOM
+from som.models import Prototype, Distance, SOM, Outlier, SomCutout
 
 
 # Create your views here.
@@ -23,16 +23,27 @@ def get_best_fits(request, proto, n_fits):
     if proto != -1:
         prototype = Prototype.objects.get(proto_id=proto)
         dists = Distance.objects.filter(prototype=prototype).order_by('distance')
-        n = n_fits
-        if n > len(dists):
-            n = len(dists)
-        best_fits = []
-        for i in range(n):
-            fit_i = {}
-            fit_i['id'] = dists[i].cutout.id
-            fit_i['url'] = dists[i].cutout.image.url
-            fit_i['ra'] = dists[i].cutout.ra
-            fit_i['dec'] = dists[i].cutout.dec
-            best_fits.append(fit_i)
+        best_fits = make_json([dist.cutout for dist in dists], n_fits)
         return JsonResponse({'best_fits': best_fits, 'success': True})
     return JsonResponse({"success": False})
+
+
+def get_outliers(request, n_fits):
+    outliers = Outlier.objects.all()[:n_fits]
+    json = make_json(outliers, n_fits)
+    return JsonResponse({'best_fits': json, 'success': True})
+
+
+def make_json(imgs, n_fits):
+    n = n_fits
+    if n > len(imgs):
+        n = len(imgs)
+    best_fits = []
+    for i in range(n):
+        fit_i = {}
+        fit_i['id'] = imgs[i].id
+        fit_i['url'] = imgs[i].image.url
+        fit_i['ra'] = imgs[i].ra
+        fit_i['dec'] = imgs[i].dec
+        best_fits.append(fit_i)
+    return best_fits

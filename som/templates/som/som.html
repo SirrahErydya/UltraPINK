@@ -80,5 +80,13 @@
                 <td>{{ active_som.som_depth|floatformat:0 }}</td>
             </tr>
         </table>
+        <button id="-o" type="button" class="action-button" onclick="show_best_fits(this.id)">View outliers</button>
+        <div id="modal-o" class="modal">
+            <div class="modal_window">
+                <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
+                <div id="cutouts-o" class="cutouts">
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

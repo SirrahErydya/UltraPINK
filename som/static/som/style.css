@@ -164,3 +164,7 @@ th, td {
     padding-right: 15px;
     height: 30px;
 }
+
+.action-button {
+    position: relative;
+}
