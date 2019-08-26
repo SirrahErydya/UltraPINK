@@ -118,7 +118,7 @@ def create_cutout_models(som_model, mapping, catalog, n_cutouts):
             som=som_model,
             ra=ra,
             dec=dec,
-            csv_path=som_model.csv_path.path,
+            csv_path=som_model.csv_path,
             csv_row_idx=cutout_idx,
             closest_prototype=som.models.Prototype.objects.get(proto_id=sorted_proto_idxs[cutout_idx][0])
         )
@@ -153,7 +153,7 @@ def create_outliers(som_model, mapping, catalog, n_outliers):
     # Todo: Check why all images after 60000 throw an error o.O
     sorted_best_distance_idxs = np.argsort(best_distances[:600000])
     print("Generating outliers...")
-    for outlier_idx in range(1, n_outliers + 1):
+    for outlier_idx in range(n_outliers):
         print("Outlier {idx} from {total}...".format(idx=outlier_idx, total=n_outliers))
         outlier_filename = os.path.join('outliers', som_model.training_dataset_name,
                                         "outlier{0}.png".format(outlier_idx))
@@ -164,9 +164,10 @@ def create_outliers(som_model, mapping, catalog, n_outliers):
             som=som_model,
             ra=ra,
             dec=dec,
-            csv_path=som_model.csv_path.path,
+            csv_path=som_model.csv_path,
             csv_row_idx=sorted_best_distance_idxs[-outlier_idx]
         )
+        outlier_model.image.name = outlier_filename
         outlier_model.save()
 
 
