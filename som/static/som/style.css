@@ -66,12 +66,12 @@ body {
     text-align: left;
 }
 
-.som-container, .cutouts {
+#som-container, .cutouts {
     text-align: center;
     display: grid;
 }
 
-.som-container {
+#som-container {
     padding-left: 20px;
     padding-top: 20px;
     width: 75vh;
@@ -79,6 +79,14 @@ body {
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
     grid-gap: 0.5%;
+}
+
+#som-container .ui-selecting {
+    opacity: 100%;
+}
+
+#som-container .ui-selected {
+    opacity: 0;
 }
 
 .cutouts {
@@ -91,12 +99,12 @@ body {
     grid-gap: 10px;
 }
 
-.som-container img, .cutouts img {
+#som-container img, .cutouts img {
     width: 100%;
     height: 100%;
 }
 
-.som-container img:hover {
+#som-container img:hover {
     cursor: pointer;
 }
 

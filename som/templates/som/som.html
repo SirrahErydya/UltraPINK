@@ -1,6 +1,7 @@
 {% extends "main/base.html" %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <!-- Aladin Lite CSS -->
     <link rel="stylesheet" href="//aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
     {% load static %}
@@ -8,6 +9,7 @@
 {% endblock %}
 {% block javascript %}
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     {% load static %}
     <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="{% static 'som/view_functions.js' %}"></script>
@@ -27,12 +29,11 @@
             Some fancy buttons will appear here...
         </div>
     </div>
-    <div class="som-container">
+    <div id="som-container">
         {% for prototype in prototypes %}
             <div class="tooltip">
                 {% load static %}
-                <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}"
-                    onclick="show_best_fits(this.id)">
+                <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}">
                 <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
                 <div id="modal{{ prototype.proto_id}}" class="modal">
                     <div class="modal_window">
@@ -89,4 +90,7 @@
             </div>
         </div>
     </div>
+    <script>
+        $( "#som-container" ).selectable();
+    </script>
 {% endblock %}

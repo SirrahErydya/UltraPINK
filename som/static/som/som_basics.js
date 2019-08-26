@@ -3,7 +3,7 @@
  * Written by Rafael Mostert
  */
 
-var survery_dir =
+
 // Set Aladin Lite snippet coordinates
 function go_to_aladin(i) {
     // Open loc.txt, parse RA and Dec and goto these coordinates

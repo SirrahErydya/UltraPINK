@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from som.models import Prototype, Distance, SOM, Outlier, SomCutout
-
+import som.som_analysis as sa
 
 # Create your views here.
 def som(request):
@@ -19,19 +19,21 @@ def som(request):
     return HttpResponse(template.render(context, request))
 
 
-def get_best_fits(request, proto, n_fits):
+def get_best_fits(request, proto, n_fits=10):
     if proto != -1:
-        prototype = Prototype.objects.get(proto_id=proto)
-        dists = Distance.objects.filter(prototype=prototype).order_by('distance')
-        best_fits = make_json([dist.cutout for dist in dists], n_fits)
-        return JsonResponse({'best_fits': best_fits, 'success': True})
+        best_fits = sa.get_best_fits(proto, n_fits)
+        return JsonResponse({'best_fits': make_json(best_fits, n_fits), 'success': True})
     return JsonResponse({"success": False})
 
 
-def get_outliers(request, n_fits):
+def get_best_fits_to_protos(request, protos, n_fits=10):
+    cutouts = sa.get_best_fits_to_protos(protos, n_fits)
+    return JsonResponse({'best_fits': make_json(cutouts, n_fits), "success": True})
+
+
+def get_outliers(request, n_fits=10):
     outliers = Outlier.objects.all()[:n_fits]
-    json = make_json(outliers, n_fits)
-    return JsonResponse({'best_fits': json, 'success': True})
+    return JsonResponse({'best_fits': make_json(outliers, n_fits), 'success': True})
 
 
 def make_json(imgs, n_fits):
