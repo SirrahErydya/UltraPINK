@@ -23,6 +23,12 @@ body {
     padding: 20px;
 }
 
+.side-menu input {
+    width: 30px;
+    margin-left: 10px;
+    margin-right:10px;
+}
+
 .collapsible {
     font-family: Verdana, Arial, sans-serif;
     width: 100%;
@@ -49,33 +55,47 @@ body {
     display: none;
 }
 
-.datasets a:link, .datasets a:active, .datasets a:visited {
+#datasets a:link, #datasets a:active, #datasets a:visited,
+.icon-disclaimer a:link, .icon-disclaimer a:active, .icon-disclaimer a:visited {
     color: dimgrey;
     text-decoration: none;
 }
 
-.datasets a:hover {
+#datasets a:hover, .icon-disclaimer a:hover {
     color: black;
 }
 
 .info-panel {
-    position: absolute;
-    top: 100px;
-    right: 5%;
-    width: 30vw;
     text-align: left;
 }
 
-#som-container, .cutouts {
+.icon-disclaimer {
+    font-size: 8pt;
+    position: absolute;
+    bottom: 80px;
+}
+
+#toolbox img {
+    width: 100%;
+}
+
+#toolbox, #som-container, .cutouts {
     text-align: center;
     display: grid;
+}
+
+#toolbox {
+    grid-template-columns: repeat(5, auto);
+    grid-template-rows: repeat(1, auto);
+    grid-gap: 50px;
+    margin-bottom: 10px;
 }
 
 #som-container {
     padding-left: 20px;
     padding-top: 20px;
-    width: 75vh;
-    height: 75vh;
+    width: 85vh;
+    height: 85vh;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
     grid-gap: 0.5%;
@@ -90,7 +110,6 @@ body {
 }
 
 .cutouts {
-
     margin-left: auto;
     margin-right: auto;
     padding: 20px;

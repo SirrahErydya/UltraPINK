@@ -18,6 +18,42 @@
 {% block content %}
     <div class="side-menu">
         <h1>Dataset: {{ active_som.training_dataset_name }}</h1>
+        <div class="info-panel">
+            <table>
+                <tr>
+                    <th>Dataset:</th>
+                    <td>{{ active_som.training_dataset_name }}</td>
+                </tr>
+                <tr>
+                    <th>Total number of images:</th>
+                    <td>{{ active_som.number_of_images }}</td>
+                </tr>
+                <tr>
+                    <th>Number of loaded cutout fits:</th>
+                    <td>{{ active_som.n_cutouts }}</td>
+                </tr>
+                <tr>
+                    <th>Number of loaded outliers:</th>
+                    <td>{{ active_som.n_outliers }}</td>
+                </tr>
+                <tr>
+                    <th>Number of channels:</th>
+                    <td>{{ active_som.number_of_channels }}</td>
+                </tr>
+                <tr>
+                    <th>Width:</th>
+                    <td>{{ active_som.som_width|floatformat:0 }}</td>
+                </tr>
+                <tr>
+                    <th>Height:</th>
+                    <td>{{ active_som.som_height|floatformat:0 }}</td>
+                </tr>
+                <tr>
+                    <th>Depth:</th>
+                    <td>{{ active_som.som_depth|floatformat:0 }}</td>
+                </tr>
+            </table>
+        </div>
         <button class="collapsible" id="coll_ds" onclick="collapse(this.id, 'datasets')">Choose dataset</button>
         <div id="datasets">
             {% for som in all_soms %}
@@ -25,8 +61,33 @@
             {% endfor %}
         </div>
         <button class="collapsible active" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
-        <div id="toolbox" style="display: block;">
-            Some fancy buttons will appear here...
+        <div id="toolbox" style="display: grid;">
+            <img src="{% static 'som/icons/png/013-cursor-1.png' %}">
+            <img src="{% static 'som/icons/png/031-cursor.png' %}">
+            <img src="{% static 'som/icons/png/025-zoom.png' %}">
+            <img src="{% static 'som/icons/png/039-crop.png' %}">
+            <img src="{% static 'som/icons/png/029-magic-wand.png' %}">
+        </div>
+        Number of best fits: <input type="number" name="n_fits" value='10'/>
+        <button id="cutout_button" type="button" class="action-button" onclick="show_best_fits(this.id)">Show best fits</button>
+        <br/>
+        Number of outliers: <input type="number" name="n_outliers" value='10'/>
+        <button id="-o" type="button" class="action-button" onclick="show_best_fits(this.id)">Show outliers</button>
+        <div id="modal-o" class="modal">
+            <div class="modal_window">
+                <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
+                <div id="cutouts-o" class="cutouts">
+                </div>
+            </div>
+        </div>
+        <button id="heatmap_button" type="button" class="action-button" onclick="">Show heatmap</button><br/>
+        <button id="export_button" type="button" class="action-button" onclick="">Export choice as a catalog</button>
+        <div class="icon-disclaimer">
+            Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
+            from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+            <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">
+                CC 3.0 BY
+            </a>
         </div>
     </div>
     <div id="som-container">
@@ -45,51 +106,7 @@
             </div>
         {% endfor %}
     </div>
-    <div class="info-panel">
-        <h2>Information about this map</h2>
-        <table>
-            <tr>
-                <th>Dataset:</th>
-                <td>{{ active_som.training_dataset_name }}</td>
-            </tr>
-            <tr>
-                <th>Total number of images:</th>
-                <td>{{ active_som.number_of_images }}</td>
-            </tr>
-            <tr>
-                <th>Number of loaded cutout fits:</th>
-                <td>{{ active_som.n_cutouts }}</td>
-            </tr>
-            <tr>
-                <th>Number of loaded outliers:</th>
-                <td>{{ active_som.n_outliers }}</td>
-            </tr>
-            <tr>
-                <th>Number of channels:</th>
-                <td>{{ active_som.number_of_channels }}</td>
-            </tr>
-            <tr>
-                <th>Width:</th>
-                <td>{{ active_som.som_width|floatformat:0 }}</td>
-            </tr>
-            <tr>
-                <th>Height:</th>
-                <td>{{ active_som.som_height|floatformat:0 }}</td>
-            </tr>
-            <tr>
-                <th>Depth:</th>
-                <td>{{ active_som.som_depth|floatformat:0 }}</td>
-            </tr>
-        </table>
-        <button id="-o" type="button" class="action-button" onclick="show_best_fits(this.id)">View outliers</button>
-        <div id="modal-o" class="modal">
-            <div class="modal_window">
-                <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
-                <div id="cutouts-o" class="cutouts">
-                </div>
-            </div>
-        </div>
-    </div>
+
     <script>
         $( "#som-container" ).selectable();
     </script>
