@@ -68,10 +68,10 @@
             <img src="{% static 'som/icons/png/039-crop.png' %}">
             <img src="{% static 'som/icons/png/029-magic-wand.png' %}">
         </div>
-        Number of best fits: <input type="number" name="n_fits" value='10'/>
+        Number of best fits: <input type="text" name="n_fits" value='10'/>
         <button id="cutout_button" type="button" class="action-button" onclick="show_best_fits(this.id)">Show best fits</button>
         <br/>
-        Number of outliers: <input type="number" name="n_outliers" value='10'/>
+        Number of outliers: <input type="text" name="n_outliers" value='10'/>
         <button id="-o" type="button" class="action-button" onclick="show_best_fits(this.id)">Show outliers</button>
         <div id="modal-o" class="modal">
             <div class="modal_window">

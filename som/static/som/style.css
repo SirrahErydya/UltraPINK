@@ -19,7 +19,7 @@ body {
     float: left;
     width: 20vw;
     height: calc(100vh - 100px);
-    background-color: darkgrey;
+    background-color: lavender;
     padding: 20px;
 }
 
@@ -27,6 +27,9 @@ body {
     width: 30px;
     margin-left: 10px;
     margin-right:10px;
+    border: none;
+    padding: 2px;
+    background-color: lavenderblush;
 }
 
 .collapsible {
@@ -36,19 +39,19 @@ body {
     margin-top: 15px;
     padding-top: 5px;
     padding-bottom: 5px;
-    background-color: lightcoral;
-    color: white;
+    background-color: lightpink;
+    color: black;
     cursor: pointer;
     border: none;
 }
 
 .active, .collapsible:hover {
-    background-color: indianred;
+    background-color: lightcoral;
 }
 
 #datasets, #toolbox {
     padding: 15px;
-    background-color: lightpink;
+    background-color: mistyrose;
 }
 
 #datasets {
