@@ -17,10 +17,10 @@ body {
 
 .side-menu {
     float: left;
-    width: 20vw;
+    padding: 0px 25px 15px 50px;
+    width: calc(50vw - 50vh);
     height: calc(100vh - 100px);
-    background-color: lavender;
-    padding: 20px;
+    background-color: pink;
 }
 
 .side-menu input {
@@ -39,14 +39,14 @@ body {
     margin-top: 15px;
     padding-top: 5px;
     padding-bottom: 5px;
-    background-color: lightpink;
-    color: black;
+    background-color: palevioletred;
+    color: white;
     cursor: pointer;
     border: none;
 }
 
 .active, .collapsible:hover {
-    background-color: lightcoral;
+    background-color: palevioletred;
 }
 
 #datasets, #toolbox {
@@ -60,7 +60,7 @@ body {
 
 #datasets a:link, #datasets a:active, #datasets a:visited,
 .icon-disclaimer a:link, .icon-disclaimer a:active, .icon-disclaimer a:visited {
-    color: dimgrey;
+    color: black;
     text-decoration: none;
 }
 
@@ -70,16 +70,22 @@ body {
 
 .info-panel {
     text-align: left;
+    background-color: mistyrose;
+    padding: 20px;
+}
+
+.button-grid {
+    margin-top: 15px;
+}
+
+.button-grid input {
+    margin-right: 15px;
 }
 
 .icon-disclaimer {
     font-size: 8pt;
     position: absolute;
     bottom: 80px;
-}
-
-#toolbox img {
-    width: 100%;
 }
 
 #toolbox, #som-container, .cutouts {
@@ -94,6 +100,20 @@ body {
     margin-bottom: 10px;
 }
 
+#toolbox img {
+    width: 100%;
+    opacity: 0.5;
+}
+
+#toolbox img:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+#toolbox .tool-selected {
+    opacity: 1;
+}
+
 #som-container {
     padding-left: 20px;
     padding-top: 20px;
@@ -102,14 +122,6 @@ body {
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
     grid-gap: 0.5%;
-}
-
-#som-container .ui-selecting {
-    opacity: 100%;
-}
-
-#som-container .ui-selected {
-    opacity: 0;
 }
 
 .cutouts {
@@ -124,10 +136,15 @@ body {
 #som-container img, .cutouts img {
     width: 100%;
     height: 100%;
+    opacity: 1;
 }
 
 #som-container img:hover {
     cursor: pointer;
+}
+
+#som-container .proto-selected {
+    opacity: 0.8;
 }
 
 .tooltip {
@@ -138,11 +155,10 @@ body {
 /* Tooltip text */
 .tooltip .tooltiptext {
    visibility: hidden;
-   width: 50px;
    background-color: lightcoral;
    color: #fff;
    text-align: center;
-   padding: 5px 0;
+   padding: 5px;
    border-radius: 6px;
 
    /* Position the tooltip text - see examples below! */
@@ -154,6 +170,7 @@ body {
 .tooltip:hover .tooltiptext {
    visibility: visible;
 }
+
 
 .modal {
     display: none;

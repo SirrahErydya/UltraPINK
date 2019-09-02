@@ -26,7 +26,8 @@ def get_best_fits(request, proto, n_fits=10):
     return JsonResponse({"success": False})
 
 
-def get_best_fits_to_protos(request, protos, n_fits=10):
+def get_best_fits_to_protos(request, n_fits=10):
+    protos = request.POST.getlist('protos')
     cutouts = sa.get_best_fits_to_protos(protos, n_fits)
     return JsonResponse({'best_fits': make_json(cutouts, n_fits), "success": True})
 

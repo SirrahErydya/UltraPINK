@@ -8,7 +8,6 @@
 
 body {
     font-family: Verdana, Arial, sans-serif;
-    background-color: lavenderblush;
 }
 
 .navbar {
@@ -34,12 +33,14 @@ body {
     display: inline-block;
 }
 
-.navbar ul li a:link, .navbar ul li a:visited, .navbar ul li a:active {
+.navbar ul li a:link, .navbar ul li a:visited, .navbar ul li a:active,
+.footer ul li a:link, .footer ul li a:visited, .footer ul li a:active {
     color: black;
     text-decoration: none;
 }
 
-.navbar ul li a:hover {
+.navbar ul li a:hover,
+.footer ul li a:hover {
     color: deeppink;
     text-decoration: underline;
 }
@@ -114,7 +115,7 @@ body {
 }
 
 .footer ul {
-    color: grey;
+    color: black;
     padding-top: 25px;
     padding-bottom: 25px;
     list-style-type: none;
@@ -124,14 +125,4 @@ body {
     display: inline-block;
     margin-left: 10px;
     margin-right: 10px;
-}
-
-.footer ul li a:link, .footer ul li a:visited, .footer ul li a:active {
-    color: grey;
-    text-decoration: none;
-}
-
-.footer ul li a:hover {
-    color: grey;
-    text-decoration: underline;
 }

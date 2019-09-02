@@ -4,6 +4,43 @@
  */
 
 
+function select_tool(id) {
+    var selected_tools = document.getElementsByClassName('tool-selected');
+    var tool = document.getElementById(id);
+    for(var i=0; i<selected_tools.length; i++) {
+        selected_tools[i].classList.remove('tool-selected');
+    }
+    tool.classList.add('tool-selected')
+}
+
+function click_prototype(id) {
+    var img = document.getElementById(id);
+    var tool = document.getElementsByClassName('tool-selected')[0];
+    if(tool.id == 'pointer') {
+        select_single(img)
+    } else if(tool.id == 'zoom') {
+
+    } else if(tool.id == 'magnifier') {
+
+    } else if(tool.id == 'select') {
+
+    } else if(tool.id == 'wand') {
+
+    }
+}
+
+function select_single(img) {
+    var already_active = img.classList.contains('proto-selected');
+    var selected_imgs = document.getElementsByClassName('proto-selected');
+    for(var i=0; i<selected_imgs.length; i++) {
+        selected_imgs[i].classList.remove('proto-selected');
+    }
+    if(!already_active) {
+        img.classList.add('proto-selected')
+    }
+}
+
+
 // Set Aladin Lite snippet coordinates
 function go_to_aladin(i) {
     // Open loc.txt, parse RA and Dec and goto these coordinates
@@ -20,21 +57,39 @@ function go_to_aladin(i) {
                    }, 'text');
 }
 
+function show_best_fits() {
+    input_field = document.getElementById('input-cutouts');
+    selection = document.getElementsByClassName('proto-selected');
+    if(selection.length > 1) {
+        var data = '{ "protos": [ "' + selection[0].id;
+        for(var i=1; i<selection.length; i++) {
+            data += '", "' + selection[i].id;
+        }
+        data += '" ] }';
+        request_cutouts(selection[0].id, '/som/get_best_fits/'+input_field.value, data)
+    } else if (selection.length === 1){
+        request_cutouts(selection[0].id,'/som/get_best_fits/'+selection[0].id+'/'+input_field.value, "");
+    } else {
+        alert("No prototypes are selected. Use one of the tools to select one or many prototypes.");
+    }
+}
+
+function show_outliers() {
+    input_field = document.getElementById('input-outliers');
+    request_cutouts("-o",'/som/get_outliers/'+input_field.value);
+}
+
+
 
 // Open a popup with the best fits for a prototype
-function show_best_fits(id) {
+function request_cutouts(id, url, data) {
     var modal = document.getElementById('modal'+id);
     modal.style.display = 'block';
     var img_container = document.getElementById('cutouts'+id);
-    var url = "";
-    if(id === '-o') {
-        url = '/som/get_outliers/'+10
-    } else {
-        url = '/som/get_best_fits/'+id+'/'+10
-    }
     if(img_container.innerHTML === null || img_container.innerHTML.trim().length === 0) {
         $.ajax({
             url: url,
+            data: data,
             dataType: 'json',
             success: function (data) {
                 if (data.success) {

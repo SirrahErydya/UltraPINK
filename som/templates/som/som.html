@@ -17,8 +17,8 @@
 {% endblock %}
 {% block content %}
     <div class="side-menu">
-        <h1>Dataset: {{ active_som.training_dataset_name }}</h1>
         <div class="info-panel">
+            <h1>Dataset: {{ active_som.training_dataset_name }}</h1>
             <table>
                 <tr>
                     <th>Dataset:</th>
@@ -62,26 +62,49 @@
         </div>
         <button class="collapsible active" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
         <div id="toolbox" style="display: grid;">
-            <img src="{% static 'som/icons/png/013-cursor-1.png' %}">
-            <img src="{% static 'som/icons/png/031-cursor.png' %}">
-            <img src="{% static 'som/icons/png/025-zoom.png' %}">
-            <img src="{% static 'som/icons/png/039-crop.png' %}">
-            <img src="{% static 'som/icons/png/029-magic-wand.png' %}">
-        </div>
-        Number of best fits: <input type="text" name="n_fits" value='10'/>
-        <button id="cutout_button" type="button" class="action-button" onclick="show_best_fits(this.id)">Show best fits</button>
-        <br/>
-        Number of outliers: <input type="text" name="n_outliers" value='10'/>
-        <button id="-o" type="button" class="action-button" onclick="show_best_fits(this.id)">Show outliers</button>
-        <div id="modal-o" class="modal">
-            <div class="modal_window">
-                <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
-                <div id="cutouts-o" class="cutouts">
-                </div>
+            <div class="tooltip">
+                <img id="pointer" class="tool-selected" src="{% static 'som/icons/png/013-cursor-1.png' %}"
+                onclick="select_tool(this.id)">
+                <span class="tooltiptext">Select</span>
+            </div>
+            <div class="tooltip">
+                <img id="zoom" src="{% static 'som/icons/png/031-cursor.png' %}"
+                     onclick="select_tool(this.id)">
+                <span class="tooltiptext">Zoom into map</span>
+            </div>
+            <div class="tooltip">
+                <img id="magnifier" src="{% static 'som/icons/png/025-zoom.png' %}"
+                     onclick="select_tool(this.id)">
+                <span class="tooltiptext">Magnify</span>
+            </div>
+            <div class="tooltip">
+                <img id="select" src="{% static 'som/icons/png/039-crop.png' %}"
+                     onclick="select_tool(this.id)">
+                <span class="tooltiptext">Select multiple</span>
+            </div>
+            <div class="tooltip">
+                <img id="wand" src="{% static 'som/icons/png/029-magic-wand.png' %}"
+                     onclick="select_tool(this.id)">
+                <span class="tooltiptext">Magic wand</span>
             </div>
         </div>
-        <button id="heatmap_button" type="button" class="action-button" onclick="">Show heatmap</button><br/>
-        <button id="export_button" type="button" class="action-button" onclick="">Export choice as a catalog</button>
+        <div class="button-grid">
+            Number of best fits: <input id='input-cutouts' type="text" name="n_fits" value='10'/>
+            <button id="cutout_button" type="button" class="action-button" onclick="show_best_fits()">Show best fits</button>
+            <br/>
+            Number of outliers: <input id='input-outliers' type="text" name="n_outliers" value='10'/>
+            <button id="-o" type="button" class="action-button" onclick="show_outliers()">Show outliers</button>
+            <div id="modal-o" class="modal">
+                <div class="modal_window">
+                    <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
+                    <div id="cutouts-o" class="cutouts">
+                    </div>
+                </div>
+            </div>
+            <button id="heatmap_button" type="button" class="action-button" onclick="">Show heatmap</button>
+            <button id="export_button" type="button" class="action-button" onclick="">Export choice as a catalog</button>
+        </div>
+
         <div class="icon-disclaimer">
             Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
             from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
@@ -94,7 +117,8 @@
         {% for prototype in prototypes %}
             <div class="tooltip">
                 {% load static %}
-                <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}">
+                <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}"
+                     onclick="click_prototype(this.id)">
                 <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
                 <div id="modal{{ prototype.proto_id}}" class="modal">
                     <div class="modal_window">
@@ -106,8 +130,4 @@
             </div>
         {% endfor %}
     </div>
-
-    <script>
-        $( "#som-container" ).selectable();
-    </script>
 {% endblock %}
