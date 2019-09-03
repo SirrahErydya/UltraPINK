@@ -120,14 +120,14 @@
                 <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}"
                      onclick="click_prototype(this.id)">
                 <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
-                <div id="modal{{ prototype.proto_id}}" class="modal">
-                    <div class="modal_window">
-                        <h1>These are the 10 best fits for this prototype</h1>
-                        <div id="cutouts{{ prototype.proto_id }}" class="cutouts">
-                        </div>
-                    </div>
-                </div>
             </div>
         {% endfor %}
+        <div id="modal" class="modal">
+            <div class="modal_window">
+                <h1>These are the best fits for this prototype</h1>
+                <div id="cutouts" class="cutouts">
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

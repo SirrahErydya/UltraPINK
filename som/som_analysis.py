@@ -14,7 +14,7 @@ def get_best_fits(proto, n_fits=10):
 
 def get_best_fits_to_protos(proto_ids, n_fits=10):
     prototypes = [Prototype.objects.get(proto_id=proto_id) for proto_id in proto_ids]
-    cutouts = SomCutout.objects.all()
+    cutouts = list(SomCutout.objects.all())
     avg_distances = []
     for cutout in cutouts:
         distances = np.asarray([Distance.objects.get(prototype=proto, cutout=cutout) for proto in prototypes])
