@@ -1,0 +1,6 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <h1>It seems that you have no projects to inspect</h1>
+    <p>Please visit <a href="{% url 'pinkproject:all' %}">All projects</a> to choose a project to investigate.</p>
+    <p>If you do not have any projects, you can create a <a href="{% url 'pinkproject:create' %}">new one</a>. </p>
+{% endblock %}

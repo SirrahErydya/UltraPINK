@@ -47,11 +47,11 @@ body {
 
 
 .content {
-    min-height: calc(100vh - 215px); /* 50px navbar + 60px footer + 100px margin = 210 */
+    min-height: calc(100vh - 215px);
     margin-left: 15%;
     margin-right: 15%;
-    margin-top: 5%;
-    margin-bottom: 5%;
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
 
 .content h1 {
@@ -90,11 +90,27 @@ body {
     text-decoration: underline;
 }
 
+input[type=text], textarea {
+    border: none;
+    width: 500px;
+    margin-left: 10px;
+    margin-right:10px;
+    padding: 5px;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12pt;
+}
+
+input[type=text] {
+    height: 30px;
+}
+
+textarea {
+    min-height: 150px;
+}
+
 .action-button {
-    position: absolute;
-    bottom: 0;
-    margin-bottom: 20px;
     padding: 15px;
+    margin-bottom: 15px;
     border-style: none;
     min-width: 200px;
     background-color: palevioletred;

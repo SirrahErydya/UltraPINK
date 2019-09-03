@@ -13,9 +13,9 @@
     {% block navbar %}
         <ul>
             <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="">About</a></li>
-            <li><a href="{% url 'som:som' %}">Inspect SOM</a></li>
-            <li><a href="">Create new SOM</a></li>
+            <li><a href="{% url 'pinkproject:project' %}">Project</a></li>
+            <li><a href="{% url 'pinkproject:create_project' %}">New project</a></li>
+            <li><a href="">All projects</a></li>
         </ul>
     {% endblock %}
     </div>

@@ -1,6 +1,5 @@
 /**
  * Basic manipulation for PINK-generated SOMs
- * Written by Rafael Mostert
  */
 
 var proto_selected = 'proto-selected';

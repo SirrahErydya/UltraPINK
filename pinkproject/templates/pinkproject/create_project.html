@@ -1,0 +1,29 @@
+{% extends "main/base.html" %}
+{% block stylesheets %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="create-project">
+        <h1>Create a new project</h1>
+        <form id="create-project-form" action="create_project/create" method="post">{% csrf_token %}
+            <div class="input-grid">
+                <label for="project-name">Project name: </label><input id='project-name' type="text" name="project-name" value='Enter project name...' maxlength="200"/>
+                <label for="project-desc">Description: </label><textarea class="large-input" id='project-desc' maxlength="2000" name="project-desc">Enter description...</textarea>
+            </div>
+            <h3>Existing data</h3>
+            <p>Do you have any existing data related to this project? Upload the csv files here.</p>
+            <input class='upload-button' type="file" id="csv-data" name="csv-data" accept="text/csv" multiple/>
+            <br/><br/>
+            <h3>Existing self-ordering map</h3>
+            <p>Do you already have a self-ordering map generated with PINK that is related to this project?
+            Please provide the binary files here.</p>
+            <div class="input-grid">
+                <label for="som-file">SOM file (.bin): </label><input class='upload-button' type="file" id="som-file" name="som-file"/>
+                <label for="mapping-file">Mapping file (.bin): </label><input class='upload-button' type="file" id="mapping-file" name="mapping-file"/>
+                <label for="image-file">Image file (.bin): </label><input class='upload-button' type="file" id="image-file" name="image-file"/>
+            </div>
+            <input class='action-button' type="submit" value="Create project"/>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,27 @@
+.create-project {
+    background-color: lavenderblush;
+    margin-left: 25%;
+    margin-right: 25%;
+    padding: 50px;
+}
+
+#create-project-form {
+}
+
+.input-grid {
+    margin-top: 50px;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(2, 10em);
+    grid-template-rows: repeat(2, 3em);
+    min-height: 280px;
+}
+
+input[type=file] {
+    font-family: Verdana, Arial, sans-serif;
+    min-width: 500px;
+}
+
+h3 {
+    margin-bottom: 5px;
+}

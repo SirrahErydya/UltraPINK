@@ -1,15 +1,18 @@
 from django.db import models
+from pinkproject.models import Project
 
 
 # Create your models here.
 class SOM(models.Model):
     # Important for data management
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     som_path = models.FileField(upload_to='bin')
     mapping_path = models.FileField(upload_to='bin')
     data_path = models.FileField(upload_to='bin')
     csv_path = models.FileField(upload_to='data')
     n_cutouts = models.IntegerField()
     n_outliers = models.IntegerField()
+    current = models.BooleanField(default=False)
 
     # SOM properties
     training_dataset_name = models.CharField(max_length=200)

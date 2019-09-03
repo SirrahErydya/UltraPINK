@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'pinkproject.apps.PinkprojectConfig',
     'som.apps.SomConfig',
     'django.contrib.admin',
     'django.contrib.auth',

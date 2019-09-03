@@ -1,133 +1,53 @@
-{% extends "main/base.html" %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <!-- Aladin Lite CSS -->
-    <link rel="stylesheet" href="//aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'som/style.css' %}">
-{% endblock %}
-{% block javascript %}
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    {% load static %}
-    <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="{% static 'som/view_functions.js' %}"></script>
-    <script type="text/javascript" src="{% static 'som/som_basics.js' %}"></script>
-{% endblock %}
-{% block content %}
-    <div class="side-menu">
-        <div class="info-panel">
-            <h1>Dataset: {{ active_som.training_dataset_name }}</h1>
-            <table>
-                <tr>
-                    <th>Dataset:</th>
-                    <td>{{ active_som.training_dataset_name }}</td>
-                </tr>
-                <tr>
-                    <th>Total number of images:</th>
-                    <td>{{ active_som.number_of_images }}</td>
-                </tr>
-                <tr>
-                    <th>Number of loaded cutout fits:</th>
-                    <td>{{ active_som.n_cutouts }}</td>
-                </tr>
-                <tr>
-                    <th>Number of loaded outliers:</th>
-                    <td>{{ active_som.n_outliers }}</td>
-                </tr>
-                <tr>
-                    <th>Number of channels:</th>
-                    <td>{{ active_som.number_of_channels }}</td>
-                </tr>
-                <tr>
-                    <th>Width:</th>
-                    <td>{{ active_som.som_width|floatformat:0 }}</td>
-                </tr>
-                <tr>
-                    <th>Height:</th>
-                    <td>{{ active_som.som_height|floatformat:0 }}</td>
-                </tr>
-                <tr>
-                    <th>Depth:</th>
-                    <td>{{ active_som.som_depth|floatformat:0 }}</td>
-                </tr>
-            </table>
+<div id="som-container">
+    {% for prototype in prototypes %}
+        <div class="tooltip">
+            {% load static %}
+            <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}"
+                 onclick="click_prototype(this.id)">
+            <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
         </div>
-        <button class="collapsible" id="coll_ds" onclick="collapse(this.id, 'datasets')">Choose dataset</button>
-        <div id="datasets">
-            {% for som in all_soms %}
-                <a href="{% url 'som:som' %}">{{ som.training_dataset_name }}</a>
-            {% endfor %}
-        </div>
-        <button class="collapsible active" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
-        <div id="toolbox" style="display: grid;">
-            <div class="tooltip">
-                <img id="pointer" class="tool-selected" src="{% static 'som/icons/png/013-cursor-1.png' %}"
-                onclick="select_tool(this.id)">
-                <span class="tooltiptext">Select</span>
-            </div>
-            <div class="tooltip">
-                <img id="zoom" src="{% static 'som/icons/png/031-cursor.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Zoom into map</span>
-            </div>
-            <div class="tooltip">
-                <img id="magnifier" src="{% static 'som/icons/png/025-zoom.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Magnify</span>
-            </div>
-            <div class="tooltip">
-                <img id="select" src="{% static 'som/icons/png/039-crop.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Select multiple</span>
-            </div>
-            <div class="tooltip">
-                <img id="wand" src="{% static 'som/icons/png/029-magic-wand.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Magic wand</span>
-            </div>
-        </div>
-        <div class="button-grid">
-            Number of best fits: <input id='input-cutouts' type="text" name="n_fits" value='10'/>
-            <button id="cutout_button" type="button" class="action-button" onclick="show_best_fits()">Show best fits</button>
-            <br/>
-            Number of outliers: <input id='input-outliers' type="text" name="n_outliers" value='10'/>
-            <button id="-o" type="button" class="action-button" onclick="show_outliers()">Show outliers</button>
-            <div id="modal-o" class="modal">
-                <div class="modal_window">
-                    <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
-                    <div id="cutouts-o" class="cutouts">
-                    </div>
-                </div>
-            </div>
-            <button id="heatmap_button" type="button" class="action-button" onclick="">Show heatmap</button>
-            <button id="export_button" type="button" class="action-button" onclick="">Export choice as a catalog</button>
-        </div>
-
-        <div class="icon-disclaimer">
-            Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
-            from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-            <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">
-                CC 3.0 BY
-            </a>
-        </div>
-    </div>
-    <div id="som-container">
-        {% for prototype in prototypes %}
-            <div class="tooltip">
-                {% load static %}
-                <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}"
-                     onclick="click_prototype(this.id)">
-                <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
-            </div>
-        {% endfor %}
-        <div id="modal" class="modal">
-            <div class="modal_window">
-                <h1>These are the best fits for this prototype</h1>
-                <div id="cutouts" class="cutouts">
-                </div>
+    {% endfor %}
+    <div id="modal" class="modal">
+        <div class="modal_window">
+            <h1>These are the best fits for this prototype</h1>
+            <div id="cutouts" class="cutouts">
             </div>
         </div>
     </div>
-{% endblock %}
+</div>
+s
+<table>
+    <tr>
+        <th>Dataset:</th>
+        <td>{{ active_som.training_dataset_name }}</td>
+    </tr>
+    <tr>
+        <th>Total number of images:</th>
+        <td>{{ active_som.number_of_images }}</td>
+    </tr>
+    <tr>
+        <th>Number of loaded cutout fits:</th>
+        <td>{{ active_som.n_cutouts }}</td>
+    </tr>
+    <tr>
+        <th>Number of loaded outliers:</th>
+        <td>{{ active_som.n_outliers }}</td>
+    </tr>
+    <tr>
+        <th>Number of channels:</th>
+        <td>{{ active_som.number_of_channels }}</td>
+    </tr>
+    <tr>
+        <th>Width:</th>
+        <td>{{ active_som.som_width|floatformat:0 }}</td>
+    </tr>
+    <tr>
+        <th>Height:</th>
+        <td>{{ active_som.som_height|floatformat:0 }}</td>
+    </tr>
+    <tr>
+        <th>Depth:</th>
+        <td>{{ active_som.som_depth|floatformat:0 }}</td>
+    </tr>
+</table>

@@ -4,11 +4,12 @@ from django.template import loader
 from som.models import Prototype, Distance, SOM, Outlier, SomCutout
 import som.som_analysis as sa
 
+
 # Create your views here.
-def som(request):
+def som(request, project):
     template = loader.get_template("som/som.html")
-    soms = SOM.objects.all()
-    active_som = SOM.objects.get(training_dataset_name='UKIDSS_FIRST') # TODO: Remove hardcode
+    soms = SOM.objects.filter(project=project)
+    active_som = soms.get(current=True)
     prototypes = Prototype.objects.filter(som=active_som).order_by('y', 'x')
     context = {
         # Pass some values from the backend here
