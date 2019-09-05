@@ -1,9 +1,7 @@
 /* Style Sheet for the general web page layout */
 
 * {
-	padding-bottom: 0px;
-	padding-top: 0px;
-	margin: 0px;
+    margin: 0;
 }
 
 body {
@@ -54,23 +52,19 @@ body {
     margin-bottom: 50px;
 }
 
-.content h1 {
-    margin-bottom: 10px;
-}
-
-.card-container {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    grid-template-rows: repeat(2, auto);
-    grid-gap: 10px;
+.headline {
+    font-size: 40pt;
+    font-weight: bolder;
+    margin-bottom: 50px;
 }
 
 .card {
+    margin-top: 2.5%;
+    margin-left: 20%;
+    margin-right: 20%;
     position: relative;
-    background-color: lavender;
-    padding: 35px;
+    background-color: mistyrose;
+    padding: 50px;
     border-radius: 25px;
     min-height: 180px;
     text-align: justify;
@@ -80,14 +74,34 @@ body {
     margin-bottom: 5px;
 }
 
-.card a:link, .card a:visited, .card a:active {
-    color: lightcoral;
+.card a {
+    margin-right: 15px;
     text-decoration: none;
 }
 
-.card a:hover {
+.project-container {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    background-color: lavenderblush;
+    padding: 25px;
+}
+
+.project-container li {
+    margin-top: 5px;
+    list-style-type: none;
+}
+
+.project-container li a {
+    font-size: 16pt;
+}
+
+a:link, a:visited, a:active {
     color: hotpink;
-    text-decoration: underline;
+    text-decoration: none;
+}
+
+a:hover {
+    color: deeppink;
 }
 
 input[type=text], textarea {
@@ -110,6 +124,7 @@ textarea {
 
 .action-button {
     padding: 15px;
+    margin-top: 15px;
     margin-bottom: 15px;
     border-style: none;
     min-width: 200px;
@@ -118,6 +133,10 @@ textarea {
     text-align: center;
     font-family: Verdana, Arial, sans-serif;
     cursor: pointer;
+}
+
+.action-button:hover {
+    background-color: deeppink;
 }
 
 .footer {

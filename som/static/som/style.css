@@ -45,8 +45,8 @@ body {
     border: none;
 }
 
-.active, .collapsible:hover {
-    background-color: palevioletred;
+.collapsible:hover {
+    background-color: deeppink;
 }
 
 #datasets, #toolbox {
@@ -56,22 +56,6 @@ body {
 
 #datasets {
     display: none;
-}
-
-#datasets a:link, #datasets a:active, #datasets a:visited,
-.icon-disclaimer a:link, .icon-disclaimer a:active, .icon-disclaimer a:visited {
-    color: black;
-    text-decoration: none;
-}
-
-#datasets a:hover, .icon-disclaimer a:hover {
-    color: black;
-}
-
-.info-panel {
-    text-align: left;
-    background-color: mistyrose;
-    padding: 20px;
 }
 
 .button-grid {

@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
+    <link rel="icon" href="{% static 'main/Logo/icon.png' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
     {% block stylesheets %}<!-- Additional sheets added in subpages -->{% endblock %}
+    <script type="text/javascript" src="{% static 'main/basic_functions.js' %}"></script>
     {% block javascript %}<!-- Additional scripts added in subpages -->{% endblock %}
     <title>{% block title %}UltraPINK{% endblock %}</title>
 </head>
@@ -15,7 +17,7 @@
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'pinkproject:project' %}">Project</a></li>
             <li><a href="{% url 'pinkproject:create_project' %}">New project</a></li>
-            <li><a href="">All projects</a></li>
+            <li><a href="{% url 'pinkproject:all' %}">All projects</a></li>
         </ul>
     {% endblock %}
     </div>

@@ -5,6 +5,7 @@
     <!-- Aladin Lite CSS -->
     <link rel="stylesheet" href="//aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
     {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'som/style.css' %}">
 {% endblock %}
 {% block javascript %}
@@ -20,9 +21,10 @@
         <div class="info-panel">
             <h1>Project: {{ current.project_name }}</h1>
             <p>{{ current.description }}</p>
+            <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">Edit</button>
         </div>
-        <button class="collapsible" id="coll_ds" onclick="collapse(this.id, 'datasets')">Choose a map</button>
-        <div id="datasets">
+        <button class="collapsible active" id="coll_ds" onclick="collapse(this.id, 'datasets')">Choose a map</button>
+        <div id="datasets" style="display: grid;">
             {% for som in soms %}
                 <a href="{% url 'som:som' %}">{{ som.training_dataset_name }}</a>
             {% endfor %}
