@@ -17,12 +17,12 @@ class SOM(object):
     """
     Class to represent a (trained) SOM object.
     """
-    def __init__(self,  dataset_name, som_path, mapping_path, layout='quadratic',
+    def __init__(self,  dataset_name, som_path, mapping_path,
                  som_label='- 15x15'):
 
         # Unpack the data
         (data_som, number_of_channels, som_width, som_height, som_depth,
-         neuron_width, neuron_height) = unpack_trained_som(som_path, layout)
+         neuron_width, neuron_height, layout) = unpack_trained_som(som_path)
 
         self.training_dataset_name = dataset_name
         self.data_som = data_som
@@ -84,19 +84,21 @@ class SOM(object):
         if not os.path.exists(mapping_path):
             print('This file does not exist:', mapping_path)
         with open(mapping_path, 'rb') as inputStream:
+            inputStream.read(12)    # Skip first 3 numbers of header info
             number_of_images = struct.unpack("i", inputStream.read(4))[0]
+            inputStream.read(8)     # Skip layout and dimensions
             som_width = struct.unpack("i", inputStream.read(4))[0]
             som_height = struct.unpack("i", inputStream.read(4))[0]
-            som_depth = struct.unpack("i", inputStream.read(4))[0]
             failed = 0
+            print(self.som_width, som_width)
+            print(self.som_height, som_height)
             assert self.som_width == som_width
             assert self.som_height == som_height
-            assert self.som_depth == som_depth
 
-            if self.layout == 'hexagonal':
+            if self.layout == 1:
                 map_size, _ = get_hex_size(som_width)
             else:
-                map_size = som_width * som_height * som_depth
+                map_size = som_width * som_height * self.som_depth
 
             data_map = np.ones((number_of_images, map_size))
             for i in range(number_of_images):
@@ -108,11 +110,12 @@ class SOM(object):
                     except:
                         failed += 1
             data_map = data_map[:len(cut_out_index)]
+            print(data_map.shape)
             if failed > 0:
                 print('Failed:', int(1.0 * failed / map_size))
         if verbose:
             print('''Loaded distances of {} cut-outs to a SOM with a width, height 
-                and depth equal to {},{},{}.'''.format(number_of_images, som_width, som_height, som_depth))
+                and depth equal to {},{},{}.'''.format(number_of_images, som_width, som_height, self.som_depth))
             return data_map, number_of_images
 
 
@@ -134,7 +137,7 @@ def plot_image(img, save_path):
 ######################################################################################
 #           Helper for Initialization                                                #
 ######################################################################################
-def unpack_trained_som(trained_path, layout):
+def unpack_trained_som(trained_path):
     """
     Unpacks a trained SOM, returns the SOM with hexagonal layout
     in a flattened format. Requires the file path to the trained SOM and
@@ -142,16 +145,23 @@ def unpack_trained_som(trained_path, layout):
     """
     with open(trained_path, 'rb') as inputStream:
         failures = 0
-        # File structure: (som_width, som_height, som_depth, number_of_channels,
-        # neuron_width, neuron_height) float
-        number_of_channels = struct.unpack("i", inputStream.read(4))[0]
+        # File structure for Pink 2.0:
+        # 2 1 <data-type> <som layout: (layout, dimensions, width, height)>
+        # <neuron layout: (layout, dimensions, width, height)> <data>
+        inputStream.read(12)    # Skip first 3 numbers of header info
+        layout = struct.unpack("i", inputStream.read(4))[0]
+        inputStream.read(4)   # Skip SOM dimensions
         som_width = struct.unpack("i", inputStream.read(4))[0]
         som_height = struct.unpack("i", inputStream.read(4))[0]
-        som_depth = struct.unpack("i", inputStream.read(4))[0]
+        inputStream.read(8)     # Skip neuron layout and dimensions
         neuron_width = struct.unpack("i", inputStream.read(4))[0]
         neuron_height = struct.unpack("i", inputStream.read(4))[0]
 
-        if layout == 'quadratic':
+        # Todo: where do these values come from?
+        som_depth = 1
+        number_of_channels = 1
+
+        if layout == 0: # Quadratic
             data_som = np.ones(
                 (som_width, som_height, som_depth, number_of_channels * neuron_width * neuron_height))
             for i in range(som_width):
@@ -174,7 +184,7 @@ def unpack_trained_som(trained_path, layout):
                         failures += 1.0
         if failures > 0:
             print('Failures:', int(failures / (number_of_channels * neuron_width * neuron_height)))
-        return data_som, number_of_channels, som_width, som_height, som_depth, neuron_width, neuron_height
+        return data_som, number_of_channels, som_width, som_height, som_depth, neuron_width, neuron_height, layout
 
 
 def get_hex_size(hex_length):
@@ -221,11 +231,15 @@ def populate_hex_map(filler, som_width, som_height):
 def return_cutout(bin_path, cutout_id):
     """Open bin_path, return cut-out with id=cutout_id"""
     with open(bin_path, 'rb') as file:
-        number_of_images, number_of_channels, width, height = struct.unpack('i' * 4, file.read(4 * 4))
+        file.read(12)   # Skip first 3 numbers of header info
+        number_of_images = struct.unpack("i", file.read(4))[0]
+        file.read(8)    # Skip layout info
+        width = struct.unpack("i", file.read(4))[0]
+        height = struct.unpack("i", file.read(4))[0]
         if cutout_id > number_of_images:
             raise Exception('Requested image ID is larger than the number of images.')
         size = width * height
-        file.seek((cutout_id*number_of_channels + 0) * size*4, 1)
+        file.seek((cutout_id + 0) * size*4, 1)
         array = np.array(struct.unpack('f' * size, file.read(size*4)))
         cutout = np.ndarray([width,height], 'float', array)
         return cutout

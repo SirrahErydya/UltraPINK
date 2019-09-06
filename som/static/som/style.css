@@ -103,8 +103,8 @@ body {
     padding-top: 20px;
     width: 85vh;
     height: 85vh;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
     grid-gap: 0.5%;
 }
 

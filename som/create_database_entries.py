@@ -9,9 +9,10 @@ from django.conf import settings
 from som.som_postprocessing import plot_image, return_cutout
 
 
-def create_som_model(som_path, mapping_path, bindata_path, csv_path, som_obj, n_cutouts=1000, n_outliers=100):
+def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, som_obj, n_cutouts=1000, n_outliers=100):
     """
     Create a database model for a complete SOM capsuling the data
+    :param project: The project that this SOM belongs to
     :param som_path: Path to the SOM binary file
     :param mapping_path: Path to the mapping binary file
     :param bindata_path: Path to the image binary file
@@ -29,6 +30,7 @@ def create_som_model(som_path, mapping_path, bindata_path, csv_path, som_obj, n_
 
     # Create SOM model
     som_model = som.models.SOM.objects.create(
+        project=project,
         som_path=som_path,
         mapping_path=mapping_path,
         data_path=bindata_path,

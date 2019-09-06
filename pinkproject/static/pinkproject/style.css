@@ -22,9 +22,9 @@
     margin-top: 50px;
     display: grid;
     grid-gap: 20px;
-    grid-template-columns: repeat(2, 10em);
-    grid-template-rows: repeat(2, 3em);
-    min-height: 280px;
+    grid-template-columns: repeat(2, 12em);
+    grid-template-rows: repeat(2, auto);
+    margin-bottom: 50px;
 }
 
 input[type=file] {

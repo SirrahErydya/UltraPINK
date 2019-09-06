@@ -6,7 +6,7 @@
 {% block content %}
     <div class="create-project">
         <h1>Create a new project</h1>
-        <form id="create-project-form" action="{% url 'pinkproject:create_new' %}{{ project.id }}" method="post">{% csrf_token %}
+        <form id="create-project-form" action="{% url 'pinkproject:create_new' %}{{ project.id }}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
             <div class="input-grid">
                 <label for="project-name">Project name: </label>
                 <input id='project-name' type="text" name="project-name"
@@ -18,8 +18,15 @@
             </div>
             <h3>Existing data</h3>
             <p>Do you have any existing data related to this project? Upload the csv files here.</p>
-            <input class='upload-button' type="file" id="csv-data" name="csv-data" accept="text/csv" multiple/>
-            <br/><br/>
+            <div class="input-grid">
+                <label for="dataset-name">Dataset name:</label>
+                <input id='dataset-name' type="text" name="dataset-name"
+                       value="Dataset name..." maxlength="200"/>
+                <label for="img-data">Data folder</label>
+                <input class='upload-button' type="file" id="img-data" name="img-data"  multiple/>
+                <label for="csv-data">Additional infos (as .csv)</label>
+                <input class='upload-button' type="file" id="csv-data" name="csv-data" accept="text/csv" multiple/>
+            </div>
             <h3>Existing self-ordering map</h3>
             <p>Do you already have a self-ordering map generated with PINK that is related to this project?
             Please provide the binary files here.</p>
@@ -27,6 +34,12 @@
                 <label for="som-file">SOM file (.bin): </label><input class='upload-button' type="file" id="som-file" name="som-file"/>
                 <label for="mapping-file">Mapping file (.bin): </label><input class='upload-button' type="file" id="mapping-file" name="mapping-file"/>
                 <label for="image-file">Image file (.bin): </label><input class='upload-button' type="file" id="image-file" name="image-file"/>
+                <label for="n_cutouts">How many cutouts do you want to generate? (Leave blank to generate all) </label>
+                <input id='n_cutouts' type="text" name="n_cutouts"
+                       value="" maxlength="200"/>
+                <label for="n_cutouts">How many outliers do you want to generate?</label>
+                <input id='n_outliers' type="text" name="n_outliers"
+                       value="100" maxlength="200"/>
             </div>
             <input class='action-button' type="submit" value="Save"/>
         </form>
