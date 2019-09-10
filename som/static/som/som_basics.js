@@ -5,11 +5,20 @@
 var proto_selected = 'proto-selected';
 var tool_selected = 'tool-selected';
 
+
 function select_tool(id) {
+    var som_container = document.getElementById('som-container');
     var selected_tools = document.getElementsByClassName(tool_selected);
     var tool = document.getElementById(id);
     for(var i=0; i<selected_tools.length; i++) {
+        if(selected_tools[i].id == 'magnifier') {
+            deactivate_magnifier();
+            som_container.removeEventListener("mousemove", magnify);
+        }
         selected_tools[i].classList.remove(tool_selected);
+    }
+    if(id == "magnifier") {
+        som_container.addEventListener("mousemove", magnify);
     }
     tool.classList.add(tool_selected)
 }
@@ -20,8 +29,6 @@ function click_prototype(id) {
     if(tool.id == 'pointer') {
         select_single(img);
     } else if(tool.id == 'zoom') {
-
-    } else if(tool.id == 'magnifier') {
 
     } else if(tool.id == 'select') {
         select_multiple(img);
@@ -143,4 +150,60 @@ function show_in_aladin(ra, dec, div_id) {
             showLayersControl : false,});
     aladin.gotoRaDec(ra,dec);
     aladin.setFov(12/60);
+}
+
+function magnify(event) {
+    zoom = 20;
+    var glass, w, h, bw;
+
+    container = document.getElementById('som-container');
+
+    /* Create magnifier glass: */
+    glass = document.getElementById('magnify-window');
+    pos = getCursorPos(event);
+    glass.style.display = 'block';
+    glass.style.backgroundImage = container.style.backgroundImage;
+    glass.style.backgroundRepeat = "no-repeat";
+    glass.style.backgroundSize = 100 * zoom + '%';
+
+    /* Set background properties for the magnifier glass: */
+    bw = 3;
+    w = glass.offsetWidth / 2;
+    h = glass.offsetHeight / 2;
+
+    /* Execute a function when someone moves the magnifier glass over the image: */
+    glass.addEventListener("mousemove", moveMagnifier);
+    container.addEventListener("mousemove", moveMagnifier);
+
+    /*and also for touch screens:*/
+    glass.addEventListener("touchmove", moveMagnifier);
+    container.addEventListener("touchmove", moveMagnifier);
+
+    function moveMagnifier(e) {
+        var pos, x, y;
+        /* Prevent any other actions that may occur when moving over the image */
+        e.preventDefault();
+        /* Get the cursor's x and y positions: */
+        pos = getCursorPos(e);
+        x = pos.x;
+        y = pos.y;
+        glass.style.left = (x-w-container.style.left) + "px";
+        glass.style.top = (y-h-container.style.top) + "px";
+        if(x < container.style.left || x > container.style.left + container.style.width ||
+            y < container.style.top || y > container.style.top + container.style.height) {
+            glass.style.display = 'none';
+        } else {
+            glass.style.display = 'block';
+        }
+        /* Display what the magnifier glass "sees": */
+        glass.style.backgroundPosition = "-" + ((x * zoom) - w + bw) + "px -" + ((y * zoom) - h + bw) + "px";
+    }
+
+    function getCursorPos(e) {
+        x = e.clientX;
+        y = e.clientY;
+        return {x, y};
+    }
+
+    
 }

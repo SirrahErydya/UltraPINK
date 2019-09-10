@@ -1,10 +1,11 @@
 
-<div id="som-container">
+<div id="som-container" style="
+    background-image: url({{ active_som.proto_map.url }});
+    grid-template-columns: repeat({{ active_som.som_width }}, auto);
+    grid-template-rows: repeat({{ active_som.som_height}}, auto);">
+    <div class="magnifier" id="magnify-window" style="display: none;"></div>
     {% for prototype in prototypes %}
-        <div class="tooltip">
-            {% load static %}
-            <img id="{{ prototype.proto_id}}" src="{{ prototype.image.url }}" alt="som_prototype{{ proto_id }}"
-                 onclick="click_prototype(this.id)">
+        <div id="{{ prototype.proto_id}}" class="tooltip" onclick="click_prototype(this.id)">
             <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
         </div>
     {% endfor %}
@@ -16,39 +17,42 @@
         </div>
     </div>
 </div>
-<!--
-<table>
-    <tr>
-        <th>Dataset:</th>
-        <td>{{ active_som.training_dataset_name }}</td>
-    </tr>
-    <tr>
-        <th>Total number of images:</th>
-        <td>{{ active_som.number_of_images }}</td>
-    </tr>
-    <tr>
-        <th>Number of loaded cutout fits:</th>
-        <td>{{ active_som.n_cutouts }}</td>
-    </tr>
-    <tr>
-        <th>Number of loaded outliers:</th>
-        <td>{{ active_som.n_outliers }}</td>
-    </tr>
-    <tr>
-        <th>Number of channels:</th>
-        <td>{{ active_som.number_of_channels }}</td>
-    </tr>
-    <tr>
-        <th>Width:</th>
-        <td>{{ active_som.som_width|floatformat:0 }}</td>
-    </tr>
-    <tr>
-        <th>Height:</th>
-        <td>{{ active_som.som_height|floatformat:0 }}</td>
-    </tr>
-    <tr>
-        <th>Depth:</th>
-        <td>{{ active_som.som_depth|floatformat:0 }}</td>
-    </tr>
-</table>
--->
+<div class="som-info">
+    <table>
+        <tr>
+            <th>Dataset:</th>
+            <td>{{ active_som.training_dataset_name }}</td>
+        </tr>
+        <tr>
+            <th>Total number of images:</th>
+            <td>{{ active_som.number_of_images }}</td>
+        </tr>
+        <tr>
+            <th>Number of loaded cutout fits:</th>
+            <td>{{ active_som.n_cutouts }}</td>
+        </tr>
+        <tr>
+            <th>Number of loaded outliers:</th>
+            <td>{{ active_som.n_outliers }}</td>
+        </tr>
+        <tr>
+            <th>Number of channels:</th>
+            <td>{{ active_som.number_of_channels }}</td>
+        </tr>
+        <tr>
+            <th>Width:</th>
+            <td>{{ active_som.som_width|floatformat:0 }}</td>
+        </tr>
+        <tr>
+            <th>Height:</th>
+            <td>{{ active_som.som_height|floatformat:0 }}</td>
+        </tr>
+        <tr>
+            <th>Depth:</th>
+            <td>{{ active_som.som_depth|floatformat:0 }}</td>
+        </tr>
+    </table>
+    <br/>
+    <h3>Heatmap:</h3>
+    <img src="{{ active_som.heatmap.url }}"/>
+</div>

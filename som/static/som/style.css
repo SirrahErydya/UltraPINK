@@ -99,13 +99,14 @@ body {
 }
 
 #som-container {
-    padding-left: 20px;
-    padding-top: 20px;
+    position: absolute;
+    top: 75px;
+    left: calc(50vw - 50vh + 100px);
+    background-repeat: no-repeat;
+    background-size: 100%;
     width: 85vh;
     height: 85vh;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-    grid-gap: 0.5%;
+    grid-gap: 0;
 }
 
 .cutouts {
@@ -134,6 +135,7 @@ body {
 .tooltip {
    position: relative;
    display: inline-block;
+    cursor: pointer;
 }
 
 /* Tooltip text */
@@ -153,6 +155,11 @@ body {
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
    visibility: visible;
+    cursor: pointer;
+}
+
+.proto-selected {
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 
@@ -185,7 +192,22 @@ body {
   to {top: 0; opacity: 1}
 }
 
-table {
+.som-info {
+    position: absolute;
+    right: 0;
+    top: 100px;
+    margin-right: 5%;
+    text-align: left;
+    width: 20vw;
+}
+
+.som-info img {
+    width: 100%;
+    right: 50px;
+
+}
+
+.som-info table {
     padding-top: 15px;
     padding-bottom: 15px;
     font-size: 14pt;
@@ -196,6 +218,11 @@ th, td {
     height: 30px;
 }
 
-.action-button {
-    position: relative;
+.magnifier {
+    position: fixed;
+    border: 1px solid #d4d4d4;
+    /*set the size of the lens:*/
+    width: 200px;
+    height: 200px;
+    z-index: 500;
 }
