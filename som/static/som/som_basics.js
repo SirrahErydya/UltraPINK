@@ -4,6 +4,7 @@
 
 var proto_selected = 'proto-selected';
 var tool_selected = 'tool-selected';
+var som_img_size = 100
 
 
 function select_tool(id) {
@@ -12,13 +13,20 @@ function select_tool(id) {
     var tool = document.getElementById(id);
     for(var i=0; i<selected_tools.length; i++) {
         if(selected_tools[i].id == 'magnifier') {
-            deactivate_magnifier();
-            som_container.removeEventListener("mousemove", magnify);
+            som_container.removeEventListener("mousedown", magnify);
+            som_container.removeEventListener("mouseup", remove_magnifier);
+        } else if(selected_tools[i].id == 'zoom') {
+            som_container.removeEventListener('wheel', zoom_som);
+            som_container.style.backgroundSize = '100%';
+            som_img_size = 100
         }
         selected_tools[i].classList.remove(tool_selected);
     }
     if(id == "magnifier") {
-        som_container.addEventListener("mousemove", magnify);
+        som_container.addEventListener("mousedown", magnify);
+        som_container.addEventListener("mouseup", remove_magnifier);
+    } else if(id == "zoom") {
+        som_container.addEventListener('wheel', zoom_som);
     }
     tool.classList.add(tool_selected)
 }
@@ -27,11 +35,10 @@ function click_prototype(id) {
     var img = document.getElementById(id);
     var tool = document.getElementsByClassName(tool_selected)[0];
     if(tool.id == 'pointer') {
-        select_single(img);
+        select_multiple(img);
     } else if(tool.id == 'zoom') {
 
     } else if(tool.id == 'select') {
-        select_multiple(img);
     } else if(tool.id == 'wand') {
 
     }
@@ -109,7 +116,6 @@ function request_cutouts(url, data) {
         success: function (data) {
             if (data.success) {
                 var best_fits = data.best_fits;
-                img_container.innerHTML = '';
                 for(var i=0; i<best_fits.length; i++) {
                     url = best_fits[i].url;
                     ra = best_fits[i].ra;
@@ -125,8 +131,10 @@ function request_cutouts(url, data) {
 
 window.onclick = function(event) {
     var modals = document.getElementsByClassName('modal');
+    var img_container = document.getElementById('cutouts');
     Array.from(modals).forEach(function(modal) {
         if (event.target === modal) {
+            img_container.innerHTML = '';
             modal.style.display = "none";
         }});
 }
@@ -153,7 +161,7 @@ function show_in_aladin(ra, dec, div_id) {
 }
 
 function magnify(event) {
-    zoom = 20;
+    zoom = 10;
     var glass, w, h, bw;
 
     container = document.getElementById('som-container');
@@ -167,7 +175,6 @@ function magnify(event) {
     glass.style.backgroundSize = 100 * zoom + '%';
 
     /* Set background properties for the magnifier glass: */
-    bw = 3;
     w = glass.offsetWidth / 2;
     h = glass.offsetHeight / 2;
 
@@ -187,16 +194,15 @@ function magnify(event) {
         pos = getCursorPos(e);
         x = pos.x;
         y = pos.y;
-        glass.style.left = (x-w-container.style.left) + "px";
-        glass.style.top = (y-h-container.style.top) + "px";
-        if(x < container.style.left || x > container.style.left + container.style.width ||
-            y < container.style.top || y > container.style.top + container.style.height) {
-            glass.style.display = 'none';
-        } else {
-            glass.style.display = 'block';
-        }
+        glass_left = (x-5);
+        glass_top = (y-5);
+        glass.style.left = glass_left + "px";
+        glass.style.top =  glass_top + "px";
         /* Display what the magnifier glass "sees": */
-        glass.style.backgroundPosition = "-" + ((x * zoom) - w + bw) + "px -" + ((y * zoom) - h + bw) + "px";
+        container_bb = container.getBoundingClientRect();
+        bg_x = container_bb.left - x;
+        bg_y = container_bb.top - y;
+        glass.style.backgroundPosition = (bg_x * (zoom/4)) + "px " +  (bg_y * (zoom/4)) + "px";
     }
 
     function getCursorPos(e) {
@@ -207,3 +213,44 @@ function magnify(event) {
 
     
 }
+
+function remove_magnifier(event) {
+    glass = document.getElementById('magnify-window');
+    glass.style.display = 'none';
+}
+
+function zoom_som(event) {
+    container = document.getElementById('som-container');
+
+    var e_delta = (event.deltaY || -event.wheelDelta || event.detail);
+    var delta =  e_delta && ((e_delta >> 10) || 1) || 0;
+    console.log(delta);
+    var scale = 1;
+    if(delta < 0) {
+        scale += 0.1
+    } else {
+        scale -= 0.1
+    }
+    som_img_size = som_img_size * scale;
+    container.style.backgroundSize = som_img_size * scale + '%';
+}
+
+ function apply_label() {
+     label = document.getElementById('label').value;
+     selection = document.getElementsByClassName(proto_selected);
+     var data = '{ "protos": [ "' + selection[0].id;
+     for(var i=1; i<selection.length; i++) {
+         data += '", "' + selection[i].id;
+     }
+     data += '" ] }';
+     $.ajax({
+        url: '/som/label_protos/'+label,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                alert("The label was applied successfully to the selected prototypes.")
+            }
+        }
+      });
+ }

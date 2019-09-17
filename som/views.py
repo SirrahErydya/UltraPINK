@@ -33,6 +33,15 @@ def get_best_fits_to_protos(request, n_fits=10):
     return JsonResponse({'best_fits': make_json(cutouts, n_fits), "success": True})
 
 
+def label_prototypes(request, label):
+    protos = request.POST.getlist('protos')
+    try:
+        sa.label_protos(protos, label)
+        return JsonResponse({"success": True})
+    except:
+        return JsonResponse({"success": False})
+
+
 def get_outliers(request, n_fits=10):
     outliers = Outlier.objects.all()[:n_fits]
     return JsonResponse({'best_fits': make_json(outliers, n_fits), 'success': True})

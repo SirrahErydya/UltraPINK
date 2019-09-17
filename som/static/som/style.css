@@ -18,7 +18,7 @@ body {
 .side-menu {
     float: left;
     padding: 0px 25px 15px 50px;
-    width: calc(50vw - 50vh);
+    width: calc(50vw - 60vh);
     height: calc(100vh - 100px);
     background-color: pink;
 }
@@ -58,13 +58,25 @@ body {
     display: none;
 }
 
-.button-grid {
+.edit-tools {
     margin-top: 15px;
+    margin-bottom: 50px;
 }
 
-.button-grid input {
-    margin-right: 15px;
+.edit-tools input {
+    margin-left: 15px;
 }
+
+.edit-tools img {
+    margin-left: 20px;
+    width: 50px;
+}
+
+.edit-tools #label {
+    margin-left: 0px;
+    width: 190px;
+}
+
 
 .icon-disclaimer {
     font-size: 8pt;
@@ -72,20 +84,30 @@ body {
     bottom: 80px;
 }
 
-#toolbox, #som-container, .cutouts {
+#som-container, .cutouts, .inspection-tools {
     text-align: center;
     display: grid;
 }
 
 #toolbox {
-    grid-template-columns: repeat(5, auto);
-    grid-template-rows: repeat(1, auto);
-    grid-gap: 50px;
+    padding-top: 30px;
     margin-bottom: 10px;
+    padding-left: 35px;
+    padding-right: 35px;
 }
 
-#toolbox img {
+.inspection-tools {
+    padding-top: 15px;
+    padding-bottom: 50px;
+    grid-template-columns: repeat(4, auto);
+    grid-template-rows: repeat(1, auto);
+    grid-gap: 50px;
+}
+
+#toolbox .inspection-tools img {
     width: 100%;
+}
+#toolbox img {
     opacity: 0.5;
 }
 
@@ -98,10 +120,20 @@ body {
     opacity: 1;
 }
 
+#toolbox .action-button {
+    min-width: 32%;
+    width: 32%;
+    max-width: 32%;
+}
+
+.view-tools {
+    display: inline-block;
+}
+
 #som-container {
     position: absolute;
     top: 75px;
-    left: calc(50vw - 50vh + 100px);
+    left: calc(50vw - 60vh + 100px);
     background-repeat: no-repeat;
     background-size: 100%;
     width: 85vh;
@@ -196,7 +228,7 @@ body {
     position: absolute;
     right: 0;
     top: 100px;
-    margin-right: 5%;
+    margin-right: 10%;
     text-align: left;
     width: 20vw;
 }
@@ -222,7 +254,7 @@ th, td {
     position: fixed;
     border: 1px solid #d4d4d4;
     /*set the size of the lens:*/
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
     z-index: 500;
 }

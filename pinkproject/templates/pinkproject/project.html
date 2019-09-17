@@ -31,48 +31,71 @@
         </div>
         <button class="collapsible active" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
         <div id="toolbox" style="display: grid;">
-            <div class="tooltip">
-                <img id="pointer" class="tool-selected" src="{% static 'som/icons/png/013-cursor-1.png' %}"
-                onclick="select_tool(this.id)">
-                <span class="tooltiptext">Select</span>
-            </div>
-            <div class="tooltip">
-                <img id="zoom" src="{% static 'som/icons/png/031-cursor.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Zoom into map</span>
-            </div>
-            <div class="tooltip">
-                <img id="magnifier" src="{% static 'som/icons/png/025-zoom.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Magnify</span>
-            </div>
-            <div class="tooltip">
-                <img id="select" src="{% static 'som/icons/png/039-crop.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Select multiple</span>
-            </div>
-            <div class="tooltip">
-                <img id="wand" src="{% static 'som/icons/png/029-magic-wand.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Magic wand</span>
-            </div>
-        </div>
-        <div class="button-grid">
-            Number of best fits: <input id='input-cutouts' type="text" name="n_fits" value='10'/>
-            <button id="cutout_button" type="button" class="action-button" onclick="show_best_fits()">Show best fits</button>
-            <br/>
-            Number of outliers: <input id='input-outliers' type="text" name="n_outliers" value='10'/>
-            <button id="-o" type="button" class="action-button" onclick="show_outliers()">Show outliers</button>
-            <div id="modal-o" class="modal">
-                <div class="modal_window">
-                    <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
-                    <div id="cutouts-o" class="cutouts">
-                    </div>
+            <h3>Inspection:</h3>
+            <div class="inspection-tools">
+                <div class="tooltip">
+                    <img id="pointer" class="tool-selected" src="{% static 'som/icons/png/013-cursor-1.png' %}"
+                    onclick="select_tool(this.id)">
+                    <span class="tooltiptext">Select</span>
+                </div>
+                <div class="tooltip">
+                    <img id="zoom" src="{% static 'som/icons/png/031-cursor.png' %}"
+                         onclick="select_tool(this.id)">
+                    <span class="tooltiptext">Zoom into map</span>
+                </div>
+                <div class="tooltip">
+                    <img id="magnifier" src="{% static 'som/icons/png/025-zoom.png' %}"
+                         onclick="select_tool(this.id)">
+                    <span class="tooltiptext">Magnify</span>
+                </div>
+                <div class="tooltip">
+                    <img id="selection" src="{% static 'som/icons/png/039-crop.png' %}"
+                         onclick="select_tool(this.id)">
+                    <span class="tooltiptext">Select area</span>
                 </div>
             </div>
-            <button id="heatmap_button" type="button" class="action-button" onclick="">Show heatmap</button>
-            <button id="export_button" type="button" class="action-button" onclick="">Export choice as a catalog</button>
+            <h3>Edit:</h3>
+            <div class="edit-tools">
+                Number of best fits: <input id='input-cutouts' type="text" name="n_fits" value='10'/>
+                <div class="tooltip">
+                    <img align="middle" id="show-best-fits" src="{% static 'som/icons/png/006-red-eye.png' %}"
+                    onclick="show_best_fits()">
+                    <span class="tooltiptext">Show closest dataset entries to selection</span>
+                </div><br/>
+                Number of outliers: <input id='input-outliers' type="text" name="n_outliers" value='10'/>
+                <div class="tooltip">
+                    <img align="middle" id="show-outliers" src="{% static 'som/icons/png/006-red-eye.png' %}"
+                    onclick="show_outliers()">
+                    <span class="tooltiptext">Show outliers</span>
+                </div>
+                <div id="modal-o" class="modal">
+                    <div class="modal_window">
+                        <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
+                        <div id="cutouts-o" class="cutouts">
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <input id='label' type="text" name="n_outliers" value='Label...'/>
+                <div class="tooltip">
+                    <img align="middle" id="apply-label" src="{% static 'som/icons/png/011-pencil.png' %}"
+                    onclick="apply_label()">
+                    <span class="tooltiptext">Apply labels</span>
+                </div>
+                <div class="tooltip">
+                    <img align="middle" id="export" src="{% static 'som/icons/png/015-file.png' %}"
+                    onclick="export_catalog()">
+                    <span class="tooltiptext">Export catalog</span>
+                </div>
+            </div>
+            <h3>View:</h3>
+            <div class="view-tools">
+                <button id="prototype_button" type="button" class="action-button active-action-button" onclick="">Prototypes</button>
+                <button id="heatmap_button" type="button" class="action-button" onclick="">Heatmap</button>
+                <button id="labels_button" type="button" class="action-button" onclick="">Labels</button>
+            </div>
         </div>
+
 
         <div class="icon-disclaimer">
             Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>

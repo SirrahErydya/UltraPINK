@@ -135,7 +135,7 @@ textarea {
     cursor: pointer;
 }
 
-.action-button:hover {
+.action-button:hover, .active-action-button{
     background-color: deeppink;
 }
 

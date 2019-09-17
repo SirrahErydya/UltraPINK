@@ -22,3 +22,10 @@ def get_best_fits_to_protos(proto_ids, n_fits=10):
     assert len(avg_distances) == len(cutouts)
     cutout_indices = np.argsort(np.asarray(avg_distances))[:n_fits]
     return [cutouts[i] for i in cutout_indices]
+
+
+def label_protos(proto_ids, label):
+    prototypes = [Prototype.objects.get(proto_id=proto_id) for proto_id in proto_ids]
+    for proto in prototypes:
+        proto.label = label
+        proto.save()

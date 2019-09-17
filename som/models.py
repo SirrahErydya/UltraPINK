@@ -48,6 +48,7 @@ class Prototype(models.Model):
     proto_id = models.IntegerField(unique=True)
     som = models.ForeignKey(SOM, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='prototypes')
+    label = models.CharField(max_length=200, default="")
     x = models.IntegerField()
     y = models.IntegerField()
     z = models.IntegerField()
@@ -62,6 +63,7 @@ class SomCutout(models.Model):
     dec = models.DecimalField(decimal_places=15, max_digits=20)
     csv_path = models.FilePathField()
     csv_row_idx = models.IntegerField()
+    label = models.CharField(max_length=200, default="")
 
     # Map coordinates and image data
     closest_prototype = models.ForeignKey(Prototype, on_delete=models.DO_NOTHING)
