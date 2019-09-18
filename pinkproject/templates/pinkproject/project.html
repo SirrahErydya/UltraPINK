@@ -56,6 +56,7 @@
             </div>
             <h3>Edit:</h3>
             <div class="edit-tools">
+                {% csrf_token %}
                 Number of best fits: <input id='input-cutouts' type="text" name="n_fits" value='10'/>
                 <div class="tooltip">
                     <img align="middle" id="show-best-fits" src="{% static 'som/icons/png/006-red-eye.png' %}"

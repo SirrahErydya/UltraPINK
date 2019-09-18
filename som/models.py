@@ -53,6 +53,17 @@ class Prototype(models.Model):
     y = models.IntegerField()
     z = models.IntegerField()
 
+    def to_json(self):
+        dictionary = {}
+        dictionary['proto_id'] = self.proto_id
+        dictionary['label'] = self.label
+        dictionary['x'] = self.x
+        dictionary['y'] = self.y
+        dictionary['z'] = self.z
+        dictionary['url'] = self.image.url
+        return dictionary
+
+
 
 class SomCutout(models.Model):
     # Foreign key
@@ -69,6 +80,14 @@ class SomCutout(models.Model):
     closest_prototype = models.ForeignKey(Prototype, on_delete=models.DO_NOTHING)
     image = models.ImageField(upload_to='cutouts')
 
+    def to_json(self):
+        dictionary = {}
+        dictionary['ra'] = self.ra
+        dictionary['dec'] = self.ra
+        dictionary['label'] = self.label
+        dictionary['url'] = self.image.url
+        return dictionary
+
 
 class Outlier(models.Model):
     # Foreign key
@@ -83,6 +102,13 @@ class Outlier(models.Model):
     # Image data
     image = models.ImageField(upload_to='outliers')
 
+    def to_json(self):
+        dictionary = {}
+        dictionary['ra'] = self.ra
+        dictionary['dec'] = self.ra
+        dictionary['label'] = self.label
+        dictionary['url'] = self.image.url
+        return dictionary
 
 class Distance(models.Model):
     prototype = models.ForeignKey(Prototype, on_delete=models.CASCADE)

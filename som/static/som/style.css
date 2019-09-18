@@ -207,9 +207,8 @@ body {
 }
 
 .modal_window {
-    border-radius: 25px;
     position: relative;
-    background-color: lavender;
+    background-color: lavenderblush;
     color: black;
     margin: 5% auto; /* 15% from the top and centered */
     padding: 20px;

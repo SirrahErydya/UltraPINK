@@ -3,6 +3,8 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from som.models import Prototype, Distance, SOM, Outlier, SomCutout
 import som.som_analysis as sa
+import json
+from django.core import serializers
 
 
 # Create your views here.
@@ -20,21 +22,20 @@ def som(request, project):
     return HttpResponse(template.render(context, request))
 
 
-def get_best_fits(request, proto, n_fits=10):
-    if proto != -1:
-        best_fits = sa.get_best_fits(proto, n_fits)
-        return JsonResponse({'best_fits': make_json(best_fits, n_fits), 'success': True})
-    return JsonResponse({"success": False})
-
-
 def get_best_fits_to_protos(request, n_fits=10):
-    protos = request.POST.getlist('protos')
-    cutouts = sa.get_best_fits_to_protos(protos, n_fits)
-    return JsonResponse({'best_fits': make_json(cutouts, n_fits), "success": True})
+    protos = json.loads(request.body)['protos']
+    prototypes = [Prototype.objects.get(proto_id=proto_id) for proto_id in protos]
+    if len(protos) == 1:
+        cutouts = sa.get_best_fits(protos[0], n_fits)
+    else:
+        cutouts = sa.get_best_fits_to_protos(prototypes, n_fits)
+    json_cutouts = [cutout.to_json() for cutout in cutouts]
+    json_protos = [prototype.to_json() for prototype in prototypes]
+    return JsonResponse({'best_fits': json_cutouts, 'protos': json_protos, "success": True})
 
 
 def label_prototypes(request, label):
-    protos = request.POST.getlist('protos')
+    protos = json.loads(request.body)['protos']
     try:
         sa.label_protos(protos, label)
         return JsonResponse({"success": True})
@@ -44,19 +45,6 @@ def label_prototypes(request, label):
 
 def get_outliers(request, n_fits=10):
     outliers = Outlier.objects.all()[:n_fits]
-    return JsonResponse({'best_fits': make_json(outliers, n_fits), 'success': True})
+    return JsonResponse({'best_fits':  serializers.serialize('json', outliers), 'success': True})
 
 
-def make_json(imgs, n_fits):
-    n = n_fits
-    if n > len(imgs):
-        n = len(imgs)
-    best_fits = []
-    for i in range(n):
-        fit_i = {}
-        fit_i['id'] = imgs[i].id
-        fit_i['url'] = imgs[i].image.url
-        fit_i['ra'] = imgs[i].ra
-        fit_i['dec'] = imgs[i].dec
-        best_fits.append(fit_i)
-    return best_fits
