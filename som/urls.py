@@ -7,5 +7,6 @@ urlpatterns = [
     path('get_best_fits/<int:n_fits>', views.get_best_fits_to_protos, name='get_best_fits_to_protos'),
     path('get_outliers/<int:n_fits>', views.get_outliers, name='get_outliers'),
     path('label/<slug:label>', views.label, name='label'),
+    path('export/<slug:filename>', views.export_catalog, name='export'),
     path('get_protos', views.get_protos, name='get_protos')
 ]

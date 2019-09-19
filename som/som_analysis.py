@@ -3,7 +3,11 @@ These functions perform basic analysis operations on a SOM
 :author: Fenja Kollasch
 """
 from som.models import Prototype, SomCutout, Distance
+from django.db.models import Q
+from django.conf import settings
 import numpy as np
+import csv
+import os
 
 
 def get_best_fits(proto, n_fits=10):
@@ -40,3 +44,15 @@ def label_cutouts(cutout_ids, label):
         cutout = SomCutout.objects.get(id=cutout_id)
         cutout.label = label
         cutout.save()
+
+
+def export_catalog(cutout_ids, filename):
+    if len(cutout_ids) == 0:
+        cutouts = SomCutout.objects.filter(~Q(label=''))
+    else:
+        cutouts = [SomCutout.objects.get(id='cutout_id') for cutout_id in cutout_ids]
+    with open(os.path.join(settings.DATA_DIR, filename + '.csv'), 'w') as file:
+        writer = csv.writer(file)
+        writer.writerow(['ID', "RA", 'Dec', 'Clostest prototype', 'Label', 'Image File'])
+        for cutout in cutouts:
+            writer.writerow([cutout.id, cutout.ra, cutout.dec, cutout.closest_prototype.id, cutout.label, cutout.image.path])

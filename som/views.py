@@ -4,7 +4,7 @@ from django.template import loader
 from som.models import Prototype, Distance, SOM, Outlier, SomCutout
 import som.som_analysis as sa
 import json
-from django.core import serializers
+import sys, traceback
 
 
 # Create your views here.
@@ -41,7 +41,6 @@ def get_best_fits_to_protos(request, n_fits=10):
 
 def label(request, label):
     data = json.loads(request.body)
-    print(data)
     protos, cutouts = None, None
     if 'protos' in data.keys():
         protos = data['protos']
@@ -65,3 +64,14 @@ def get_outliers(request, n_fits=10):
     return JsonResponse({'best_fits':  json_outliers, 'success': True})
 
 
+def export_catalog(request, filename):
+    data = json.loads(request.body)
+    try:
+        if 'ids' in data.keys():
+            sa.export_catalog(data['ids'], filename)
+        else:
+            sa.export_catalog([], filename)
+        return JsonResponse({'success': True})
+    except:
+        traceback.print_exc(file=sys.stdout)
+        return JsonResponse({"success": False})

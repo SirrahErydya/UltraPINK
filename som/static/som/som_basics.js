@@ -7,6 +7,7 @@ var tool_selected = 'tool-selected';
 var som_img_size = 100;
 var csrf_token_name = "csrfmiddlewaretoken";
 var selected_prototypes = [];
+var label_colors = {}
 
 
 function select_tool(id) {
@@ -342,11 +343,57 @@ function change_view(img, button) {
     button.classList.add("active-action-button")
  }
 
+ function color_map(prototypes, button) {
+    container = document.getElementById('som-container');
+    for(proto_div in container.childNodes) {
+        prototype = prototypes[proto_div.id]
+        label = prototype.label
+        if(!(label in label_colors.keys())) {
+            color = getRandomColor()
+            label_colors[label] = color
+        }
+        proto_div.style.backgroundColor = label_colors[label]
+     }
+    change_view('', button)
+ }
+
+ function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
  function show_selection_info(selected) {
      selection_info = document.getElementById('prototype-info');
      selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
      label = selected.label.trim() !== '' ? selected.label : "Unlabeled";
      selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
      selection_info.innerHTML += "<img src='" + selected.url + "'/>";
+ }
+
+function export_catalog(filename, data) {
+    filename = filename.replace(/\s+/g, '');
+    var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
+    $.ajaxSetup({
+    beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+    }
+    });
+    $.post({
+    url: '/som/export/'+filename,
+    data: JSON.stringify(data),
+    contentType: 'json',
+    dataType: 'json',
+    success: function (data) {
+        if (data.success) {
+            alert("The catalog was exported and saved under the name " + filename + ".csv")
+        } else {
+            alert("The export was not possible")
+        }
+    }
+    });
  }
 

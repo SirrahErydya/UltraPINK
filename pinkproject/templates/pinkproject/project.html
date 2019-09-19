@@ -85,7 +85,7 @@
                 </div>
                 <div class="tooltip">
                     <img align="middle" id="export" src="{% static 'som/icons/png/015-file.png' %}"
-                    onclick="export_catalog()">
+                    onclick="export_catalog('{{ current.project_name }}', {})">
                     <span class="tooltiptext">Export catalog</span>
                 </div>
             </div>
@@ -95,7 +95,8 @@
                         onclick="change_view('{{ active_som.proto_map.url }}', this)">Prototypes</button>
                 <button id="heatmap_button" type="button" class="action-button"
                         onclick="change_view('{{ active_som.heatmap.url }}', this)">Heatmap</button>
-                <button id="labels_button" type="button" class="action-button" onclick="">Labels</button>
+                <button id="labels_button" type="button" class="action-button"
+                        onclick="color_map('{{ prototypes }}', this)">Labels</button>
             </div>
         </div>
 
