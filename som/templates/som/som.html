@@ -15,6 +15,11 @@
             <div id="modal-header"></div>
             <div id="cutouts" class="cutouts">
             </div>
+            <input id='cutout-label' type="text" value='Label...'/>
+            <button id="label-cutouts" class="action-button"
+                    onclick="label_cutouts(false)">Apply label</button>
+            <button id="label-cutouts-proto" class="action-button"
+                    onclick="label_cutouts(true)">Apply prototype label</button>
         </div>
     </div>
 </div>
@@ -54,6 +59,6 @@
         </tr>
     </table>
     <br/>
-    <h3>Heatmap:</h3>
-    <img src="{{ active_som.heatmap.url }}"/>
+    <div class="prototype-info" id="prototype-info">
+    </div>
 </div>

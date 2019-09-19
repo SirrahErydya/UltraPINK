@@ -64,7 +64,6 @@ class Prototype(models.Model):
         return dictionary
 
 
-
 class SomCutout(models.Model):
     # Foreign key
     som = models.ForeignKey(SOM, on_delete=models.CASCADE)
@@ -86,6 +85,7 @@ class SomCutout(models.Model):
         dictionary['dec'] = self.ra
         dictionary['label'] = self.label
         dictionary['url'] = self.image.url
+        dictionary['db_id'] = self.id
         return dictionary
 
 
@@ -98,6 +98,7 @@ class Outlier(models.Model):
     dec = models.DecimalField(decimal_places=15, max_digits=20)
     csv_path = models.FilePathField()
     csv_row_idx = models.IntegerField()
+    label = models.CharField(max_length=200, default="")
 
     # Image data
     image = models.ImageField(upload_to='outliers')
@@ -109,6 +110,7 @@ class Outlier(models.Model):
         dictionary['label'] = self.label
         dictionary['url'] = self.image.url
         return dictionary
+
 
 class Distance(models.Model):
     prototype = models.ForeignKey(Prototype, on_delete=models.CASCADE)

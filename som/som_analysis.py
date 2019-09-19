@@ -24,9 +24,19 @@ def get_best_fits_to_protos(prototypes, n_fits=10):
     return cutouts
 
 
+def get_protos(proto_ids):
+    return [Prototype.objects.get(proto_id=proto_id) for proto_id in proto_ids]
+
+
 def label_protos(proto_ids, label):
-    prototypes = [Prototype.objects.get(proto_id=proto_id) for proto_id in proto_ids]
-    print(prototypes)
-    for proto in prototypes:
+    for proto_id in proto_ids:
+        proto = Prototype.objects.get(proto_id=proto_id)
         proto.label = label
         proto.save()
+
+
+def label_cutouts(cutout_ids, label):
+    for cutout_id in cutout_ids:
+        cutout = SomCutout.objects.get(id=cutout_id)
+        cutout.label = label
+        cutout.save()

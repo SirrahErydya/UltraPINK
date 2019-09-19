@@ -77,10 +77,10 @@
                     </div>
                 </div>
                 <br/>
-                <input id='label' type="text" name="n_outliers" value='Label...'/>
+                <input id='label' type="text" value='Label...'/>
                 <div class="tooltip">
                     <img align="middle" id="apply-label" src="{% static 'som/icons/png/011-pencil.png' %}"
-                    onclick="apply_label()">
+                    onclick="label_protos()">
                     <span class="tooltiptext">Apply labels</span>
                 </div>
                 <div class="tooltip">
@@ -91,8 +91,10 @@
             </div>
             <h3>View:</h3>
             <div class="view-tools">
-                <button id="prototype_button" type="button" class="action-button active-action-button" onclick="">Prototypes</button>
-                <button id="heatmap_button" type="button" class="action-button" onclick="">Heatmap</button>
+                <button id="prototype_button" type="button" class="action-button active-action-button"
+                        onclick="change_view('{{ active_som.proto_map.url }}', this)">Prototypes</button>
+                <button id="heatmap_button" type="button" class="action-button"
+                        onclick="change_view('{{ active_som.heatmap.url }}', this)">Heatmap</button>
                 <button id="labels_button" type="button" class="action-button" onclick="">Labels</button>
             </div>
         </div>

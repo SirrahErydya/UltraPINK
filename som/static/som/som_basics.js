@@ -6,6 +6,7 @@ var proto_selected = 'proto-selected';
 var tool_selected = 'tool-selected';
 var som_img_size = 100;
 var csrf_token_name = "csrfmiddlewaretoken";
+var selected_prototypes = [];
 
 
 function select_tool(id) {
@@ -36,10 +37,11 @@ function click_prototype(id) {
     var img = document.getElementById(id);
     var tool = document.getElementsByClassName(tool_selected)[0];
     if(tool.id == 'pointer') {
-        select_multiple(img);
+        select_single(img);
     } else if(tool.id == 'zoom') {
 
-    } else if(tool.id == 'select') {
+    } else if(tool.id == 'selection') {
+        select_multiple(img)
     } else if(tool.id == 'wand') {
 
     }
@@ -50,9 +52,14 @@ function select_single(img) {
     var selected_imgs = document.getElementsByClassName(proto_selected);
     for(var i=0; i<selected_imgs.length; i++) {
         selected_imgs[i].classList.remove(proto_selected);
+        selection_info = document.getElementById('prototype-info');
+        selection_info.innerHTML = '';
+        selected_prototypes = [];
     }
     if(!already_active) {
         img.classList.add(proto_selected);
+        request_prototypes([img.id]);
+        show_selection_info(selected_prototypes[0])
     }
 }
 
@@ -97,13 +104,35 @@ function show_outliers() {
     request_cutouts('/som/get_outliers/'+input_field.value, '');
 }
 
-
+function request_prototypes(proto_ids) {
+    var data = JSON.stringify({ 'protos': proto_ids});
+    var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        }
+    });
+    $.ajax({
+        url: '/som/get_protos',
+        data: data,
+        dataType: 'json',
+        method: 'POST',
+        success: function (data) {
+            if (data.success) {
+                selected_prototypes = data.protos;
+            }
+        },
+        async: false
+      });
+    console.log(selected_prototypes);
+}
 
 // Open a popup with the best fits for a prototype
 function request_cutouts(url, data) {
     var modal = document.getElementById('modal');
     modal.style.display = 'block';
     var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
+    outlier_case = data.trim() === '';
     $.ajaxSetup({
         beforeSend: function(xhr) {
             xhr.setRequestHeader("X-CSRFToken", csrf_token);
@@ -116,34 +145,43 @@ function request_cutouts(url, data) {
         method: 'POST',
         success: function (data) {
             if (data.success) {
-                create_cutout_images(data.best_fits, data.protos);
+                create_cutout_images(data.best_fits, selected_prototypes, outlier_case);
             }
         }
       });
 }
 
-function create_cutout_images(best_fits, protos) {
+function create_cutout_images(best_fits, protos, outlier_case) {
     var img_container = document.getElementById('cutouts');
     var modal_header = document.getElementById('modal-header');
-    modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" best matching images to your choice.</h1>";
-    modal_header.innerHTML += "<p><b>Chosen prototypes:</b>";
+    var proto_label_button = document.getElementById("label-cutouts-proto");
+    if(outlier_case) {
+        modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" images that fit the least to any of the prototypes.</h1>";
+        proto_label_button.style.display = 'none'
+    } else {
+        modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" best matching images to your choice.</h1>";
+        modal_header.innerHTML += "<p><b>Chosen prototypes:</b>";
+        proto_label_button.style.display = 'inline'
+
+        for(var i=0; i<protos.length; i++) {
+            id = "" + protos[i].x + protos[i].y;
+            label = protos[i].label.trim() !== '' ? protos[i].label : "Unlabeled";
+            modal_header.innerHTML += id + " (Label: " + label +")";
+            if(i < best_fits.length-1) {
+                modal_header.innerHTML += ", ";
+            }
+            modal_header.innerHTML += "</p>";
+        }
+    }
     for(var i=0; i<best_fits.length; i++) {
         url = best_fits[i].url;
         ra = best_fits[i].ra;
         dec = best_fits[i].dec;
+        id = best_fits[i].db_id;
         img_container.innerHTML +=
-            "<div id=cutout"+i+">"+
+            "<div id="+id+">"+
             "<img src='" + url + "' alt='cutout" + i + "'>" +
             "</div>";
-    }
-    for(var i=0; i<protos.length; i++) {
-        id = "" + protos[i].x + protos[i].y;
-        label = best_fits[i].label !== '' ? best_fits[i].label : "Unlabeled";
-        modal_header.innerHTML += id + " (Label: " + label +")";
-        if(i < best_fits.length-1) {
-            modal_header.innerHTML += ", ";
-        }
-        modal_header.innerHTML += "</p>";
     }
 }
 
@@ -253,26 +291,62 @@ function zoom_som(event) {
     container.style.backgroundSize = som_img_size * scale + '%';
 }
 
- function apply_label() {
-     label = document.getElementById('label').value;
-     selection = Array.from(document.getElementsByClassName(proto_selected));
-     var data = { 'protos': selection.map(s => s.id)};
-     var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
-     $.ajaxSetup({
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+function apply_label(data, label) {
+    var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
+    $.ajaxSetup({
+    beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+    }
+    });
+    $.post({
+    url: '/som/label/'+label,
+    data: JSON.stringify(data),
+    contentType: 'json',
+    dataType: 'json',
+    success: function (data) {
+        if (data.success) {
+            alert("The label was applied successfully to the selected images.")
+        } else {
+            alert("The label could not have been applied.")
         }
-     });
-     $.post({
-        url: '/som/label_protos/'+label,
-        data: JSON.stringify(data),
-        contentType: 'json',
-        dataType: 'json',
-        success: function (data) {
-            if (data.success) {
-                alert("The label was applied successfully to the selected prototypes.")
-            }
-        }
-      });
+    }
+    });
+ }
+
+function label_protos() {
+    label = document.getElementById('label').value;
+    selection = Array.from(document.getElementsByClassName(proto_selected));
+    var data = { 'protos': selection.map(s => s.id)};
+    apply_label(data, label)
+}
+
+function label_cutouts(proto_label) {
+    if(proto_label) {
+        label = selected_prototypes[0].label;
+    } else {
+        label = document.getElementById('cutout-label').value;
+    }
+    var img_container = document.getElementById('cutouts');
+    cutouts = Array.from(img_container.childNodes);
+    var data = { 'cutouts': cutouts.filter(c => c.id).map(c => c.id)};
+    apply_label(data, label)
+}
+
+function change_view(img, button) {
+    active_buttons = document.getElementsByClassName('active-action-button')
+    for(i=0; i<active_buttons.length; i++) {
+        active_buttons[i].classList.remove('active-action-button')
+    }
+    container = document.getElementById('som-container');
+    container.style.backgroundImage = 'url('+img+')';
+    button.classList.add("active-action-button")
+ }
+
+ function show_selection_info(selected) {
+     selection_info = document.getElementById('prototype-info');
+     selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
+     label = selected.label.trim() !== '' ? selected.label : "Unlabeled";
+     selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
+     selection_info.innerHTML += "<img src='" + selected.url + "'/>";
  }
 

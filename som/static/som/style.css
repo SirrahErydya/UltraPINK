@@ -257,3 +257,12 @@ th, td {
     height: 300px;
     z-index: 500;
 }
+
+.prototype-info p {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.prototype-info img {
+    width: 65%;
+}

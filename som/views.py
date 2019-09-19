@@ -22,29 +22,46 @@ def som(request, project):
     return HttpResponse(template.render(context, request))
 
 
+def get_protos(request):
+    protos = sa.get_protos(json.loads(request.body)['protos'])
+    json_protos = [prototype.to_json() for prototype in protos]
+    return JsonResponse({'protos': json_protos, "success": True})
+
+
 def get_best_fits_to_protos(request, n_fits=10):
     protos = json.loads(request.body)['protos']
-    prototypes = [Prototype.objects.get(proto_id=proto_id) for proto_id in protos]
+    prototypes = sa.get_protos(protos)
     if len(protos) == 1:
         cutouts = sa.get_best_fits(protos[0], n_fits)
     else:
         cutouts = sa.get_best_fits_to_protos(prototypes, n_fits)
     json_cutouts = [cutout.to_json() for cutout in cutouts]
-    json_protos = [prototype.to_json() for prototype in prototypes]
-    return JsonResponse({'best_fits': json_cutouts, 'protos': json_protos, "success": True})
+    return JsonResponse({'best_fits': json_cutouts, "success": True})
 
 
-def label_prototypes(request, label):
-    protos = json.loads(request.body)['protos']
+def label(request, label):
+    data = json.loads(request.body)
+    print(data)
+    protos, cutouts = None, None
+    if 'protos' in data.keys():
+        protos = data['protos']
+    if 'cutouts' in data.keys():
+        cutouts = data['cutouts']
     try:
-        sa.label_protos(protos, label)
-        return JsonResponse({"success": True})
+        if protos:
+            sa.label_protos(protos, label)
+            return JsonResponse({"success": True})
+        if cutouts:
+            sa.label_cutouts(cutouts, label)
+            return JsonResponse({"success": True})
+        return JsonResponse({"success": False})
     except:
         return JsonResponse({"success": False})
 
 
 def get_outliers(request, n_fits=10):
     outliers = Outlier.objects.all()[:n_fits]
-    return JsonResponse({'best_fits':  serializers.serialize('json', outliers), 'success': True})
+    json_outliers = [outlier.to_json() for outlier in outliers]
+    return JsonResponse({'best_fits':  json_outliers, 'success': True})
 
 
