@@ -266,3 +266,8 @@ th, td {
 .prototype-info img {
     width: 65%;
 }
+
+.label-legend {
+    margin-top: 15px;
+    padding: 15px;
+}
