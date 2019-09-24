@@ -67,7 +67,7 @@
                 Number of outliers: <input id='input-outliers' type="text" name="n_outliers" value='10'/>
                 <div class="tooltip">
                     <img align="middle" id="show-outliers" src="{% static 'som/icons/png/006-red-eye.png' %}"
-                    onclick="show_outliers()">
+                    onclick="show_outliers({{ active_som.id }})">
                     <span class="tooltiptext">Show outliers</span>
                 </div>
                 <div id="modal-o" class="modal">

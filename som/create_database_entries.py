@@ -7,6 +7,10 @@ import os
 import numpy as np
 from django.conf import settings
 from som.som_postprocessing import plot_image, return_cutout
+import matplotlib.pyplot as plt
+from matplotlib import image as mpimg
+from matplotlib import gridspec as gridspec
+import csv
 
 
 def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, som_obj, n_cutouts=1000, n_outliers=100):
@@ -30,13 +34,6 @@ def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, so
 
     # Create SOM model
     som_model = som.models.SOM.objects.create(
-        project=project,
-        som_path=som_path,
-        mapping_path=mapping_path,
-        data_path=bindata_path,
-        csv_path=csv_path,
-        n_cutouts=n_cutouts,
-        n_outliers=n_outliers,
         training_dataset_name=som_obj.training_dataset_name,
         number_of_images=som_obj.number_of_images,
         number_of_channels=som_obj.number_of_channels,
@@ -47,6 +44,14 @@ def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, so
         som_label=som_obj.som_label,
         rotated_size=som_obj.rotated_size,
         full_size=som_obj.full_size,
+        project=project,
+        som_obj=som_obj.som_obj_path,
+        som_path=som_path,
+        mapping_path=mapping_path,
+        data_path=bindata_path,
+        csv_path=csv_path,
+        n_cutouts=n_cutouts,
+        n_outliers=n_outliers,
         gauss_start=som_obj.gauss_start,
         learning_constraint=som_obj.learning_constraint,
         epochs_per_epoch=som_obj.epochs_per_epoch,
@@ -70,6 +75,14 @@ def create_prototype_models(som_model, prototypes):
     :param som_model: The SOM database model that belongs to these prototypes
     :param prototypes: All prototypes as numpy arrays
     """
+    som_obj = som_model.load_som_obj()
+    best_protos = som_obj.sorted_proto_idxs[:,0]
+    figure = plt.figure(figsize=(som_model.som_width, som_model.som_height), frameon=False)
+    grid = gridspec.GridSpec(som_model.som_width, som_model.som_height)
+    grid.update(wspace=0.05, hspace=0.05)
+
+    heatmap = np.ndarray((som_model.som_width, som_model.som_height))
+    i = 0
     for x in range(som_model.som_width):
         for y in range(som_model.som_height):
             for z in range(som_model.som_depth):
@@ -81,37 +94,113 @@ def create_prototype_models(som_model, prototypes):
                 # Plot
                 plot_image(proto, os.path.join(settings.MEDIA_ROOT, file_name))
 
+                proto_id = x * som_model.som_height + y
+                number_of_fits = np.extract(best_protos == proto_id, best_protos).shape[0]
+
                 # Save
                 proto_model = som.models.Prototype(
-                    proto_id=x * som_model.som_height + y,
+                    proto_id=proto_id,
                     som=som_model,
                     x=x,
                     y=y,
-                    z=z
+                    z=z,
+                    number_of_fits=number_of_fits
                 )
                 proto_model.image.name = file_name
                 proto_model.save()
+
+                # Generate joined image
+                axis = plt.subplot(grid[i])
+                axis.set_axis_off()
+                axis.imshow(mpimg.imread(proto_model.image.path))
+                heatmap[y][x] = number_of_fits
+                i += 1
+
+    plt.subplots_adjust(wspace=0, hspace=0)
+    proto_map_file = os.path.join('prototypes', som_model.training_dataset_name,  'protos.png')
+    heatmap_file = os.path.join('prototypes', som_model.training_dataset_name, 'heatmap.png')
+    figure.savefig(os.path.join(settings.MEDIA_ROOT, proto_map_file))
+    save_heatmap(heatmap, heatmap_file)
+    som_model.proto_map.name = proto_map_file
+    som_model.heatmap.name = heatmap_file
+    som_model.save()
     print("...done.")
 
 
-def create_cutout_models(som_model, mapping, catalog, n_cutouts):
+def save_heatmap(heatmap, filename):
+    figure = plt.figure(frameon=False)
+    axis = plt.Axes(figure, [0., 0., 1., 1.])
+    axis.set_axis_off()
+    figure.add_axes(axis)
+    for y in range(heatmap.shape[0]):
+        for x in range(heatmap.shape[1]):
+            axis.text(x, y, heatmap[y][x], ha="center", va="center", color="w")
+    axis.imshow(heatmap)
+    figure.savefig(os.path.join(settings.MEDIA_ROOT, filename))
+
+
+def create_cutouts_for_prototype(prototype, n_cutouts):
+    som_model = som.models.SOM.objects.get(id=prototype.som_id)
+    som_obj = som_model.load_som_obj()
+    best_protos = som_obj.sorted_proto_idxs[:,0]
+    print(best_protos)
+    sorted_cutouts = np.argsort(som_obj.data_map[range(som_model.number_of_images), best_protos])
+    print(sorted_cutouts)
+    counter = 0
+    cutouts = []
+    for idx in sorted_cutouts:
+        if counter >= n_cutouts:
+            break
+        proto_idx = best_protos[idx]
+        if proto_idx == prototype.proto_id:
+            distance = som_obj.data_map[idx][proto_idx]
+            dir_name = os.path.join('data', som_model.training_dataset_name, 'proto'+str(proto_idx))
+            if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dir_name)):
+                os.makedirs(os.path.join(settings.MEDIA_ROOT, dir_name))
+            cutout_filename = os.path.join(dir_name,
+                                           "cutout{0}.png".format(idx))
+            plot_image(return_cutout(som_model.data_path.path, idx),
+                       os.path.join(settings.MEDIA_ROOT, cutout_filename))
+
+            with open(som_model.csv_path.path) as csv_file:
+                catalog = csv.DictReader(csv_file)
+                ra, dec = get_sky_coords(catalog, idx)
+            cutout_model = som.models.SomCutout(
+                som=som_model,
+                ra=ra,
+                dec=dec,
+                csv_path=som_model.csv_path,
+                csv_row_idx=idx,
+                closest_prototype=prototype,
+                distance=distance,
+            )
+            cutout_model.image.name = cutout_filename
+            cutout_model.save()
+            cutouts.append(cutout_model)
+            counter += 1
+    return cutouts
+
+
+def create_cutout_models(som_model, catalog, n_cutouts):
     """
     Generate images and database entries for the map-specific dataset
     Furthermore, save the distance to all prototypes to the database
     :param som_model: The SOM database model that belongs to these cutouts
-    :param mapping: An array containing the distances of the cutouts to each prototype
     :param catalog: A csv file containing the sky position of the image objects
     :param n_cutouts: The number of cutouts that will be saved
     :return:
     """
     print("Generating all cutout images and saving them to the database (this is going to take forever...")
     # Save and plot the cutouts
-    sorted_proto_idxs = np.argsort(mapping, axis=1)
-    sorted_best_distance_idxs = np.argsort(mapping[:][sorted_proto_idxs[:, 0]])
-    print(sorted_best_distance_idxs)
+    som_obj = som_model.load_som_obj()
+    best_protos = som_obj.sorted_proto_idxs[:,0]
+    print(best_protos)
     for cutout_idx in range(n_cutouts):
+        best_prototype = som.models.Prototype.objects.get(proto_id=best_protos[cutout_idx])
+        distance = som_obj.data_map[cutout_idx][best_protos[cutout_idx]]
         print("Cutout {idx} from {total}...".format(idx=cutout_idx, total=n_cutouts))
-        cutout_filename = os.path.join('cutouts', som_model.training_dataset_name,
+        print("Best prototype: {proto}. Distance: {dist}".format(proto=best_protos[cutout_idx], dist=distance))
+        cutout_filename = os.path.join('data', som_model.training_dataset_name,
                                        "cutout{0}.png".format(cutout_idx))
         plot_image(return_cutout(som_model.data_path.path, cutout_idx),
                    os.path.join(settings.MEDIA_ROOT, cutout_filename))
@@ -122,26 +211,27 @@ def create_cutout_models(som_model, mapping, catalog, n_cutouts):
             dec=dec,
             csv_path=som_model.csv_path,
             csv_row_idx=cutout_idx,
-            closest_prototype=som.models.Prototype.objects.get(proto_id=sorted_proto_idxs[cutout_idx][0])
+            closest_prototype=best_prototype,
+            distance=distance
         )
         cutout_model.image.name = cutout_filename
         cutout_model.save()
 
         # Save the distances to each prototype for this cutout
-        print("Saving distances to all {no_p} prototypes for cutout {no_c}".format(
-            no_p=mapping.shape[1], no_c=cutout_idx))
-        for proto_idx in sorted_proto_idxs[cutout_idx]:
-            distance = mapping[cutout_idx][proto_idx]
-            prototype = som.models.Prototype.objects.get(proto_id=proto_idx)
-            som.models.Distance.objects.create(
-                distance=distance,
-                prototype=prototype,
-                cutout=cutout_model
-            )
+        #print("Saving distances to all {no_p} prototypes for cutout {no_c}".format(
+        #    no_p=mapping.shape[1], no_c=cutout_idx))
+        #for proto_idx in sorted_proto_idxs[cutout_idx]:
+        #    distance = mapping[cutout_idx][proto_idx]
+        #    prototype = som.models.Prototype.objects.get(proto_id=proto_idx)
+        #    som.models.Distance.objects.create(
+        #        distance=distance,
+        #        prototype=prototype,
+        #        cutout=cutout_model
+        #    )
     print("...done.")
 
 
-def create_outliers(som_model, mapping, catalog, n_outliers):
+def create_outliers(som_id, n_outliers):
     """
     Generate images and database entries for the outliers of the map
     :param som_model: The SOM database model that belongs to these outliers
@@ -150,27 +240,37 @@ def create_outliers(som_model, mapping, catalog, n_outliers):
     :param n_outliers: The number of outliers that should be saved
     :return:
     """
-    sorted_proto_idxs = np.argsort(mapping, axis=1)
-    best_distances = mapping[range(som_model.number_of_images), sorted_proto_idxs[:, 0]]
-    # Todo: Check why all images after 60000 throw an error o.O
-    sorted_best_distance_idxs = np.argsort(best_distances[:600000])
+    som_model = som.models.SOM.objects.get(id=som_id)
+    som_obj = som_model.load_som_obj()
+    best_protos = som_obj.sorted_proto_idxs[:, 0]
+    best_distances = som_obj.data_map[range(som_model.number_of_images), best_protos]
+    sorted_best_distance_idxs = np.argsort(best_distances)
+    farest_distance_idxs = sorted_best_distance_idxs[-n_outliers:]
     print("Generating outliers...")
-    for outlier_idx in range(n_outliers):
-        print("Outlier {idx} from {total}...".format(idx=outlier_idx, total=n_outliers))
+    counter = 0
+    outliers = []
+    for outlier_idx in farest_distance_idxs:
+        print("Outlier {idx} from {total}. Distance: {dist}".format(idx=counter, total=n_outliers, dist=best_distances[outlier_idx]))
         outlier_filename = os.path.join('outliers', som_model.training_dataset_name,
                                         "outlier{0}.png".format(outlier_idx))
-        plot_image(return_cutout(som_model.data_path.path, sorted_best_distance_idxs[-outlier_idx]),
+        plot_image(return_cutout(som_model.data_path.path, outlier_idx),
                    os.path.join(settings.MEDIA_ROOT, outlier_filename))
-        ra, dec = get_sky_coords(catalog, sorted_best_distance_idxs[-outlier_idx])
+        with open(som_model.csv_path.path) as csv_file:
+            catalog = csv.DictReader(csv_file)
+            ra, dec = get_sky_coords(catalog, outlier_idx)
         outlier_model = som.models.Outlier(
             som=som_model,
             ra=ra,
             dec=dec,
             csv_path=som_model.csv_path,
-            csv_row_idx=sorted_best_distance_idxs[-outlier_idx]
+            csv_row_idx=outlier_idx,
+            distance=best_distances[outlier_idx]
         )
         outlier_model.image.name = outlier_filename
         outlier_model.save()
+        outliers.append(outlier_model)
+        counter += 1
+    return outliers
 
 
 def get_sky_coords(catalog, idx):

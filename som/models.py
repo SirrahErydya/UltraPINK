@@ -1,22 +1,11 @@
 from django.db import models
 from pinkproject.models import Project
+import os
+import pickle
 
 
 # Create your models here.
 class SOM(models.Model):
-    # Important for data management
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    som_path = models.FileField(upload_to='bin')
-    mapping_path = models.FileField(upload_to='bin')
-    data_path = models.FileField(upload_to='bin')
-    csv_path = models.FileField(upload_to='data')
-    proto_map = models.ImageField(upload_to='cutouts')
-    heatmap = models.ImageField(upload_to='cutouts')
-    histogram = models.ImageField(upload_to='prototypes')
-    n_cutouts = models.IntegerField()
-    n_outliers = models.IntegerField()
-    current = models.BooleanField(default=False)
-
     # SOM properties
     training_dataset_name = models.CharField(max_length=200)
     number_of_images = models.IntegerField()
@@ -28,6 +17,20 @@ class SOM(models.Model):
     som_label = models.CharField(max_length=200)
     rotated_size = models.DecimalField(decimal_places=15, max_digits=20)
     full_size = models.IntegerField()
+
+    # Important for data management
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    som_obj = models.FileField(upload_to=os.path.join('bin', str(training_dataset_name)))
+    som_path = models.FileField(upload_to=os.path.join('bin', str(training_dataset_name)))
+    mapping_path = models.FileField(upload_to=os.path.join('bin', str(training_dataset_name)))
+    data_path = models.FileField(upload_to=os.path.join('bin', str(training_dataset_name)))
+    csv_path = models.FileField(upload_to=os.path.join('data', str(training_dataset_name)))
+    proto_map = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
+    heatmap = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
+    histogram = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
+    n_cutouts = models.IntegerField()
+    n_outliers = models.IntegerField()
+    current = models.BooleanField(default=False)
 
     # Training parameters
     gauss_start = models.DecimalField(decimal_places=15, max_digits=20)
@@ -43,6 +46,10 @@ class SOM(models.Model):
     rotated_size_arcsec = models.DecimalField(decimal_places=15, max_digits=20)
     full_size_arcsec = models.DecimalField(decimal_places=15, max_digits=20)
 
+    def load_som_obj(self):
+        with open(self.som_obj.path, 'rb') as file:
+            return pickle.load(file)
+
 
 class Prototype(models.Model):
     proto_id = models.IntegerField(unique=True)
@@ -52,6 +59,7 @@ class Prototype(models.Model):
     x = models.IntegerField()
     y = models.IntegerField()
     z = models.IntegerField()
+    number_of_fits = models.IntegerField()
 
     def to_json(self):
         dictionary = {}
@@ -61,6 +69,7 @@ class Prototype(models.Model):
         dictionary['y'] = self.y
         dictionary['z'] = self.z
         dictionary['url'] = self.image.url
+        dictionary['number_fits'] = self.number_of_fits
         return dictionary
 
 
@@ -77,7 +86,8 @@ class SomCutout(models.Model):
 
     # Map coordinates and image data
     closest_prototype = models.ForeignKey(Prototype, on_delete=models.DO_NOTHING)
-    image = models.ImageField(upload_to='cutouts')
+    distance = models.DecimalField(decimal_places=15, max_digits=20)
+    image = models.ImageField(upload_to='data')
 
     def to_json(self):
         dictionary = {}
@@ -100,6 +110,8 @@ class Outlier(models.Model):
     csv_row_idx = models.IntegerField()
     label = models.CharField(max_length=200, default="")
 
+    distance = models.DecimalField(decimal_places=15, max_digits=20)
+
     # Image data
     image = models.ImageField(upload_to='outliers')
 
@@ -111,10 +123,5 @@ class Outlier(models.Model):
         dictionary['url'] = self.image.url
         return dictionary
 
-
-class Distance(models.Model):
-    prototype = models.ForeignKey(Prototype, on_delete=models.CASCADE)
-    cutout = models.ForeignKey(SomCutout, on_delete=models.CASCADE)
-    distance = models.DecimalField(decimal_places=15, max_digits=20)
 
 

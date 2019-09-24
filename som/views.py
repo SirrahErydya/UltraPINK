@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from som.models import Prototype, Distance, SOM, Outlier, SomCutout
+from som.models import Prototype, SOM, Outlier, SomCutout
 import som.som_analysis as sa
+import som.create_database_entries as dbe
 import json
 import sys, traceback
 
@@ -34,7 +35,7 @@ def get_best_fits_to_protos(request, n_fits=10):
     if len(protos) == 1:
         cutouts = sa.get_best_fits(protos[0], n_fits)
     else:
-        cutouts = sa.get_best_fits_to_protos(prototypes, n_fits)
+        raise NotImplementedError("No multiple prototype selection for this time")
     json_cutouts = [cutout.to_json() for cutout in cutouts]
     return JsonResponse({'best_fits': json_cutouts, "success": True})
 
@@ -58,8 +59,10 @@ def label(request, label):
         return JsonResponse({"success": False})
 
 
-def get_outliers(request, n_fits=10):
+def get_outliers(request, som_id, n_fits=10):
     outliers = Outlier.objects.all()[:n_fits]
+    if len(outliers) < n_fits:
+        outliers = dbe.create_outliers(som_id, n_fits)
     json_outliers = [outlier.to_json() for outlier in outliers]
     return JsonResponse({'best_fits':  json_outliers, 'success': True})
 

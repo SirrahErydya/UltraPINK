@@ -100,9 +100,9 @@ function show_best_fits() {
     request_cutouts( '/som/get_best_fits/'+input_field.value, data);
 }
 
-function show_outliers() {
+function show_outliers(som_id) {
     input_field = document.getElementById('input-outliers');
-    request_cutouts('/som/get_outliers/'+input_field.value, '');
+    request_cutouts('/som/get_outliers/'+som_id+'/'+input_field.value, '');
 }
 
 function request_prototypes(proto_ids) {
