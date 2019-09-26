@@ -4,7 +4,6 @@ from django.db import models
 class Project(models.Model):
     project_name = models.CharField(max_length=200)
     description = models.TextField(max_length=2000)
-    current_project = models.BooleanField(default=True)
 
 
 class Catalog(models.Model):

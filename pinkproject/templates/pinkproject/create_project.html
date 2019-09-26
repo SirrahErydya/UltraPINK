@@ -22,8 +22,6 @@
                 <label for="dataset-name">Dataset name:</label>
                 <input id='dataset-name' type="text" name="dataset-name"
                        value="Dataset name..." maxlength="200"/>
-                <label for="img-data">Data folder</label>
-                <input class='upload-button' type="file" id="img-data" name="img-data"  multiple/>
                 <label for="csv-data">Additional infos (as .csv)</label>
                 <input class='upload-button' type="file" id="csv-data" name="csv-data" accept="text/csv" multiple/>
             </div>
@@ -34,12 +32,6 @@
                 <label for="som-file">SOM file (.bin): </label><input class='upload-button' type="file" id="som-file" name="som-file"/>
                 <label for="mapping-file">Mapping file (.bin): </label><input class='upload-button' type="file" id="mapping-file" name="mapping-file"/>
                 <label for="image-file">Image file (.bin): </label><input class='upload-button' type="file" id="image-file" name="image-file"/>
-                <label for="n_cutouts">How many cutouts do you want to generate? (Leave blank to generate all) </label>
-                <input id='n_cutouts' type="text" name="n_cutouts"
-                       value="" maxlength="200"/>
-                <label for="n_cutouts">How many outliers do you want to generate?</label>
-                <input id='n_outliers' type="text" name="n_outliers"
-                       value="100" maxlength="200"/>
             </div>
             <input class='action-button' type="submit" value="Save"/>
         </form>

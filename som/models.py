@@ -28,8 +28,6 @@ class SOM(models.Model):
     proto_map = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
     heatmap = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
     histogram = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
-    n_cutouts = models.IntegerField()
-    n_outliers = models.IntegerField()
     current = models.BooleanField(default=False)
 
     # Training parameters

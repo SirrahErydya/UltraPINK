@@ -1,0 +1,46 @@
+{% extends "main/base.html" %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <!-- Aladin Lite CSS -->
+    <link rel="stylesheet" href="//aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'som/style.css' %}">
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    {% load static %}
+    <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
+    <script>var prototypes = '{{ prototypes }}';</script>
+    <script type="text/javascript" src="{% static 'som/view_functions.js' %}"></script>
+    <script type="text/javascript" src="{% static 'som/som_basics.js' %}"></script>
+{% endblock %}
+{% block content %}
+    {% include 'som/side_menu.html' %}
+    <div class="create-project">
+        <h1>Create a new project</h1>
+        <form id="add-project-form" action="{% url 'som:add_som' %}/{{ project.id }}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
+            <h1>Add a SOM to the current project</h1>
+            <h3>The data set</h3>
+            <p>Please add a csv file summarizing the dataset here.</p>
+            <div class="input-grid">
+                <label for="dataset-name">Dataset name:</label>
+                <input id='dataset-name' type="text" name="dataset-name"
+                       value="Dataset name..." maxlength="200"/>
+                <label for="csv-data">Additional infos (as .csv)</label>
+                <input class='upload-button' type="file" id="csv-data" name="csv-data" accept="text/csv" multiple/>
+            </div>
+            <h3>Binary files</h3>
+            <p>To process the map, the binary files of the SOM, the mapping, and the images That were created during the training with PINK are necessary.
+            Please provide the binary files here.</p>
+            <div class="input-grid">
+                <label for="som-file">SOM file (.bin): </label><input class='upload-button' type="file" id="som-file" name="som-file"/>
+                <label for="mapping-file">Mapping file (.bin): </label><input class='upload-button' type="file" id="mapping-file" name="mapping-file"/>
+                <label for="image-file">Image file (.bin): </label><input class='upload-button' type="file" id="image-file" name="image-file"/>
+            </div>
+            <input class='action-button' type="submit" value="Save"/>
+        </form>
+    </div>
+{% endblock %}

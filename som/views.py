@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
+from pinkproject.models import Project
 from som.models import Prototype, SOM, Outlier, SomCutout
+from pinkproject.views import create_som, pinkproject
 import som.som_analysis as sa
 import som.create_database_entries as dbe
 import json
@@ -22,6 +24,31 @@ def som(request, project):
     }
     return HttpResponse(template.render(context, request))
 
+
+def add_som(request, project_id):
+    project_model = Project.objects.get(id=project_id)
+    template = loader.get_template("som/add_som.html")
+    context = {
+        # Pass some values from the backend here
+        'current': project_model
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def save_som(request, project_id):
+    data = request.POST
+    # File handling
+    dataset_name = data.get('dataset-name', None)
+    csv_file = request.FILES.get('csv-data', None)
+    som_binfile = request.FILES.get('som-file', None)
+    mapping_binfile = request.FILES.get('mapping-file', None)
+    data_binfile = request.FILES.get('image-file', None)
+
+    project_model = Project.objects.get(id=project_id)
+    project_model.save()
+    som_id = create_som(project_model, dataset_name, som_binfile, mapping_binfile,
+               data_binfile, csv_file)
+    return pinkproject(request, project_id, som_id)
 
 def get_protos(request):
     protos = sa.get_protos(json.loads(request.body)['protos'])

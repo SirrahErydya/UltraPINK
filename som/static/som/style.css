@@ -58,6 +58,19 @@ body {
     display: none;
 }
 
+#datasets ul {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#datasets ul li {
+    list-style: none;
+}
+
+#datasets .action-button{
+    width: 120px;
+}
+
 .edit-tools {
     margin-top: 15px;
     margin-bottom: 50px;

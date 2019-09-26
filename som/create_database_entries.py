@@ -13,7 +13,7 @@ from matplotlib import gridspec as gridspec
 import csv
 
 
-def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, som_obj, n_cutouts=1000, n_outliers=100):
+def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, som_obj):
     """
     Create a database model for a complete SOM capsuling the data
     :param project: The project that this SOM belongs to
@@ -22,15 +22,10 @@ def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, so
     :param bindata_path: Path to the image binary file
     :param csv_path: Path to the CSV file containing the celestial positions
     :param som_obj: A Python object that contains all relevant SOM information
-    :param n_cutouts: The number of cutouts that initially should be saved to the database
-    :param n_outliers: The number of outlier images that initially should be saved to the database
     :return: A Django Database model of the given SOM
     """
     print("Generating Database entries for the SOM build for {0}".format(som_obj))
     print("Creating SOM model...")
-
-    assert n_cutouts <= som_obj.data_map.shape[0]
-    assert n_outliers <= som_obj.data_map.shape[0]
 
     # Create SOM model
     som_model = som.models.SOM.objects.create(
@@ -50,8 +45,6 @@ def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, so
         mapping_path=mapping_path,
         data_path=bindata_path,
         csv_path=csv_path,
-        n_cutouts=n_cutouts,
-        n_outliers=n_outliers,
         gauss_start=som_obj.gauss_start,
         learning_constraint=som_obj.learning_constraint,
         epochs_per_epoch=som_obj.epochs_per_epoch,
@@ -181,13 +174,12 @@ def create_cutouts_for_prototype(prototype, n_cutouts):
     return cutouts
 
 
-def create_cutout_models(som_model, catalog, n_cutouts):
+def create_cutout_models(som_model, catalog):
     """
     Generate images and database entries for the map-specific dataset
     Furthermore, save the distance to all prototypes to the database
     :param som_model: The SOM database model that belongs to these cutouts
     :param catalog: A csv file containing the sky position of the image objects
-    :param n_cutouts: The number of cutouts that will be saved
     :return:
     """
     print("Generating all cutout images and saving them to the database (this is going to take forever...")
@@ -195,10 +187,10 @@ def create_cutout_models(som_model, catalog, n_cutouts):
     som_obj = som_model.load_som_obj()
     best_protos = som_obj.sorted_proto_idxs[:,0]
     print(best_protos)
-    for cutout_idx in range(n_cutouts):
+    for cutout_idx in range(som_model.number_of_images):
         best_prototype = som.models.Prototype.objects.get(proto_id=best_protos[cutout_idx])
         distance = som_obj.data_map[cutout_idx][best_protos[cutout_idx]]
-        print("Cutout {idx} from {total}...".format(idx=cutout_idx, total=n_cutouts))
+        print("Cutout {idx} from {total}...".format(idx=cutout_idx, total=som_model.number_of_images))
         print("Best prototype: {proto}. Distance: {dist}".format(proto=best_protos[cutout_idx], dist=distance))
         cutout_filename = os.path.join('data', som_model.training_dataset_name,
                                        "cutout{0}.png".format(cutout_idx))
