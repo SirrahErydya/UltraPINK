@@ -21,6 +21,7 @@ body {
     width: calc(50vw - 60vh);
     height: calc(100vh - 100px);
     background-color: pink;
+    z-index: 3;
 }
 
 .side-menu input {
@@ -30,6 +31,16 @@ body {
     border: none;
     padding: 2px;
     background-color: lavenderblush;
+}
+
+.add-som {
+    background-color: mistyrose;
+    position: relative;
+    top: 50px;
+    left: calc(25vw - 60vh);
+    margin-left: 25%;
+    margin-right: 25%;
+    padding: 50px;
 }
 
 .collapsible {
@@ -144,9 +155,9 @@ body {
 }
 
 #som-container {
-    position: absolute;
-    top: 75px;
-    left: calc(50vw - 60vh + 100px);
+    position: relative;
+    top: 20px;
+    left: 20px;
     background-repeat: no-repeat;
     background-size: 100%;
     width: 85vh;
@@ -155,9 +166,9 @@ body {
 }
 
 .cutouts {
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
+    position: relative;
+    padding-top: 20px;
+    padding-bottom: 20px;
     grid-template-columns: repeat(5, auto);
     grid-template-rows: repeat(2, auto);
     grid-gap: 10px;
@@ -220,24 +231,31 @@ body {
 }
 
 .modal_window {
-    position: relative;
+    padding: 50px;
+    position: absolute;
     background-color: lavenderblush;
     color: black;
-    margin: 5% auto; /* 15% from the top and centered */
-    padding: 20px;
-    width: 80vw;
-    animation-name: animatetop;
-    animation-duration: 0.4s
+    width: 50vw;
+    top: 70px;
+    left: 45vw;
 }
 
-/* Add Animation */
-@keyframes animatetop {
-  from {top: -300px; opacity: 0}
-  to {top: 0; opacity: 1}
+.modal_window .icon {
+    text-align: right;
+}
+
+.modal_window .icon img{
+    width: 30px;
+    opacity: 0.5;
+}
+
+.modal_window .icon img:hover {
+    opacity: 1;
+    cursor: pointer;
 }
 
 .som-info {
-    position: absolute;
+    position: fixed;
     right: 0;
     top: 100px;
     margin-right: 10%;
@@ -278,6 +296,13 @@ th, td {
 
 .prototype-info img {
     width: 65%;
+}
+
+#prototype-preview {
+    padding-top: 20px;
+}
+#prototype-preview img {
+    width: 20%;
 }
 
 .label-legend {

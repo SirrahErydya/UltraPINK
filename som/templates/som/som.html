@@ -10,20 +10,24 @@
             <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
         </div>
     {% endfor %}
-    <div id="modal" class="modal">
-        <div class="modal_window" id="'modal-window">
-            <div id="modal-header"></div>
-            <div id="cutouts" class="cutouts">
-            </div>
-            <input id='cutout-label' type="text" value='Label...'/>
-            <button id="label-cutouts" class="action-button"
-                    onclick="label_cutouts(false)">Apply label</button>
-            <button id="label-cutouts-proto" class="action-button"
-                    onclick="label_cutouts(true)">Apply prototype label</button>
-        </div>
-    </div>
 </div>
-<div class="som-info">
+<div class="modal_window" id="modal-window" style="display: none">
+    {% load static %}
+    <div class="icon">
+        <img src="{% static 'main/icons/error.png' %}" onclick="close_cutout_modal()"/>
+    </div>
+    <div id="modal-header"></div>
+    <div class="prototype-info" id="prototype-preview">
+    </div>
+    <div id="cutouts" class="cutouts">
+    </div>
+    <input id='cutout-label' type="text" value='Label...'/>
+    <button id="label-cutouts" class="action-button"
+            onclick="label_cutouts(false)">Apply label</button>
+    <button id="label-cutouts-proto" class="action-button"
+            onclick="label_cutouts(true)">Apply prototype label</button>
+</div>
+<div class="som-info" id="som-info">
     <table>
         <tr>
             <th>Dataset:</th>
@@ -53,5 +57,5 @@
     <br/>
     <div class="prototype-info" id="prototype-info">
     </div>
-    <div class="label-legend", id="label-legend"></div>
+    <div class="label-legend" id="label-legend"></div>
 </div>

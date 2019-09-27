@@ -3,10 +3,11 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <!-- Aladin Lite CSS -->
-    <link rel="stylesheet" href="//aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
+    <link rel="stylesheet"
+          href="//aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'som/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
 {% endblock %}
 {% block javascript %}
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -19,10 +20,10 @@
 {% endblock %}
 {% block content %}
     {% include 'som/side_menu.html' %}
-    <div class="create-project">
-        <h1>Create a new project</h1>
+    <div class="add-som">
+        <h1>Add a SOM to the current project</h1>
+        <br/>
         <form id="add-project-form" action="{% url 'som:add_som' %}/{{ project.id }}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
-            <h1>Add a SOM to the current project</h1>
             <h3>The data set</h3>
             <p>Please add a csv file summarizing the dataset here.</p>
             <div class="input-grid">

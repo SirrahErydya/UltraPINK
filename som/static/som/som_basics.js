@@ -60,7 +60,7 @@ function select_single(img) {
     if(!already_active) {
         img.classList.add(proto_selected);
         request_prototypes([img.id]);
-        show_selection_info(selected_prototypes[0])
+        show_selection_info(selected_prototypes[0], 'prototype-info')
     }
 }
 
@@ -130,8 +130,7 @@ function request_prototypes(proto_ids) {
 
 // Open a popup with the best fits for a prototype
 function request_cutouts(url, data) {
-    var modal = document.getElementById('modal');
-    modal.style.display = 'block';
+    cutout_view()
     var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
     outlier_case = data.trim() === '';
     $.ajaxSetup({
@@ -152,6 +151,16 @@ function request_cutouts(url, data) {
       });
 }
 
+function cutout_view() {
+    var som_container = document.getElementById('som-container');
+    var modal = document.getElementById('modal-window');
+    var som_info = document.getElementById('som-info');
+    som_container.style.width = '40vh';
+    som_container.style.height = '40vh';
+    modal.style.display = 'block';
+    som_info.style.display = 'none';
+}
+
 function create_cutout_images(best_fits, protos, outlier_case) {
     var img_container = document.getElementById('cutouts');
     var modal_header = document.getElementById('modal-header');
@@ -161,17 +170,10 @@ function create_cutout_images(best_fits, protos, outlier_case) {
         proto_label_button.style.display = 'none'
     } else {
         modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" best matching images to your choice.</h1>";
-        modal_header.innerHTML += "<p><b>Chosen prototypes:</b>";
-        proto_label_button.style.display = 'inline'
+        proto_label_button.style.display = 'inline';
 
         for(var i=0; i<protos.length; i++) {
-            id = "" + protos[i].x + protos[i].y;
-            label = protos[i].label.trim() !== '' ? protos[i].label : "Unlabeled";
-            modal_header.innerHTML += id + " (Label: " + label +")";
-            if(i < best_fits.length-1) {
-                modal_header.innerHTML += ", ";
-            }
-            modal_header.innerHTML += "</p>";
+            show_selection_info(protos[i], "prototype-preview")
         }
     }
     for(var i=0; i<best_fits.length; i++) {
@@ -186,14 +188,18 @@ function create_cutout_images(best_fits, protos, outlier_case) {
     }
 }
 
-window.onclick = function(event) {
-    var modals = document.getElementsByClassName('modal');
+function close_cutout_modal() {
+    var som_container = document.getElementById('som-container');
+    var modal = document.getElementById('modal-window');
+    var som_info = document.getElementById('som-info');
     var img_container = document.getElementById('cutouts');
-    Array.from(modals).forEach(function(modal) {
-        if (event.target === modal) {
-            img_container.innerHTML = '';
-            modal.style.display = "none";
-        }});
+    var proto_preview = document.getElementById('prototype-preview');
+    img_container.innerHTML = '';
+    proto_preview.innerHTML = '';
+    modal.style.display = "none";
+    som_container.style.width = '85vh';
+    som_container.style.height = '85vh';
+    som_info.style.display = 'block';
 }
 
 function open_aladin(path, idx) {
@@ -412,8 +418,8 @@ function display_label_legend() {
     }
 }
 
- function show_selection_info(selected) {
-     selection_info = document.getElementById('prototype-info');
+ function show_selection_info(selected, element_id) {
+     selection_info = document.getElementById(element_id);
      selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
      label = selected.label.trim() !== '' ? selected.label : "Unlabeled";
      selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';

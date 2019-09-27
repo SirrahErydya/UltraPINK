@@ -8,10 +8,10 @@
     <div id="datasets" style="display: grid;">
         <ul>
         {% for som in soms %}
-            <li><a href="{% url 'pinkproject:project' %}/{{ current.id }}/{{ som.id }}">{{ som.training_dataset_name }}</a></li>
+            <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">{{ som.training_dataset_name }}</a></li>
         {% endfor %}
         </ul>
-        <button class="action-button" onclick="request_page('{% url 'som:add_som' current.id %}', [])">Add SOM</button>
+        <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">Add SOM</button>
     </div>
     <button class="collapsible active" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
     <div id="toolbox" style="display: grid;">

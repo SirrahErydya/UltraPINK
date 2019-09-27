@@ -29,7 +29,7 @@
         <ul class="project-container">
             {% for project in projects %}
                 <li>
-                    <a href="{% url 'pinkproject:project' %}/{{ project.id }}">{{ project.project_name }}</a><br/>
+                    <a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a><br/>
                     {{ project.description }}
                 </li>
             {% endfor %}

@@ -25,12 +25,14 @@ def som(request, project):
     return HttpResponse(template.render(context, request))
 
 
-def add_som(request, project_id):
+def add_som(request, project_id=1):
     project_model = Project.objects.get(id=project_id)
+    soms = SOM.objects.filter(project=project_model)
     template = loader.get_template("som/add_som.html")
     context = {
         # Pass some values from the backend here
-        'current': project_model
+        'current': project_model,
+        'soms': soms
     }
     return HttpResponse(template.render(context, request))
 
