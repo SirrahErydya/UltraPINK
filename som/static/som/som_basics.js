@@ -2,11 +2,11 @@
  * Basic manipulation for PINK-generated SOMs
  */
 
-var proto_selected = 'proto-selected';
 var tool_selected = 'tool-selected';
 var som_img_size = 100;
 var csrf_token_name = "csrfmiddlewaretoken";
 var selected_prototypes = [];
+var selected_cutouts = [];
 var label_colors = {};
 
 
@@ -34,41 +34,53 @@ function select_tool(id) {
     tool.classList.add(tool_selected)
 }
 
-function click_prototype(id) {
-    var img = document.getElementById(id);
+function click_image(id, is_proto) {
+    var selected_class = is_proto ? 'proto-selected' : 'cutout-selected';
+    var el_id = is_proto ? id : "cutout"+id;
+    var img = document.getElementById(el_id);
     var tool = document.getElementsByClassName(tool_selected)[0];
     if(tool.id == 'pointer') {
-        select_single(img);
-    } else if(tool.id == 'zoom') {
-
+        select_single(img, selected_class);
     } else if(tool.id == 'selection') {
-        select_multiple(img)
-    } else if(tool.id == 'wand') {
-
+        select_multiple(img, selected_class)
     }
 }
 
-function select_single(img) {
-    var already_active = img.classList.contains(proto_selected);
-    var selected_imgs = document.getElementsByClassName(proto_selected);
+function select_single(img, selected_class) {
+    var already_active = img.classList.contains(selected_class);
+    var selected_imgs = document.getElementsByClassName(selected_class);
     for(var i=0; i<selected_imgs.length; i++) {
-        selected_imgs[i].classList.remove(proto_selected);
-        selection_info = document.getElementById('prototype-info');
-        selection_info.innerHTML = '';
-        selected_prototypes = [];
+        selected_imgs[i].classList.remove(selected_class);
+        if(selected_class == 'proto-selected') {
+            selection_info = document.getElementById('prototype-info');
+            selection_info.innerHTML = '';
+            selected_prototypes = [];
+        } else if(selected_class == 'cutout-selected') {
+            selected_cutouts = []
+        }
     }
     if(!already_active) {
-        img.classList.add(proto_selected);
-        request_prototypes([img.id]);
-        show_selection_info(selected_prototypes[0], 'prototype-info')
+        img.classList.add(selected_class);
+        if(selected_class == 'proto-selected') {
+            request_prototypes([img.id]);
+            show_selection_info(selected_prototypes[0], 'prototype-info')
+        } else if(selected_class == 'cutout-selected') {
+            selected_cutouts.push(img)
+        }
     }
 }
 
-function select_multiple(img) {
-    if(img.classList.contains(proto_selected)) {
-        img.classList.remove(proto_selected)
+function select_multiple(img, selected_class) {
+    if(img.classList.contains(selected_class)) {
+        img.classList.remove(selected_class)
+        if(selected_class == 'cutout-selected') {
+            selected_cutouts.filter(i => i !== img)
+        }
     } else {
-        img.classList.add(proto_selected);
+        img.classList.add(selected_class);
+        if(selected_class == 'cutout-selected') {
+            selected_cutouts.push(img)
+        }
     }
 }
 
@@ -91,7 +103,7 @@ function go_to_aladin(i) {
 
 function show_best_fits() {
     var input_field = document.getElementById('input-cutouts');
-    selection = Array.from(document.getElementsByClassName(proto_selected));
+    selection = Array.from(document.getElementsByClassName('proto-selected'));
     if(selection.length <= 0){
         alert("No prototypes are selected. Use one of the tools to select one or many prototypes.");
         return;
@@ -164,13 +176,19 @@ function cutout_view() {
 function create_cutout_images(best_fits, protos, outlier_case) {
     var img_container = document.getElementById('cutouts');
     var modal_header = document.getElementById('modal-header');
-    var proto_label_button = document.getElementById("label-cutouts-proto");
+    var proto_label_button1 = document.getElementById("label-cutouts-proto");
+    var proto_label_button2 = document.getElementById("label-all-cutouts-proto");
+    var export_outliers_button = document.getElementById("export-outliers");
     if(outlier_case) {
         modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" images that fit the least to any of the prototypes.</h1>";
-        proto_label_button.style.display = 'none'
+        proto_label_button1.style.display = 'none';
+        proto_label_button2.style.display = 'none';
+        export_outliers_button.style.display = 'inline';
     } else {
         modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" best matching images to your choice.</h1>";
-        proto_label_button.style.display = 'inline';
+        proto_label_button1.style.display = 'inline';
+        proto_label_button2.style.display = 'inline';
+        export_outliers_button.style.display = 'none';
 
         for(var i=0; i<protos.length; i++) {
             show_selection_info(protos[i], "prototype-preview")
@@ -182,7 +200,7 @@ function create_cutout_images(best_fits, protos, outlier_case) {
         dec = best_fits[i].dec;
         id = best_fits[i].db_id;
         img_container.innerHTML +=
-            "<div id="+id+">"+
+            "<div class='cutout-img' id='cutout"+id+"' onclick='click_image("+id+",  false)'>"+
             "<img src='" + url + "' alt='cutout" + i + "'>" +
             "</div>";
     }
@@ -200,6 +218,7 @@ function close_cutout_modal() {
     som_container.style.width = '85vh';
     som_container.style.height = '85vh';
     som_info.style.display = 'block';
+    selected_cutouts = []
 }
 
 function open_aladin(path, idx) {
@@ -322,20 +341,29 @@ function apply_label(data, label) {
 
 function label_protos() {
     label = document.getElementById('label').value;
-    selection = Array.from(document.getElementsByClassName(proto_selected));
+    selection = Array.from(document.getElementsByClassName('proto-selected'));
     var data = { 'protos': selection.map(s => s.id)};
     apply_label(data, label)
 }
 
-function label_cutouts(proto_label) {
+function label_all_cutouts(proto_label) {
+    var img_container = document.getElementById('cutouts');
+    cutouts = Array.from(img_container.childNodes);
+
+    label_cutouts(cutouts, proto_label)
+}
+
+function label_selected_cutouts(proto_label) {
+    label_cutouts(selected_cutouts, proto_label)
+}
+
+function label_cutouts(cutouts, proto_label) {
     if(proto_label) {
         label = selected_prototypes[0].label;
     } else {
         label = document.getElementById('cutout-label').value;
     }
-    var img_container = document.getElementById('cutouts');
-    cutouts = Array.from(img_container.childNodes);
-    var data = { 'cutouts': cutouts.filter(c => c.id).map(c => c.id)};
+    var data = { 'cutouts': cutouts.filter(c => c.id).map(c => c.id.match(/\d/g).join(""))};
     apply_label(data, label)
 }
 
@@ -348,7 +376,7 @@ function change_view(img, button) {
     if(button.id === 'prototype_button' || button.id === 'heatmap_button') {
         elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
         for(var i=0; i<elements.length; i++) {
-            elements[i].style.backgroundColor = 'rgba(0, 0, 0, 0)';
+            elements[i].style.backgroundColor = '';
             legend_container = document.getElementById('label-legend');
             legend_container.innerHTML = "";
             legend_container.style.backgroundColor = 'white';
@@ -425,6 +453,13 @@ function display_label_legend() {
      selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
      selection_info.innerHTML += "<img src='" + selected.url + "'/>";
  }
+
+function export_outliers() {
+    var img_container = document.getElementById('cutouts');
+    outliers = Array.from(img_container.childNodes);
+    var data = { 'outlier_ids': outliers.filter(c => c.id).map(c => c.id.match(/\d/g).join(""))};
+    export_catalog('outliers', data)
+}
 
 function export_catalog(filename, data) {
     filename = filename.replace(/\s+/g, '');

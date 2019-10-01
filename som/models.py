@@ -27,7 +27,7 @@ class SOM(models.Model):
     csv_path = models.FileField(upload_to=os.path.join('data', str(training_dataset_name)))
     proto_map = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
     heatmap = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
-    histogram = models.ImageField(upload_to=os.path.join('prototypes', str(training_dataset_name)))
+    histogram = models.ImageField(upload_to=os.path.join('data', str(training_dataset_name)))
     current = models.BooleanField(default=False)
 
     # Training parameters
@@ -119,6 +119,7 @@ class Outlier(models.Model):
         dictionary['dec'] = self.ra
         dictionary['label'] = self.label
         dictionary['url'] = self.image.url
+        dictionary['db_id'] = self.id
         return dictionary
 
 

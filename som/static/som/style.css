@@ -184,9 +184,6 @@ body {
     cursor: pointer;
 }
 
-#som-container .proto-selected {
-    opacity: 0.8;
-}
 
 .tooltip {
    position: relative;
@@ -214,8 +211,20 @@ body {
     cursor: pointer;
 }
 
+.prototype {
+    background-color: rgba(255, 255, 255, 0);
+}
+
 .proto-selected {
     background-color: rgba(255, 255, 255, 0.5);
+}
+
+.cutout-selected {
+    opacity: 0.5;
+}
+
+.cutout-img:hover {
+    cursor: pointer;
 }
 
 
@@ -308,4 +317,8 @@ th, td {
 .label-legend {
     margin-top: 15px;
     padding: 15px;
+}
+
+.add-som {
+    left: 0;
 }

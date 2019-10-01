@@ -64,13 +64,12 @@ def create_project(request, project_id=None):
         project_model.project_name = name
         project_model.description = desc
     project_model.save()
-    create_som(project_model, dataset_name, som_binfile, mapping_binfile,
-               data_binfile, None, csv_file)
-    return pinkproject(request)
+    if dataset_name is not None and csv_file is not None and som_binfile is not None and mapping_binfile is not None and data_binfile is not None:
+        create_som(project_model, dataset_name, som_binfile, mapping_binfile, data_binfile, csv_file)
+    return pinkproject(request, project_model.id)
 
 
-def create_som(project, dataset_name, som_binfile, mapping_binfile,
-               data_binfile=None, csv_file=None):
+def create_som(project, dataset_name, som_binfile, mapping_binfile, data_binfile=None, csv_file=None):
     bin_dir = os.path.join(settings.BIN_DIR, dataset_name)
     data_dir = os.path.join(settings.DATA_DIR, dataset_name)
     fs = FileSystemStorage()

@@ -50,13 +50,13 @@ def label_cutouts(cutout_ids, label):
         cutout.save()
 
 
-def export_catalog(cutout_ids, filename):
-    if len(cutout_ids) == 0:
-        cutouts = SomCutout.objects.filter(~Q(label=''))
-    else:
-        cutouts = [SomCutout.objects.get(id='cutout_id') for cutout_id in cutout_ids]
+def export_catalog(entries, filename):
     with open(os.path.join(settings.DATA_DIR, filename + '.csv'), 'w') as file:
         writer = csv.writer(file)
         writer.writerow(['ID', "RA", 'Dec', 'Clostest prototype', 'Label', 'Image File'])
-        for cutout in cutouts:
-            writer.writerow([cutout.id, cutout.ra, cutout.dec, cutout.closest_prototype.id, cutout.label, cutout.image.path])
+        for cutout in entries:
+            try:
+                clostest_proto = cutout.closest_prototype.id
+            except AttributeError:
+                clostest_proto = ""
+            writer.writerow([cutout.id, cutout.ra, cutout.dec, clostest_proto, cutout.label, cutout.image.path])

@@ -76,8 +76,8 @@ def create_prototype_models(som_model, prototypes):
 
     heatmap = np.ndarray((som_model.som_width, som_model.som_height))
     i = 0
-    for x in range(som_model.som_width):
-        for y in range(som_model.som_height):
+    for y in range(som_model.som_height):
+        for x in range(som_model.som_width):
             for z in range(som_model.som_depth):
                 file_name = os.path.join('prototypes', som_model.training_dataset_name,
                                          'prototype{x}{y}{z}.png'.format(x=x, y=y, z=z))
@@ -172,6 +172,28 @@ def create_cutouts_for_prototype(prototype, n_cutouts):
             cutouts.append(cutout_model)
             counter += 1
     return cutouts
+
+
+def create_som_histogram(som_model):
+    som_obj = som_model.load_som_obj()
+    bmu_distances = np.max(som_obj.data_map, axis=1)
+    plot_histogram(bmu_distances, som_model.histogram.path)
+
+
+def plot_histogram(bmu_distances, save_path, xmax=200, bins=100):
+    fig = plt.figure()
+    fig.set_size_inches(9, 4.5)
+    ax = fig.add_subplot(111)
+    bins = ax.hist(bmu_distances, bins=bins, histtype='step', linewidth=3)
+    height = max(bins[0])
+    plt.xlim(0, xmax)
+    plt.yscale('log')
+    plt.ylim(0.6, height)
+    plt.xlabel('Summed Euclidian (SE) distance to best matching prototype')
+    plt.ylabel('Number of radio-sources per bin')
+    plt.tight_layout()
+    plt.savefig(save_path, transparent=True)
+
 
 
 def create_cutout_models(som_model, catalog):

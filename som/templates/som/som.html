@@ -6,7 +6,7 @@
     grid-template-rows: repeat({{ active_som.som_height}}, auto);">
     <div class="magnifier" id="magnify-window" style="display: none;"></div>
     {% for prototype in prototypes %}
-        <div id="{{ prototype.proto_id}}" class="tooltip" onclick="click_prototype(this.id)">
+        <div id="{{ prototype.proto_id}}" class="tooltip prototype" onclick="click_image(this.id, true)">
             <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
         </div>
     {% endfor %}
@@ -21,11 +21,17 @@
     </div>
     <div id="cutouts" class="cutouts">
     </div>
-    <input id='cutout-label' type="text" value='Label...'/>
+    <input style="width:300px" id='cutout-label' type="text" value='Label...'/>
     <button id="label-cutouts" class="action-button"
-            onclick="label_cutouts(false)">Apply label</button>
+            onclick="label_selected_cutouts(false)">Label selection</button>
     <button id="label-cutouts-proto" class="action-button"
-            onclick="label_cutouts(true)">Apply prototype label</button>
+            onclick="label_selected_cutouts(true)">Apply prototype label to selection</button>
+    <button id="label-all-cutouts" class="action-button"
+            onclick="label_all_cutouts(false)">Label all</button>
+    <button id="label-all-cutouts-proto" class="action-button"
+            onclick="label_all_cutouts(true)">Apply prototype label to all</button>
+    <button id="export-outliers" class="action-button"
+            onclick="export_outliers()">Export outliers</button>
 </div>
 <div class="som-info" id="som-info">
     <table>

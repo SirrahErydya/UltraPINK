@@ -85,6 +85,7 @@ def label(request, label):
             return JsonResponse({"success": True})
         return JsonResponse({"success": False})
     except:
+        traceback.print_exc(file=sys.stdout)
         return JsonResponse({"success": False})
 
 
@@ -99,10 +100,13 @@ def get_outliers(request, som_id, n_fits=10):
 def export_catalog(request, filename):
     data = json.loads(request.body)
     try:
-        if 'ids' in data.keys():
-            sa.export_catalog(data['ids'], filename)
+        if 'cutout_ids' in data.keys():
+            entries = [SomCutout.objects.get(id=cutout_id) for cutout_id in data['cutout_ids']]
+        elif 'outlier_ids' in data.keys():
+            entries = [Outlier.objects.get(id=outlier_id) for outlier_id in data['outlier_ids']]
         else:
-            sa.export_catalog([], filename)
+            entries = SomCutout.objects.all()
+        sa.export_catalog(entries, filename)
         return JsonResponse({'success': True})
     except:
         traceback.print_exc(file=sys.stdout)

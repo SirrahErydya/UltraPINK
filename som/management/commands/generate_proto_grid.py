@@ -9,7 +9,7 @@ import os
 
 
 class Command(BaseCommand):
-    help = 'Add outliers to database'
+    help = 'Generate protoype map'
 
     def add_arguments(self, parser):
         parser.add_argument('som_id', type=int, default=0)
@@ -17,6 +17,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         som_model = SOM.objects.get(id=options['som_id'])
         prototypes = Prototype.objects.filter(som=som_model).order_by('y', 'x')
+        print(prototypes)
         figure = plt.figure(figsize=(som_model.som_width, som_model.som_height), frameon=False)
         grid = gridspec.GridSpec(som_model.som_width, som_model.som_height)
         grid.update(wspace=0.05, hspace=0.05)
