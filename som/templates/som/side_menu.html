@@ -77,11 +77,11 @@
         <h3>View:</h3>
         <div class="view-tools">
             <button id="prototype_button" type="button" class="action-button active-action-button"
-                    onclick="change_view('{{ active_som.proto_map.url }}', this)">Prototypes</button>
+                    onclick="proto_view(this)">Prototypes</button>
             <button id="heatmap_button" type="button" class="action-button"
-                    onclick="change_view('{{ active_som.heatmap.url }}', this)">Heatmap</button>
+                    onclick="heatmap_view('{{ active_som.heatmap.url }}', this)">Heatmap</button>
             <button id="labels_button" type="button" class="action-button"
-                    onclick="color_map('{{ active_som.proto_map.url }}', this)">Labels</button>
+                    onclick="color_map(this)">Labels</button>
         </div>
     </div>
 

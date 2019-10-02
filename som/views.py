@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.template import loader
 from pinkproject.models import Project
 from som.models import Prototype, SOM, Outlier, SomCutout
@@ -50,7 +51,8 @@ def save_som(request, project_id):
     project_model.save()
     som_id = create_som(project_model, dataset_name, som_binfile, mapping_binfile,
                data_binfile, csv_file)
-    return pinkproject(request, project_id, som_id)
+    return redirect('pinkproject:project', project_id=project_id, som_id=som_id)
+
 
 def get_protos(request):
     protos = sa.get_protos(json.loads(request.body)['protos'])
@@ -60,7 +62,6 @@ def get_protos(request):
 
 def get_best_fits_to_protos(request, n_fits=10):
     protos = json.loads(request.body)['protos']
-    prototypes = sa.get_protos(protos)
     if len(protos) == 1:
         cutouts = sa.get_best_fits(protos[0], n_fits)
     else:

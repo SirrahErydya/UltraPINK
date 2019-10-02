@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.template import loader
 from django.core.exceptions import ObjectDoesNotExist
 from pinkproject.models import Project
@@ -66,7 +67,7 @@ def create_project(request, project_id=None):
     project_model.save()
     if dataset_name is not None and csv_file is not None and som_binfile is not None and mapping_binfile is not None and data_binfile is not None:
         create_som(project_model, dataset_name, som_binfile, mapping_binfile, data_binfile, csv_file)
-    return pinkproject(request, project_model.id)
+    return redirect('pinkproject:project', project_id=project_model.id)
 
 
 def create_som(project, dataset_name, som_binfile, mapping_binfile, data_binfile=None, csv_file=None):

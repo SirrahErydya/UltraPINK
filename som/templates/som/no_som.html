@@ -1,3 +1,7 @@
-<h1>No SOM available</h1>
-<p>It seems like there are no SOMS associated with this project. You can upload a SOM now, if you want to.</p>
-<button class="action-button">Add SOMM</button>
+<div class="no-som">
+    <h1>No SOM available</h1>
+    <br/>
+    <p>It seems like there are no SOMS associated with this project. You can upload a SOM now, if you want to.</p>
+    <br/>
+    <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">Add SOM</button>
+</div>

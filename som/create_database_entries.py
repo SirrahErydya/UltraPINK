@@ -59,6 +59,7 @@ def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, so
         full_size_arcsec=som_obj.full_size_arcsec
     )
     print("...done.")
+    create_som_histogram(som_model)
     return som_model
 
 
@@ -70,14 +71,10 @@ def create_prototype_models(som_model, prototypes):
     """
     som_obj = som_model.load_som_obj()
     best_protos = som_obj.sorted_proto_idxs[:,0]
-    figure = plt.figure(figsize=(som_model.som_width, som_model.som_height), frameon=False)
-    grid = gridspec.GridSpec(som_model.som_width, som_model.som_height)
-    grid.update(wspace=0.05, hspace=0.05)
 
     heatmap = np.ndarray((som_model.som_width, som_model.som_height))
-    i = 0
-    for y in range(som_model.som_height):
-        for x in range(som_model.som_width):
+    for x in range(som_model.som_height):
+        for y in range(som_model.som_width):
             for z in range(som_model.som_depth):
                 file_name = os.path.join('prototypes', som_model.training_dataset_name,
                                          'prototype{x}{y}{z}.png'.format(x=x, y=y, z=z))
@@ -100,21 +97,18 @@ def create_prototype_models(som_model, prototypes):
                     number_of_fits=number_of_fits
                 )
                 proto_model.image.name = file_name
+                histrogram_name = os.path.join('prototypes', som_model.training_dataset_name,
+                                                          'histogram{x}{y}{z}.png'.format(x=x, y=y, z=z))
+                proto_model.histogram.name = histrogram_name
                 proto_model.save()
 
-                # Generate joined image
-                axis = plt.subplot(grid[i])
-                axis.set_axis_off()
-                axis.imshow(mpimg.imread(proto_model.image.path))
+                #bmu_distances = som_obj.data_map[:proto_model.proto_id]
+                #plot_histogram(bmu_distances, histrogram_name)
                 heatmap[y][x] = number_of_fits
-                i += 1
 
     plt.subplots_adjust(wspace=0, hspace=0)
-    proto_map_file = os.path.join('prototypes', som_model.training_dataset_name,  'protos.png')
     heatmap_file = os.path.join('prototypes', som_model.training_dataset_name, 'heatmap.png')
-    figure.savefig(os.path.join(settings.MEDIA_ROOT, proto_map_file))
     save_heatmap(heatmap, heatmap_file)
-    som_model.proto_map.name = proto_map_file
     som_model.heatmap.name = heatmap_file
     som_model.save()
     print("...done.")
@@ -136,9 +130,7 @@ def create_cutouts_for_prototype(prototype, n_cutouts):
     som_model = som.models.SOM.objects.get(id=prototype.som_id)
     som_obj = som_model.load_som_obj()
     best_protos = som_obj.sorted_proto_idxs[:,0]
-    print(best_protos)
     sorted_cutouts = np.argsort(som_obj.data_map[range(som_model.number_of_images), best_protos])
-    print(sorted_cutouts)
     counter = 0
     cutouts = []
     for idx in sorted_cutouts:
@@ -177,23 +169,19 @@ def create_cutouts_for_prototype(prototype, n_cutouts):
 def create_som_histogram(som_model):
     som_obj = som_model.load_som_obj()
     bmu_distances = np.max(som_obj.data_map, axis=1)
-    plot_histogram(bmu_distances, som_model.histogram.path)
+    file_name = os.path.join('data', som_model.training_dataset_name, 'histogram.png')
+    plot_histogram(bmu_distances, os.path.join(settings.MEDIA_ROOT, file_name))
+    som_model.histogram.name = file_name
+    som_model.save()
 
 
-def plot_histogram(bmu_distances, save_path, xmax=200, bins=100):
-    fig = plt.figure()
-    fig.set_size_inches(9, 4.5)
-    ax = fig.add_subplot(111)
-    bins = ax.hist(bmu_distances, bins=bins, histtype='step', linewidth=3)
-    height = max(bins[0])
-    plt.xlim(0, xmax)
-    plt.yscale('log')
-    plt.ylim(0.6, height)
+def plot_histogram(bmu_distances, save_path, bins=100):
+    plt.hist(bmu_distances, bins=bins)
     plt.xlabel('Summed Euclidian (SE) distance to best matching prototype')
     plt.ylabel('Number of radio-sources per bin')
     plt.tight_layout()
-    plt.savefig(save_path, transparent=True)
-
+    plt.savefig(os.path.join(settings.MEDIA_ROOT,save_path), transparent=True)
+    plt.close()
 
 
 def create_cutout_models(som_model, catalog):

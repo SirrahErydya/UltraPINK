@@ -367,26 +367,55 @@ function label_cutouts(cutouts, proto_label) {
     apply_label(data, label)
 }
 
-function change_view(img, button) {
+function change_view(button) {
     active_buttons = document.getElementsByClassName('active-action-button')
     for(i=0; i<active_buttons.length; i++) {
         active_buttons[i].classList.remove('active-action-button')
     }
     container = document.getElementById('som-container');
-    if(button.id === 'prototype_button' || button.id === 'heatmap_button') {
-        elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
-        for(var i=0; i<elements.length; i++) {
-            elements[i].style.backgroundColor = '';
-            legend_container = document.getElementById('label-legend');
-            legend_container.innerHTML = "";
-            legend_container.style.backgroundColor = 'white';
-        }
+    legend_container = document.getElementById('label-legend');
+    var som_info = document.getElementById('info-table');
+    if(button.id === 'labels_button') {
+        som_info.style.display = 'none'
+        legend_container.style.backgroundColor = 'lavenderblush';
+        legend_container.innerHTML = '<h3>Label legend</h3>';
+        for(var label in label_colors) {
+            var r = label_colors[label][0];
+            var g = label_colors[label][1];
+            var b = label_colors[label][2];
+            legend_container.innerHTML += '<p style="color: rgb('+r+','+g+','+b+')">'+label+'</p>'
     }
-    container.style.backgroundImage = 'url('+img+')';
-    button.classList.add("active-action-button")
+    } else {
+        som_info.style.display = 'block';
+        legend_container.innerHTML = "";
+        legend_container.style.backgroundColor = 'white';
+        button.classList.add("active-action-button")
+    }
  }
 
- function color_map(img, button) {
+ function proto_view(button) {
+    change_view(button)
+    container.style.backgroundImage = '';
+    elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
+    for(var i=0; i<elements.length; i++) {
+        elements[i].style.backgroundColor = '';
+        elements[i].style.display = 'block';
+    }
+ }
+
+ function heatmap_view(img, button) {
+    change_view(button)
+    container = document.getElementById('som-container');
+    container.style.backgroundImage = 'url('+img+')';
+    elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
+    for(var i=0; i<elements.length; i++) {
+        elements[i].style.backgroundColor = '';
+        elements[i].style.display = 'none';
+    }
+ }
+
+ function color_map(button) {
+    proto_view(button)
     container = document.getElementById('som-container');
     elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
     var prototypes = [];
@@ -423,8 +452,6 @@ function change_view(img, button) {
             document.getElementById(prototypes[i].proto_id).style.backgroundColor = "rgba("+r+","+g+","+b+",0.7)";
         }
      }
-    display_label_legend()
-    change_view(img, button)
  }
 
  function getRandomColor() {
@@ -434,17 +461,6 @@ function change_view(img, button) {
   return [r, g, b];
 }
 
-function display_label_legend() {
-    legend_container = document.getElementById('label-legend');
-    legend_container.style.backgroundColor = 'lavenderblush';
-    legend_container.innerHTML = '<h3>Label legend</h3>';
-    for(var label in label_colors) {
-        var r = label_colors[label][0];
-        var g = label_colors[label][1];
-        var b = label_colors[label][2];
-        legend_container.innerHTML += '<p style="color: rgb('+r+','+g+','+b+')">'+label+'</p>'
-    }
-}
 
  function show_selection_info(selected, element_id) {
      selection_info = document.getElementById(element_id);

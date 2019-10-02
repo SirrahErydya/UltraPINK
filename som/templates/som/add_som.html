@@ -23,7 +23,7 @@
     <div class="add-som">
         <h1>Add a SOM to the current project</h1>
         <br/>
-        <form id="add-project-form" action="{% url 'som:add_som' %}/{{ project.id }}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
+        <form id="add-project-form" action="{% url 'som:create_som' project_id=current.id %}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
             <h3>The data set</h3>
             <p>Please add a csv file summarizing the dataset here.</p>
             <div class="input-grid">

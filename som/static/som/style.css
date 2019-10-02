@@ -212,14 +212,12 @@ body {
 }
 
 .prototype {
-    background-color: rgba(255, 255, 255, 0);
+    opacity: 1;
+    background-size: 100%;
+    background-repeat: no-repeat;
 }
 
-.proto-selected {
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-.cutout-selected {
+.proto-selected, .cutout-selected {
     opacity: 0.5;
 }
 
@@ -261,6 +259,12 @@ body {
 .modal_window .icon img:hover {
     opacity: 1;
     cursor: pointer;
+}
+
+.no-som {
+    position: relative;
+    left: 100px;
+    top: 100px;
 }
 
 .som-info {
