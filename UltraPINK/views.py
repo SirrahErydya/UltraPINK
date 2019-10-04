@@ -10,3 +10,16 @@ def home(request):
         'projects': Project.objects.all()
     }
     return HttpResponse(template.render(context, request))
+
+
+def all_projects(request):
+    template = loader.get_template('main/all_projects.html')
+    context = {
+        'projects': Project.objects.all()
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def about(request):
+    template = loader.get_template('main/about.html')
+    return HttpResponse(template.render({}, request))

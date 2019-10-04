@@ -21,7 +21,8 @@ from django.conf import settings
 
 urlpatterns = [
     path('', views.home, name="home"),
-    path('', views.home, name="about"),
+    path('about', views.about, name="about"),
+    path('all_projects', views.all_projects, name="all_projects"),
     path('pinkproject/', include('pinkproject.urls')),
     path('som/', include('som.urls')),
     path('admin/', admin.site.urls),

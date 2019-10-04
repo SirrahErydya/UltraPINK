@@ -1,0 +1,47 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <div class="card">
+        {% load static %}
+        <span class="headline">About </span><img class='inline-img' align="middle" src="{% static 'main/Logo/pink-logo-small.png' %}">
+        <p>
+            <b>UltraPINK</b> allows you to load, store, and inspect data that is analysable with a self-organizing Kohonen map
+            that was created with <b>PINK</b>. You can add multiple SOMs to a project, have them displayed, and let
+            <b>UltraPINK</b> show you the best fits from your data set to each cell of the map.
+        </p>
+        <p>
+            Futhermore, it is possible to label single data samples or map entries to allow a semi-automatic data analysis.
+            You can export the final catalog of all inspected, and labeled or unlabeled samples to a csv file.
+        </p>
+        <p>
+            This tool is currently under development and will gain more inspection features, as well as a direct connection
+            to <b>PINK</b> allowing visualized training of SOMs directly with <b>UltraPINK</b>.
+        </p>
+        <br/>
+        <a href="https://github.com/HITS-AIN/PINK">
+            <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-32px.png' %}"/>
+            View PINK sources
+        </a>
+        <a href="https://github.com/SirrahErydya/UltraPINK">
+            <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-32px.png' %}"/>
+            View UltraPINK sources
+        </a> <br/>
+        <button class="action-button" href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2016-116.pdf">
+            View Publication
+        </button>
+    </div>
+    <div class="card">
+        <p class="headline">Contributor</p>
+        <p><b>UltraPINK</b> was developed by Fenja Kollasch, Master Student at <a href="https://www.h-its.org">HITS gGmbH</a></p>
+        <br/>
+        <a href="https://github.com/SirrahErydya">
+            <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-32px.png' %}"/>
+            Fenja Kollasch on GitHub
+        </a><br/>
+        <a href="mailto:fenja.kollasch@h-its.org">
+            <img style="width: 4%" align="middle" src="{%  static 'main/icons/mail.png' %}"/>
+            fenja.kollasch@h-its.org
+        </a>
+    </div>
+
+
+{% endblock %}
