@@ -19,59 +19,82 @@
         <h3>Inspection:</h3>
         <div class="inspection-tools">
             <div class="tooltip">
-                <img id="pointer" class="tool-selected" src="{% static 'som/icons/graphic-icons/png/039-object.png' %}"
-                onclick="select_tool(this.id)">
+                <i id="pointer" class="tool-selected material-icons" onclick="select_tool(this.id)">mouse</i>
                 <span class="tooltiptext">Select</span>
             </div>
             <div class="tooltip">
-                <img id="selection" src="{% static 'som/icons/network-icons/png/032-network-1.png' %}"
-                     onclick="select_tool(this.id)">
+                <i id="selection" class="material-icons" onclick="select_tool(this.id)">select_all</i>
                 <span class="tooltiptext">Select multiple</span>
             </div>
             <div class="tooltip">
-                <img id="zoom" src="{% static 'som/icons/graphic-icons/png/047-computer mouse.png' %}"
-                     onclick="select_tool(this.id)">
+                <i id="zoom" class="material-icons" onclick="select_tool(this.id)">zoom_out_map</i>
                 <span class="tooltiptext">Zoom into map</span>
             </div>
             <div class="tooltip">
-                <img id="magnifier" src="{% static 'som/icons/graphic-icons/png/035-zoom in.png' %}"
-                     onclick="select_tool(this.id)">
+                <i id="magnifier" class="material-icons" onclick="select_tool(this.id)">zoom_in</i>
                 <span class="tooltiptext">Magnify</span>
             </div>
         </div>
-        <h3>Edit:</h3>
+        <h3>Operations:</h3>
         <div class="edit-tools">
             {% csrf_token %}
-            Number of best fits: <input id='input-cutouts' type="text" name="n_fits" value='10'/>
-            <div class="tooltip">
-                <img align="middle" id="show-best-fits" src="{% static 'som/icons/graphic-icons/png/020-view.png' %}"
-                onclick="show_best_fits()">
-                <span class="tooltiptext">Show closest dataset entries to selection</span>
-            </div><br/>
-            Number of outliers: <input id='input-outliers' type="text" name="n_outliers" value='10'/>
-            <div class="tooltip">
-                <img align="middle" id="show-outliers" src="{% static 'som/icons/graphic-icons/png/020-view.png' %}"
-                onclick="show_outliers({{ active_som.id }})">
-                <span class="tooltiptext">Show outliers</span>
-            </div>
-            <div id="modal-o" class="modal">
-                <div class="modal_window">
-                    <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
-                    <div id="cutouts-o" class="cutouts">
-                    </div>
+            <!-- I know, table layouts are out. It works, though -->
+            <table>
+                <tr>
+                    <td>Show best fits to selection:</td>
+                    <td><input id='input-cutouts' type="text" name="n_fits" value='10'/></td>
+                    <td>
+                        <div class="tooltip">
+                            <i class="material-icons" onclick="show_best_fits()">view_module</i>
+                            <span class="tooltiptext">Show closest dataset entries to selection</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Show outliers:</td>
+                    <td><input id='input-outliers' type="text" name="n_outliers" value='10'/></td>
+                    <td>
+                         <div class="tooltip">
+                             <i class="material-icons" onclick="show_outliers({{ active_som.id }})">view_module</i>
+                            <span class="tooltiptext">Show outliers</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Apply label to selection:</td>
+                    <td><input id='label' type="text" value='Label...'/></td>
+                    <td>
+                        <div class="tooltip">
+                            <i class="material-icons" onclick="label_protos()">label_outline</i>
+                            <span class="tooltiptext">Apply labels</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <b>Export operations:</b>
+            <div class="export-tools">
+                <div class="tooltip">
+                    <i class="material-icons" onclick="export_catalog('{{ current.project_name }}', {})">file_download</i>
+                    <span class="tooltiptext">Export catalog as csv</span>
                 </div>
-            </div>
-            <br/>
-            <input id='label' type="text" value='Label...'/>
-            <div class="tooltip">
-                <img align="middle" id="apply-label" src="{% static 'som/icons/graphic-icons/png/018-graphic design.png' %}"
-                onclick="label_protos()">
-                <span class="tooltiptext">Apply labels</span>
-            </div>
-            <div class="tooltip">
-                <img align="middle" id="export" src="{% static 'som/icons/network-icons/png/029-retweet.png' %}"
-                onclick="export_catalog('{{ current.project_name }}', {})">
-                <span class="tooltiptext">Export catalog</span>
+                <div class="tooltip">
+                    <img align="middle" id="export" src="{% static 'main/icons/topcat.png' %}"
+                    onclick="export_catalog('{{ current.project_name }}', {})">
+                    <span class="tooltiptext">Export Topcat project</span>
+                </div>
+                <div class="tooltip">
+                    <i class="material-icons" onclick="//todo">photo_library</i>
+                    <span class="tooltiptext">Download Prototype map</span>
+                </div>
+                <div class="tooltip">
+                    <i class="material-icons" onclick="//todo">photo_filter</i>
+                    <span class="tooltiptext">Download heat map</span>
+                </div>
+                <div class="tooltip">
+                    <i class="material-icons" onclick="//todo">insert_chart</i>
+                    <span class="tooltiptext">Download histogram</span>
+                </div>
             </div>
         </div>
         <h3>View:</h3>
@@ -86,11 +109,4 @@
     </div>
 
 
-    <div class="icon-disclaimer">
-        Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
-        from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-        <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">
-            CC 3.0 BY
-        </a>
-    </div>
 </div>

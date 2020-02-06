@@ -66,6 +66,7 @@ body {
 }
 
 #datasets {
+    padding-left: 25px;
     display: none;
 }
 
@@ -87,17 +88,19 @@ body {
     margin-bottom: 50px;
 }
 
-.edit-tools input {
-    margin-left: 15px;
+.edit-tools table {
+    padding-bottom: 15px;
 }
 
 .edit-tools img {
-    margin-left: 20px;
-    width: 50px;
+    width: 48px;
+}
+
+.edit-tools i {
+    font-size: 48px;
 }
 
 .edit-tools #label {
-    margin-left: 0px;
     width: 190px;
 }
 
@@ -125,17 +128,27 @@ body {
     padding-bottom: 50px;
     grid-template-columns: repeat(4, auto);
     grid-template-rows: repeat(1, auto);
-    grid-gap: 50px;
 }
 
-#toolbox .inspection-tools img {
-    width: 100%;
+.export-tools {
+    display: grid;
+    padding-top: 15px;
+    grid-template-columns: repeat(5, auto);
+    grid-template-rows: repeat(1, auto);
 }
-#toolbox img {
+
+.export-tools i, .inspection-tools i {
+    font-size: 64px;
+}
+
+#toolbox .inspection-tools img, #toolbox .export-tools img {
+    width: 64px;
+}
+#toolbox img, #toolbox i {
     opacity: 0.5;
 }
 
-#toolbox img:hover {
+#toolbox img:hover, #toolbox i:hover {
     opacity: 1;
     cursor: pointer;
 }
