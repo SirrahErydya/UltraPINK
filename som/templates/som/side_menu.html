@@ -19,24 +19,24 @@
         <h3>Inspection:</h3>
         <div class="inspection-tools">
             <div class="tooltip">
-                <img id="pointer" class="tool-selected" src="{% static 'som/icons/png/013-cursor-1.png' %}"
+                <img id="pointer" class="tool-selected" src="{% static 'som/icons/graphic-icons/png/039-object.png' %}"
                 onclick="select_tool(this.id)">
                 <span class="tooltiptext">Select</span>
             </div>
             <div class="tooltip">
-                <img id="zoom" src="{% static 'som/icons/png/031-cursor.png' %}"
+                <img id="selection" src="{% static 'som/icons/network-icons/png/032-network-1.png' %}"
+                     onclick="select_tool(this.id)">
+                <span class="tooltiptext">Select multiple</span>
+            </div>
+            <div class="tooltip">
+                <img id="zoom" src="{% static 'som/icons/graphic-icons/png/047-computer mouse.png' %}"
                      onclick="select_tool(this.id)">
                 <span class="tooltiptext">Zoom into map</span>
             </div>
             <div class="tooltip">
-                <img id="magnifier" src="{% static 'som/icons/png/025-zoom.png' %}"
+                <img id="magnifier" src="{% static 'som/icons/graphic-icons/png/035-zoom in.png' %}"
                      onclick="select_tool(this.id)">
                 <span class="tooltiptext">Magnify</span>
-            </div>
-            <div class="tooltip">
-                <img id="selection" src="{% static 'som/icons/png/039-crop.png' %}"
-                     onclick="select_tool(this.id)">
-                <span class="tooltiptext">Select area</span>
             </div>
         </div>
         <h3>Edit:</h3>
@@ -44,13 +44,13 @@
             {% csrf_token %}
             Number of best fits: <input id='input-cutouts' type="text" name="n_fits" value='10'/>
             <div class="tooltip">
-                <img align="middle" id="show-best-fits" src="{% static 'som/icons/png/006-red-eye.png' %}"
+                <img align="middle" id="show-best-fits" src="{% static 'som/icons/graphic-icons/png/020-view.png' %}"
                 onclick="show_best_fits()">
                 <span class="tooltiptext">Show closest dataset entries to selection</span>
             </div><br/>
             Number of outliers: <input id='input-outliers' type="text" name="n_outliers" value='10'/>
             <div class="tooltip">
-                <img align="middle" id="show-outliers" src="{% static 'som/icons/png/006-red-eye.png' %}"
+                <img align="middle" id="show-outliers" src="{% static 'som/icons/graphic-icons/png/020-view.png' %}"
                 onclick="show_outliers({{ active_som.id }})">
                 <span class="tooltiptext">Show outliers</span>
             </div>
@@ -64,12 +64,12 @@
             <br/>
             <input id='label' type="text" value='Label...'/>
             <div class="tooltip">
-                <img align="middle" id="apply-label" src="{% static 'som/icons/png/011-pencil.png' %}"
+                <img align="middle" id="apply-label" src="{% static 'som/icons/graphic-icons/png/018-graphic design.png' %}"
                 onclick="label_protos()">
                 <span class="tooltiptext">Apply labels</span>
             </div>
             <div class="tooltip">
-                <img align="middle" id="export" src="{% static 'som/icons/png/015-file.png' %}"
+                <img align="middle" id="export" src="{% static 'som/icons/network-icons/png/029-retweet.png' %}"
                 onclick="export_catalog('{{ current.project_name }}', {})">
                 <span class="tooltiptext">Export catalog</span>
             </div>
