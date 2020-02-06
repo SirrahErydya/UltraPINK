@@ -1,0 +1,23 @@
+{% extends "main/base.html" %}
+
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h1>Welcome to the project {{ current.project_name }}!</h1>
+        <p><i>{{ current.project_description }}</i></p>
+        <button class="action-button"
+                onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">
+            Edit project
+        </button>
+    </div>
+    <div class="card">
+        {% if soms %}
+        { % else %}
+            <h1>No SOMs available</h1>
+        { % endif %}
+    </div>
+{% endblock %}

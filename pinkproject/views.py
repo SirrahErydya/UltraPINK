@@ -14,27 +14,27 @@ import csv
 
 
 def pinkproject(request, project_id, som_id=None):
-    template = loader.get_template("pinkproject/project.html")
     no_template = loader.get_template("pinkproject/no_project.html")
     try:
         current_project = Project.objects.get(id=project_id)
         soms = SOM.objects.filter(project=current_project)
         if som_id is not None:
+            template = loader.get_template("pinkproject/project.html")
             active_som = SOM.objects.get(id=som_id)
             assert active_som.project_id == project_id
-        elif len(soms) > 0:
-            active_som = soms[0]
+            prototypes = Prototype.objects.filter(som=active_som).order_by('y', 'x')
+            context = {
+                # Pass some values from the backend here
+                'current': current_project,
+                'soms': soms,
+                'active_som': active_som,
+                'prototypes': prototypes
+            }
         else:
-            active_som = None
-        prototypes = Prototype.objects.filter(som=active_som).order_by('y', 'x')
-        context = {
-            # Pass some values from the backend here
-            'current': current_project,
-            'soms': soms,
-            'active_som': active_som,
-            'prototypes': prototypes
-        }
+            template = loader.get_template("pinkproject/project_lander.html")
+            context = {'current': current_project}
         return HttpResponse(template.render(context, request))
+
     except ObjectDoesNotExist:
         return HttpResponse(no_template.render({}, request))
 
