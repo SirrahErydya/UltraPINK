@@ -32,7 +32,10 @@ def pinkproject(request, project_id, som_id=None):
             }
         else:
             template = loader.get_template("pinkproject/project_lander.html")
-            context = {'current': current_project}
+            context = {
+                'current': current_project,
+                'projects': Project.objects.all()
+            }
         return HttpResponse(template.render(context, request))
 
     except ObjectDoesNotExist:

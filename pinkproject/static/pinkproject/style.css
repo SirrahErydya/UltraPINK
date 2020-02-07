@@ -9,6 +9,18 @@
 #create-project-form {
 }
 
+.project-lander {
+    position: relative;
+    left: 23vw;
+    width: 77vw;
+    margin-top: 100px;
+    min-height: calc(100vh - 215px);
+}
+
+.project-lander .card {
+    text-align: center;
+}
+
 .info-panel {
     text-align: left;
     background-color: mistyrose;
@@ -27,6 +39,83 @@
     grid-template-rows: repeat(2, auto);
     margin-bottom: 50px;
 }
+
+.side-menu {
+    float: left;
+    padding: 0px 25px 15px 50px;
+    width: 20vw;
+    min-height: calc(100vh - 100px);
+    background-color: pink;
+    z-index: 3;
+}
+
+.side-menu input {
+    width: 30px;
+    margin-left: 10px;
+    margin-right:10px;
+    border: none;
+    padding: 2px;
+    background-color: lavenderblush;
+}
+
+.collapsible {
+    font-family: Verdana, Arial, sans-serif;
+    width: 100%;
+    font-size: 15pt;
+    margin-top: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: palevioletred;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+.collapsible:hover {
+    background-color: deeppink;
+}
+
+#datasets, #toolbox {
+    padding: 15px;
+    background-color: mistyrose;
+}
+
+#datasets {
+    padding-left: 25px;
+    display: none;
+}
+
+#datasets ul {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#datasets ul li {
+    list-style: none;
+}
+
+#datasets .action-button{
+    width: 120px;
+}
+
+.project-lander .export-tools {
+    padding-top: 25px;
+}
+.project-lander .export-tools i {
+    font-size: 64px;
+    opacity: 0.5;
+}
+
+.project-lander .export-tools .tooltip {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.project-lander .export-tools i:hover {
+    opacity: 1;
+}
+
 
 input[type=file] {
     font-family: Verdana, Arial, sans-serif;

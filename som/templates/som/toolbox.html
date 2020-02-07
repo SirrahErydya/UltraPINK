@@ -1,0 +1,95 @@
+<button class="collapsible active" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
+<div id="toolbox" style="display: grid;">
+    {% load static %}
+    <h3>Inspection:</h3>
+    <div class="inspection-tools">
+        <div class="tooltip">
+            <i id="pointer" class="tool-selected material-icons" onclick="select_tool(this.id)">mouse</i>
+            <span class="tooltiptext">Select</span>
+        </div>
+        <div class="tooltip">
+            <i id="selection" class="material-icons" onclick="select_tool(this.id)">select_all</i>
+            <span class="tooltiptext">Select multiple</span>
+        </div>
+        <div class="tooltip">
+            <i id="zoom" class="material-icons" onclick="select_tool(this.id)">zoom_out_map</i>
+            <span class="tooltiptext">Zoom into map</span>
+        </div>
+        <div class="tooltip">
+            <i id="magnifier" class="material-icons" onclick="select_tool(this.id)">zoom_in</i>
+            <span class="tooltiptext">Magnify</span>
+        </div>
+    </div>
+    <h3>Operations:</h3>
+    <div class="edit-tools">
+        {% csrf_token %}
+        <!-- I know, table layouts are out. It works, though -->
+        <table>
+            <tr>
+                <td>Show best fits to selection:</td>
+                <td><input id='input-cutouts' type="text" name="n_fits" value='10'/></td>
+                <td>
+                    <div class="tooltip">
+                        <i class="material-icons" onclick="show_best_fits()">view_module</i>
+                        <span class="tooltiptext">Show closest dataset entries to selection</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Show outliers:</td>
+                <td><input id='input-outliers' type="text" name="n_outliers" value='10'/></td>
+                <td>
+                     <div class="tooltip">
+                         <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
+                        <span class="tooltiptext">Show outliers</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Apply label to selection:</td>
+                <td><input id='label' type="text" value='Label...'/></td>
+                <td>
+                    <div class="tooltip">
+                        <i class="material-icons" onclick="label_protos()">local_offer</i>
+                        <span class="tooltiptext">Apply labels</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <b>Export operations:</b>
+        <div class="export-tools">
+            <div class="tooltip">
+                <i class="material-icons" onclick="export_catalog('{{ current.project_name }}', {})">file_download</i>
+                <span class="tooltiptext">Export catalog as csv</span>
+            </div>
+            <div class="tooltip">
+                <img align="middle" id="export" src="{% static 'main/icons/topcat.png' %}"
+                onclick="//todo">
+                <span class="tooltiptext">Export Topcat project</span>
+            </div>
+            <div class="tooltip">
+                <i class="material-icons" onclick="//todo">photo_library</i>
+                <span class="tooltiptext">Download Prototype map</span>
+            </div>
+            <div class="tooltip">
+                <i class="material-icons" onclick="//todo">photo_filter</i>
+                <span class="tooltiptext">Download heat map</span>
+            </div>
+            <div class="tooltip">
+                <i class="material-icons" onclick="//todo">insert_chart</i>
+                <span class="tooltiptext">Download histogram</span>
+            </div>
+        </div>
+    </div>
+    <h3>View:</h3>
+    <div class="view-tools">
+        <button id="prototype_button" type="button" class="action-button active-action-button"
+                onclick="proto_view(this)">Prototypes</button>
+        <button id="heatmap_button" type="button" class="action-button"
+                onclick="heatmap_view('{{ active_som.heatmap.url }}', this)">Heatmap</button>
+        <button id="labels_button" type="button" class="action-button"
+                onclick="color_map(this)">Labels</button>
+    </div>
+</div>
+
