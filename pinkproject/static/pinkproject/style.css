@@ -18,6 +18,8 @@
 }
 
 .project-lander .card {
+    margin-left: 25%;
+    margin-right: 25%;
     text-align: center;
 }
 
@@ -41,6 +43,7 @@
 }
 
 .side-menu {
+    position: fixed;
     float: left;
     padding: 0px 25px 15px 50px;
     width: 20vw;
