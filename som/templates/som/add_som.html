@@ -19,7 +19,7 @@
     <script type="text/javascript" src="{% static 'som/som_basics.js' %}"></script>
 {% endblock %}
 {% block content %}
-    {% include 'som/toolbox.html' %}
+    {% include 'pinkproject/side_menu.html' %}
     <div class="add-som">
         <h1>Add a SOM to the current project</h1>
         <br/>
@@ -33,15 +33,50 @@
                 <label for="csv-data">Additional infos (as .csv)</label>
                 <input class='upload-button' type="file" id="csv-data" name="csv-data" accept="text/csv" multiple/>
             </div>
-            <h3>Binary files</h3>
-            <p>To process the map, the binary files of the SOM, the mapping, and the images That were created during the training with PINK are necessary.
-            Please provide the binary files here.</p>
-            <div class="input-grid">
-                <label for="som-file">SOM file (.bin): </label><input class='upload-button' type="file" id="som-file" name="som-file"/>
-                <label for="mapping-file">Mapping file (.bin): </label><input class='upload-button' type="file" id="mapping-file" name="mapping-file"/>
-                <label for="image-file">Image file (.bin): </label><input class='upload-button' type="file" id="image-file" name="image-file"/>
+             <div class="tab-bar">
+                <button class="tab-button active" type="button" id="train-som-tab"
+                        onclick="activate_tab('train-som')">Train SOM</button>
+                <button class="tab-button" type="button"  id="import-bin-tab"
+                        onclick="activate_tab('import-bin')">Import from Binaries</button>
+                <button class="tab-button" type="button" id="import-python-tab"
+                        onclick="activate_tab('import-python')">Import Python object</button>
             </div>
-            <input class='action-button' type="submit" value="Save"/>
+            <div class="tab-content">
+                <div id="train-som" class="tab">
+                    <h3>Train a SOM</h3>
+                    <br/>
+                    <p>Give link the folder containing the data below. The folder can contain data in the following formats</p>
+                    <ul>
+                        <li>Images</li>
+                    </ul>
+                    <p>Furthermore, you need to specifiy the dimensions of the map</p>
+                    <br/>
+                    <div class="input-grid">
+                        <label for="dataset">Training data:</label>
+                        <input class='upload-button' type="file" id="dataset" name="dataset" webkitdirectory mozdirectory/>
+                        <label for="som-width">Width:</label>
+                        <td><input id='som-width' type="text" name="som_width" value='10'/></td>
+                        <label for="som-heigt">Height:</label>
+                        <td><input id='som-height' type="text" name="som_height" value='10'/></td>
+                        <label for="som-depth">Depth:</label>
+                        <td><input id='som-depth' type="text" name="som_depth" value='10'/></td>
+                    </div>
+                </div>
+                <div id="import-bin" class="tab" style="display: none">
+                    <h3>Binary files</h3>
+                    <p>To process the map, the binary files of the SOM, the mapping, and the images That were created during the training with PINK are necessary.
+                    Please provide the binary files here.</p>
+                    <div class="input-grid">
+                        <label for="som-file">SOM file (.bin): </label><input class='upload-button' type="file" id="som-file" name="som-file"/>
+                        <label for="mapping-file">Mapping file (.bin): </label><input class='upload-button' type="file" id="mapping-file" name="mapping-file"/>
+                        <label for="image-file">Image file (.bin): </label><input class='upload-button' type="file" id="image-file" name="image-file"/>
+                    </div>
+                </div>
+                <div id="import-python" class="tab" style="display: none">
+
+                </div>
+                <input class='action-button' type="submit" value="Save"/>
+            </div>
         </form>
     </div>
 {% endblock %}

@@ -1,23 +1,21 @@
 body {
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .footer {
     position: absolute;
-    bottom: 0;
-    left: 0;
     width: 100%;
 }
 
 .add-som {
     background-color: mistyrose;
     position: relative;
-    top: 50px;
-    left: calc(25vw - 60vh);
-    margin-left: 25%;
-    margin-right: 25%;
+    left: 24vw;
+    width: 63vw;
+    margin: 2.5%;
     padding: 50px;
+    min-height: 55vh;
 }
 
 .edit-tools {
@@ -115,6 +113,31 @@ body {
     grid-template-columns: repeat(5, auto);
     grid-template-rows: repeat(2, auto);
     grid-gap: 10px;
+}
+
+.tab-bar {
+    border-color: deeppink;
+    border-bottom-style: solid;
+}
+
+.tab-button {
+    padding: 10px;
+    color: black;
+    font-size: 14pt;
+    background-color: lightpink;
+    cursor: pointer;
+    border: none;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.tab-button:hover, .tab-bar .active {
+    background-color: deeppink;
+    color: white;
+}
+
+.tab-content {
+    background-color: white;
+    padding: 20px;
 }
 
 #som-container img, .cutouts img {
@@ -239,6 +262,3 @@ th, td {
     padding: 15px;
 }
 
-.add-som {
-    left: 0;
-}

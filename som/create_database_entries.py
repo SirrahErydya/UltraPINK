@@ -6,7 +6,7 @@ import som.models
 import os
 import numpy as np
 from django.conf import settings
-from som.som_postprocessing import plot_image, return_cutout
+#from som.som_postprocessing import plot_image, return_cutout
 import matplotlib.pyplot as plt
 from matplotlib import image as mpimg
 from matplotlib import gridspec as gridspec

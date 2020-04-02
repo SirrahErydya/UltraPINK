@@ -9,46 +9,43 @@
     {% include 'pinkproject/side_menu.html' %}
         <div class="project-lander">
             <div class="card">
-            <h1>Welcome to the project {{ current.project_name }}!</h1>
-            <br/>
-            <p><i>{{ current.description }}</i></p>
-            <div class="export-tools">
-                <div class="tooltip">
-                    <i class="material-icons" onclick="//todo">archive</i>
-                    <span class="tooltiptext">Export map prototypes, heatmaps, and catalogues for the whole project.</span>
-                    <p>Export as .zip</p>
-                </div>
-                <div class="tooltip">
-                    <i class="material-icons" onclick="//todo">file_download</i>
-                    <span class="tooltiptext">Export a catalog from all SOMs as csv</span>
-                    <p>Export collaborative catalogue</p>
+                <h1>Welcome to the project {{ current.project_name }}!</h1>
+                <br/>
+                <p><i>{{ current.description }}</i></p>
+                <div class="export-tools">
+                    <div class="tooltip">
+                        <i class="material-icons" onclick="//todo">archive</i>
+                        <span class="tooltiptext">Export map prototypes, heatmaps, and catalogues for the whole project.</span>
+                        <p>Export as .zip</p>
+                    </div>
+                    <div class="tooltip">
+                        <i class="material-icons" onclick="//todo">file_download</i>
+                        <span class="tooltiptext">Export a catalog from all SOMs as csv</span>
+                        <p>Export collaborative catalogue</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            {% if soms %}
-                <h1>Choose a SOM to make further investigations!</h1>
-                    <ul class="project-container">
-                        {% for som in soms %}
-                            <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
-                                {{ som.training_dataset_name }}
-                            </a></li>
-                        {% endfor %}
-                    </ul>
-            {% else %}
-                <h1>No SOMs available</h1>
-                <br/>
-                <p>It looks like there are no self organizing maps associated with this project.
-                Please click one of the buttons below to either <b>train a self-organizing map with PINK</b> or
-                    <b>upload the  binary files of a previously trained map</b>.</p>
-            {% endif %}
-            <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
-                Train a SOM
-            </button>
-            <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
-                Add SOM
-            </button>
-        </div>
+            <div class="card">
+                {% if soms %}
+                    <h1>Choose a SOM to make further investigations!</h1>
+                        <ul class="project-container">
+                            {% for som in soms %}
+                                <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
+                                    {{ som.training_dataset_name }}
+                                </a></li>
+                            {% endfor %}
+                        </ul>
+                {% else %}
+                    <h1>No SOMs available</h1>
+                    <br/>
+                    <p>It looks like there are no self organizing maps associated with this project.
+                    Please click one of the buttons below to either <b>train a self-organizing map with PINK</b> or
+                        <b>upload the  binary files of a previously trained map</b>.</p>
+                {% endif %}
+                <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
+                    Add SOM
+                </button>
+            </div>
     </div>
 
 {% endblock %}

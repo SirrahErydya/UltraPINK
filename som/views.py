@@ -5,7 +5,7 @@ from django.template import loader
 from pinkproject.models import Project
 from som.models import Prototype, SOM, Outlier, SomCutout
 from pinkproject.views import create_som, pinkproject
-import som.som_analysis as sa
+#import som.som_analysis as sa
 import som.create_database_entries as dbe
 import json
 import sys, traceback

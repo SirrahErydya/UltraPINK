@@ -9,7 +9,7 @@ from django.conf import settings
 import os
 from django.core.files.storage import FileSystemStorage
 import som.create_database_entries as db
-from som.som_postprocessing import SOM as SOM_obj
+#from som.som_postprocessing import SOM as SOM_obj
 import csv
 
 

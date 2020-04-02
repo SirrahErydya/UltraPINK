@@ -47,7 +47,7 @@
     float: left;
     padding: 0px 25px 15px 50px;
     width: 20vw;
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh);
     background-color: pink;
     z-index: 3;
 }
