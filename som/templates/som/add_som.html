@@ -49,17 +49,29 @@
                     <ul>
                         <li>Images</li>
                     </ul>
-                    <p>Furthermore, you need to specifiy the dimensions of the map</p>
+                    <p>Furthermore, you need to specifiy the dimensions of the map and for how many epochs you want to train the model.</p>
                     <br/>
                     <div class="input-grid">
+                        <label for="som-name">SOM name:</label>
+                        <input id='som-name' type="text" name="som_name"
+                       value="SOM name..." maxlength="200"/>
                         <label for="dataset">Training data:</label>
-                        <input class='upload-button' type="file" id="dataset" name="dataset" webkitdirectory mozdirectory/>
+                        <input class='upload-button' type="file" id="dataset" name="dataset" style="border-style:none;"/>
+                        <label for="som-width">Layout:</label>
+                        <select name="layout">
+                            <option value="cartesian-2d" selected>Cartesian</option>
+                            <option value="hexagonal-2d">Hexagonal</option>
+                        </select>
                         <label for="som-width">Width:</label>
-                        <td><input id='som-width' type="text" name="som_width" value='10'/></td>
+                        <input id='som-width' type="text" name="som_width" value='10'/>
                         <label for="som-heigt">Height:</label>
-                        <td><input id='som-height' type="text" name="som_height" value='10'/></td>
+                        <input id='som-height' type="text" name="som_height" value='10'/>
                         <label for="som-depth">Depth:</label>
-                        <td><input id='som-depth' type="text" name="som_depth" value='10'/></td>
+                        <input id='som-depth' type="text" name="som_depth" value='1'/>
+                        <label for="rotations">Number of rotations:</label>
+                        <input id='rotations' type="text" name="rotations" value='360'/>
+                        <label for="som-depth">Epochs:</label>
+                        <input id='epochs' type="text" name="epochs" value='10'/>
                     </div>
                 </div>
                 <div id="import-bin" class="tab" style="display: none">

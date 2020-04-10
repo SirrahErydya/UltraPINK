@@ -1,34 +1,37 @@
 <div class="side-menu">
     <div class="info-panel">
-        <h1>Project: {{ current.project_name }}</h1>
-        <p>{{ current.description }}</p>
-        <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">Edit</button>
-    </div>
-    <button class="collapsible active" id="coll_ds" onclick="collapse(this.id, 'datasets')">
         {% if active_som %}
-            Choose a map
+            <b>Back to <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></b>
+            <br/>
+            <br/>
+            <h1>{{ active_som.som_name }}</h1>
         {% else %}
-            Change project
+            <h1>Project: {{ current.project_name }}</h1>
+            <p>{{ current.description }}</p>
+            <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">Edit</button>
         {% endif %}
-    </button>
-    <div id="datasets" style="display: grid;">
-        <ul>
-        {% if active_som %}
-            {% for som in soms %}
-                <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">{{ som.training_dataset_name }}</a></li>
-            {% endfor %}
-        {% else %}
-            {% for project in projects %}
-                <li>
-                    <a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a>
-                </li>
-            {% endfor %}
-        {% endif %}
-        </ul>
-        <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">Add SOM</button>
     </div>
     {% if active_som %}
         {% include 'som/toolbox.html' %}
+    {% else %}
+        <div id="datasets" style="display: grid;">
+            <ul>
+                {% for ds in datasets %}
+                    <li>
+                        <b>{{ ds.dataset_name }}</b>
+                        <ul>
+                        {% for som in soms %}
+                            {% if som.dataset == ds %}
+                                <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
+                                    {{ som.som_name}}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
 </div>

@@ -31,7 +31,7 @@
                         <ul class="project-container">
                             {% for som in soms %}
                                 <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
-                                    {{ som.training_dataset_name }}
+                                    {{ som.som_name }}
                                 </a></li>
                             {% endfor %}
                         </ul>

@@ -2,65 +2,59 @@
 This is a collection of functions to automatically create database entries with SOM components
 :author: Fenja Kollasch
 """
-import som.models
+import som.models as smodels
+import pinkproject.models as pmodels
 import os
 import numpy as np
 from django.conf import settings
-#from som.som_postprocessing import plot_image, return_cutout
 import matplotlib.pyplot as plt
-from matplotlib import image as mpimg
-from matplotlib import gridspec as gridspec
 import csv
 
 
-def create_som_model(project, som_path, mapping_path, bindata_path, csv_path, som_obj):
+def create_som_model(som_name, pink_som, dataset_model):
     """
     Create a database model for a complete SOM capsuling the data
-    :param project: The project that this SOM belongs to
-    :param som_path: Path to the SOM binary file
-    :param mapping_path: Path to the mapping binary file
-    :param bindata_path: Path to the image binary file
-    :param csv_path: Path to the CSV file containing the celestial positions
-    :param som_obj: A Python object that contains all relevant SOM information
+    :param som_name: The Name for the SOM
+    :param pink_som: The PINK object representing the trained SOM
+    :param dataset_model: The Dataset which trained the SOM
     :return: A Django Database model of the given SOM
     """
-    print("Generating Database entries for the SOM build for {0}".format(som_obj))
     print("Creating SOM model...")
-
+    np_som = np.array(pink_som)
+    save_path = os.path.join(dataset_model.project.project_name, "soms", som_name)
+    os.makedirs(save_path, exist_ok=True)
+    full_path = os.path.join(save_path, "{0}.npy".format(som_name))
+    np.save(full_path, np_som)
     # Create SOM model
-    som_model = som.models.SOM.objects.create(
-        training_dataset_name=som_obj.training_dataset_name,
-        number_of_images=som_obj.number_of_images,
-        number_of_channels=som_obj.number_of_channels,
-        som_width=som_obj.som_width,
-        som_height=som_obj.som_height,
-        som_depth=som_obj.som_depth,
-        layout=som_obj.layout,
-        som_label=som_obj.som_label,
-        rotated_size=som_obj.rotated_size,
-        full_size=som_obj.full_size,
-        project=project,
-        som_obj=som_obj.som_obj_path,
-        som_path=som_path,
-        mapping_path=mapping_path,
-        data_path=bindata_path,
-        csv_path=csv_path,
-        gauss_start=som_obj.gauss_start,
-        learning_constraint=som_obj.learning_constraint,
-        epochs_per_epoch=som_obj.epochs_per_epoch,
-        gauss_decrease=som_obj.gauss_decrease,
-        gauss_end=som_obj.gauss_end,
-        pbc=som_obj.pbc,
-        learning_constraint_decrease=som_obj.learning_constraint_decrease,
-        random_seed=som_obj.random_seed,
-        init=som_obj.init,
-        pix_angular_res=som_obj.pix_angular_res,
-        rotated_size_arcsec=som_obj.rotated_size_arcsec,
-        full_size_arcsec=som_obj.full_size_arcsec
+    som_model = smodels.SOM.objects.create(
+        som_name=som_name,
+        som_width=np_som.shape[0],
+        som_height=np_som.shape[1],
+        som_depth=np_som.shape[2],
+        layout=pink_som.get_som_layout(),
+        number_of_neurons=np.prod(np_som.shape),
+        som_file=full_path,
+        dataset=dataset_model,
+        current=False
     )
     print("...done.")
-    create_som_histogram(som_model)
+    #create_som_histogram(som_model)
     return som_model
+
+
+def create_dataset_models(dataset_name, numpy_data, project, csv_file=None):
+    save_path = os.path.join(project.project_name, "datasets", dataset_name)
+    os.makedirs(save_path, exist_ok=True)
+    full_path = os.path.join(save_path, "{0}.npy".format(dataset_name))
+    np.save(full_path, numpy_data)
+    dataset = pmodels.Dataset.objects.create(
+        project=project,
+        dataset_name=dataset_name,
+        length=len(numpy_data),
+        data_path=full_path,
+        csv_path=csv_file
+    )
+    return dataset
 
 
 def create_prototype_models(som_model, prototypes):
@@ -150,7 +144,7 @@ def create_cutouts_for_prototype(prototype, n_cutouts):
             with open(som_model.csv_path.path) as csv_file:
                 catalog = csv.DictReader(csv_file)
                 ra, dec = get_sky_coords(catalog, idx)
-            cutout_model = som.models.SomCutout(
+            cutout_model = som.models.DataPoint(
                 som=som_model,
                 ra=ra,
                 dec=dec,
@@ -207,7 +201,7 @@ def create_cutout_models(som_model, catalog):
         plot_image(return_cutout(som_model.data_path.path, cutout_idx),
                    os.path.join(settings.MEDIA_ROOT, cutout_filename))
         ra, dec = get_sky_coords(catalog, cutout_idx)
-        cutout_model = som.models.SomCutout(
+        cutout_model = som.models.DataPoint(
             som=som_model,
             ra=ra,
             dec=dec,

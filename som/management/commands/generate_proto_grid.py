@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from som.models import SOM, Prototype, SomCutout
+from som.models import SOM, Prototype, DataPoint
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import image as mpimg

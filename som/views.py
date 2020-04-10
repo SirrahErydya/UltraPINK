@@ -1,12 +1,11 @@
-from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
-from pinkproject.models import Project
-from som.models import Prototype, SOM, Outlier, SomCutout
-from pinkproject.views import create_som, pinkproject
-#import som.som_analysis as sa
-import som.create_database_entries as dbe
+from django.db.models import QuerySet
+from pinkproject.models import Project, Dataset
+from som.models import SOM
+from som.som import *
+import UltraPINK.create_database_entries as dbe
 import json
 import sys, traceback
 
@@ -14,7 +13,10 @@ import sys, traceback
 # Create your views here.
 def som(request, project):
     template = loader.get_template("som/som.html")
-    soms = SOM.objects.filter(project=project)
+    soms = QuerySet(SOM)
+    datasets = Dataset.objects.filter(project=project)
+    for ds in datasets:
+        soms = soms | SOM.objects.filter(dataset=ds)
     active_som = soms.get(current=True)
     prototypes = Prototype.objects.filter(som=active_som).order_by('y', 'x')
     context = {
@@ -28,7 +30,10 @@ def som(request, project):
 
 def add_som(request, project_id=1):
     project_model = Project.objects.get(id=project_id)
-    soms = SOM.objects.filter(project=project_model)
+    soms = QuerySet(SOM)
+    datasets = Dataset.objects.filter(project=project_model)
+    for ds in datasets:
+        soms = soms | SOM.objects.filter(dataset=ds)
     template = loader.get_template("som/add_som.html")
     context = {
         # Pass some values from the backend here
@@ -39,23 +44,41 @@ def add_som(request, project_id=1):
 
 
 def save_som(request, project_id):
+    project_model = Project.objects.get(id=project_id)
+
+    # Dataset
     data = request.POST
-    # File handling
     dataset_name = data.get('dataset-name', None)
     csv_file = request.FILES.get('csv-data', None)
+    data_path = request.FILES.get('dataset', None)
+    dataset = get_data(data_path)
+    dataset_model = dbe.create_dataset_models(dataset_name, dataset, project_model, csv_file)
+
+    # Input for SOM training
+    som_name = data.get('som_name', None)
+    width = data.get('som_width', None)
+    height = data.get('som_height', None)
+    depth = data.get('som_depth', None)
+    layout = data.get('layout', None)
+    rotations = data.get('rotations', None)
+    epochs = data.get('epochs', None)
+
+    # Input for SOM import
     som_binfile = request.FILES.get('som-file', None)
     mapping_binfile = request.FILES.get('mapping-file', None)
-    data_binfile = request.FILES.get('image-file', None)
 
-    project_model = Project.objects.get(id=project_id)
-    project_model.save()
-    som_id = create_som(project_model, dataset_name, som_binfile, mapping_binfile,
-               data_binfile, csv_file)
-    return redirect('pinkproject:project', project_id=project_id, som_id=som_id)
+    if som_binfile and mapping_binfile:
+        pink_som = import_som(project_model, dataset_name, som_binfile, mapping_binfile, dataset, csv_file)
+    elif width and height and depth and layout and rotations and epochs:
+        pink_som = train(dataset, (width, height, depth), layout, rotations, epochs)
+    else:
+        raise FileNotFoundError("No files to train or import are SOM are provided.")
+    som_model = dbe.create_som_model(som_name, pink_som, dataset_model)
+    return redirect('pinkproject:project', project_id=project_id, som_id=som_model.id)
 
 
 def get_protos(request):
-    protos = sa.get_protos(json.loads(request.body)['protos'])
+    protos = get_protos(json.loads(request.body)['protos'])
     json_protos = [prototype.to_json() for prototype in protos]
     return JsonResponse({'protos': json_protos, "success": True})
 
@@ -63,7 +86,7 @@ def get_protos(request):
 def get_best_fits_to_protos(request, n_fits=10):
     protos = json.loads(request.body)['protos']
     if len(protos) == 1:
-        cutouts = sa.get_best_fits(protos[0], n_fits)
+        cutouts = get_best_fits(protos[0], n_fits)
     else:
         raise NotImplementedError("No multiple prototype selection for this time")
     json_cutouts = [cutout.to_json() for cutout in cutouts]
@@ -79,10 +102,10 @@ def label(request, label):
         cutouts = data['cutouts']
     try:
         if protos:
-            sa.label_protos(protos, label)
+            label_protos(protos, label)
             return JsonResponse({"success": True})
         if cutouts:
-            sa.label_cutouts(cutouts, label)
+            label_cutouts(cutouts, label)
             return JsonResponse({"success": True})
         return JsonResponse({"success": False})
     except:
@@ -102,12 +125,12 @@ def export_catalog(request, filename):
     data = json.loads(request.body)
     try:
         if 'cutout_ids' in data.keys():
-            entries = [SomCutout.objects.get(id=cutout_id) for cutout_id in data['cutout_ids']]
+            entries = [DataPoint.objects.get(id=cutout_id) for cutout_id in data['cutout_ids']]
         elif 'outlier_ids' in data.keys():
             entries = [Outlier.objects.get(id=outlier_id) for outlier_id in data['outlier_ids']]
         else:
-            entries = SomCutout.objects.all()
-        sa.export_catalog(entries, filename)
+            entries = DataPoint.objects.all()
+        export_catalog(entries, filename)
         return JsonResponse({'success': True})
     except:
         traceback.print_exc(file=sys.stdout)
