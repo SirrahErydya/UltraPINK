@@ -23,39 +23,32 @@
     <h3>Operations:</h3>
     <div class="edit-tools">
         {% csrf_token %}
-        <!-- I know, table layouts are out. It works, though -->
-        <table>
-            <tr>
-                <td>Show best fits to selection:</td>
-                <td><input id='input-cutouts' type="text" name="n_fits" value='10'/></td>
-                <td>
-                    <div class="tooltip">
-                        <i class="material-icons" onclick="show_best_fits()">view_module</i>
-                        <span class="tooltiptext">Show closest dataset entries to selection</span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>Show outliers:</td>
-                <td><input id='input-outliers' type="text" name="n_outliers" value='10'/></td>
-                <td>
-                     <div class="tooltip">
-                         <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
-                        <span class="tooltiptext">Show outliers</span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>Apply label to selection:</td>
-                <td><input id='label' type="text" value='Label...'/></td>
-                <td>
-                    <div class="tooltip">
-                        <i class="material-icons" onclick="label_protos()">local_offer</i>
-                        <span class="tooltiptext">Apply labels</span>
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="input-grid">
+            <div class="toolbox-input">
+                <label for="input-cutouts">Show best fits to selection:</label>
+                <input id='input-cutouts' type="text" name="n_fits" value='10'/>
+            </div>
+            <div class="tooltip">
+                <i class="material-icons" onclick="show_best_fits()">view_module</i>
+                <span class="tooltiptext">Show closest dataset entries to selection</span>
+            </div>
+            <div class="toolbox-input">
+                <label for="input-outliers">Show outliers:</label>
+                <input id='input-outliers' type="text" name="n_outliers" value='10'/>
+            </div>
+             <div class="tooltip">
+                 <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
+                <span class="tooltiptext">Show outliers</span>
+            </div>
+            <div class="toolbox-input">
+                <label for="label">Apply label</label>
+                <input id='label' type="text" value='Label...'/>
+            </div>
+            <div class="tooltip">
+                <i class="material-icons" onclick="label_protos()">local_offer</i>
+                <span class="tooltiptext">Apply labels</span>
+            </div>
+        </div>
 
         <b>Export operations:</b>
         <div class="export-tools">

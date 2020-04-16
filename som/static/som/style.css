@@ -3,11 +3,6 @@ body {
     overflow-x: hidden;
 }
 
-.footer {
-    position: absolute;
-    width: 100%;
-}
-
 .add-som {
     background-color: mistyrose;
     position: relative;
@@ -20,7 +15,7 @@ body {
 
 .edit-tools {
     margin-top: 15px;
-    margin-bottom: 50px;
+    margin-bottom: 15px;
 }
 
 .edit-tools table {
@@ -60,7 +55,7 @@ body {
 
 .inspection-tools {
     padding-top: 15px;
-    padding-bottom: 50px;
+    padding-bottom: 15px;
     grid-template-columns: repeat(4, auto);
     grid-template-rows: repeat(1, auto);
 }
@@ -91,19 +86,46 @@ body {
     max-width: 32%;
 }
 
+#toolbox .input-grid {
+    margin-top: 15px;
+    margin-bottom: 25px;
+    text-align: right;
+    float: right;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(3, 30px);
+}
+
+.toolbox-input {
+    width: 100%;
+}
+
+.toolbox-input #input-cutouts {
+    margin-left: 60px;
+}
+
+.toolbox-input #input-outliers {
+    margin-left: 150px;
+}
+
 .view-tools {
     display: inline-block;
 }
 
+.som-page {
+    min-height: calc(100vh - 115px);
+    height: 100%;
+}
+
 #som-container {
-    position: relative;
-    top: 20px;
-    left: 20px;
+    top: 60px;
     background-repeat: no-repeat;
     background-size: 100%;
-    width: 85vh;
-    height: 85vh;
+    width: 80vh;
+    height: 80vh;
+    bottom: 20px;
     grid-gap: 0;
+    position: fixed;
+    left: 600px;
 }
 
 .cutouts {
@@ -145,6 +167,7 @@ body {
     border-width: 1px;
     border-style: solid;
 }
+
 
 #som-container img, .cutouts img {
     width: 100%;
@@ -231,11 +254,6 @@ body {
     padding-top: 15px;
     padding-bottom: 15px;
     font-size: 14pt;
-}
-
-th, td {
-    padding-right: 15px;
-    height: 30px;
 }
 
 .magnifier {

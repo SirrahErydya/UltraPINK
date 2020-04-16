@@ -3,7 +3,6 @@ from . import views
 
 app_name = 'som'
 urlpatterns = [
-    path('', views.som, name='som'),
     path('create_som/<int:project_id>', views.save_som, name='create_som'),
     path('add_som/<int:project_id>', views.add_som, name='add_som'),
     path('get_best_fits/<int:n_fits>', views.get_best_fits_to_protos, name='get_best_fits_to_protos'),

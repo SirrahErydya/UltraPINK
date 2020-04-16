@@ -7,6 +7,7 @@ import pinkproject.models as pmodels
 import os
 import numpy as np
 from django.conf import settings
+from django.core.files import File
 import matplotlib.pyplot as plt
 import csv
 
@@ -21,90 +22,59 @@ def create_som_model(som_name, pink_som, dataset_model):
     """
     print("Creating SOM model...")
     np_som = np.array(pink_som)
-    save_path = os.path.join(dataset_model.project.project_name, "soms", som_name)
+    save_path = os.path.join('projects', dataset_model.project.project_name, "soms", som_name)
     os.makedirs(save_path, exist_ok=True)
     full_path = os.path.join(save_path, "{0}.npy".format(som_name))
     np.save(full_path, np_som)
     # Create SOM model
-    som_model = smodels.SOM.objects.create(
+    som_model = smodels.SOM(
         som_name=som_name,
         som_width=np_som.shape[0],
         som_height=np_som.shape[1],
         som_depth=np_som.shape[2],
         layout=pink_som.get_som_layout(),
         number_of_neurons=np.prod(np_som.shape),
-        som_file=full_path,
         dataset=dataset_model,
         current=False
     )
+    som_model.som_file = os.path.join(full_path)
+    som_model.save()
+    create_prototype_models(som_model)
     print("...done.")
     #create_som_histogram(som_model)
     return som_model
 
 
 def create_dataset_models(dataset_name, numpy_data, project, csv_file=None):
-    save_path = os.path.join(project.project_name, "datasets", dataset_name)
+    save_path = os.path.join('projects', project.project_name, "datasets", dataset_name)
     os.makedirs(save_path, exist_ok=True)
     full_path = os.path.join(save_path, "{0}.npy".format(dataset_name))
     np.save(full_path, numpy_data)
-    dataset = pmodels.Dataset.objects.create(
+    dataset = pmodels.Dataset(
         project=project,
         dataset_name=dataset_name,
         length=len(numpy_data),
-        data_path=full_path,
         csv_path=csv_file
     )
+    dataset.data_path = full_path
+    dataset.save()
     return dataset
 
 
-def create_prototype_models(som_model, prototypes):
+def create_prototype_models(som_model):
     """
     Generate images and database entries for each prototype in the map
     :param som_model: The SOM database model that belongs to these prototypes
-    :param prototypes: All prototypes as numpy arrays
     """
-    som_obj = som_model.load_som_obj()
-    best_protos = som_obj.sorted_proto_idxs[:,0]
-
-    heatmap = np.ndarray((som_model.som_width, som_model.som_height))
-    for x in range(som_model.som_height):
-        for y in range(som_model.som_width):
-            for z in range(som_model.som_depth):
-                file_name = os.path.join('prototypes', som_model.training_dataset_name,
-                                         'prototype{x}{y}{z}.png'.format(x=x, y=y, z=z))
-                proto = prototypes[x, y, z, :]
-                proto = proto.reshape((som_model.rotated_size, som_model.rotated_size))
-
-                # Plot
-                plot_image(proto, os.path.join(settings.MEDIA_ROOT, file_name))
-
-                proto_id = x * som_model.som_height + y
-                number_of_fits = np.extract(best_protos == proto_id, best_protos).shape[0]
-
-                # Save
-                proto_model = som.models.Prototype(
-                    proto_id=proto_id,
-                    som=som_model,
-                    x=x,
-                    y=y,
-                    z=z,
-                    number_of_fits=number_of_fits
-                )
-                proto_model.image.name = file_name
-                histrogram_name = os.path.join('prototypes', som_model.training_dataset_name,
-                                                          'histogram{x}{y}{z}.png'.format(x=x, y=y, z=z))
-                proto_model.histogram.name = histrogram_name
-                proto_model.save()
-
-                #bmu_distances = som_obj.data_map[:proto_model.proto_id]
-                #plot_histogram(bmu_distances, histrogram_name)
-                heatmap[y][x] = number_of_fits
-
-    plt.subplots_adjust(wspace=0, hspace=0)
-    heatmap_file = os.path.join('prototypes', som_model.training_dataset_name, 'heatmap.png')
-    save_heatmap(heatmap, heatmap_file)
-    som_model.heatmap.name = heatmap_file
-    som_model.save()
+    for y in range(som_model.som_height):
+        for x in range(som_model.som_width):
+            prototype = smodels.Prototype.objects.create(
+                som = som_model,
+                x = x,
+                y = y,
+                z = 1,
+                number_of_fits = 0
+            )
     print("...done.")
 
 

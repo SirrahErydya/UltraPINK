@@ -3,29 +3,14 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.db.models import QuerySet
 from pinkproject.models import Project, Dataset
+from io import BytesIO
+from PIL import Image
 from som.models import SOM
 from som.som import *
 import UltraPINK.create_database_entries as dbe
 import json
 import sys, traceback
-
-
-# Create your views here.
-def som(request, project):
-    template = loader.get_template("som/som.html")
-    soms = QuerySet(SOM)
-    datasets = Dataset.objects.filter(project=project)
-    for ds in datasets:
-        soms = soms | SOM.objects.filter(dataset=ds)
-    active_som = soms.get(current=True)
-    prototypes = Prototype.objects.filter(som=active_som).order_by('y', 'x')
-    context = {
-        # Pass some values from the backend here
-        'prototypes': prototypes,
-        'all_soms': soms,
-        'active_som': active_som
-    }
-    return HttpResponse(template.render(context, request))
+import base64
 
 
 def add_som(request, project_id=1):
@@ -75,6 +60,15 @@ def save_som(request, project_id):
         raise FileNotFoundError("No files to train or import are SOM are provided.")
     som_model = dbe.create_som_model(som_name, pink_som, dataset_model)
     return redirect('pinkproject:project', project_id=project_id, som_id=som_model.id)
+
+
+def plot_image(np_img):
+    pil_image = Image.fromarray(np_img*255)
+    pil_image = pil_image.convert('L')
+    data = BytesIO()
+    pil_image.save(data, 'PNG')
+    data64 = base64.b64encode(data.getvalue())
+    return u'data:img/png;base64,' + data64.decode('utf-8')
 
 
 def get_protos(request):

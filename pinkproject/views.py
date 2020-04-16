@@ -5,6 +5,8 @@ from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from pinkproject.models import Project, Dataset
 from som.models import SOM, Prototype
+from som.views import plot_image
+import numpy as np
 
 
 #from som.som_postprocessing import SOM as SOM_obj
@@ -22,12 +24,20 @@ def pinkproject(request, project_id, som_id=None):
             template = loader.get_template("pinkproject/project.html")
             active_som = SOM.objects.get(id=som_id)
             assert active_som.dataset.project.id == project_id
-            prototypes = Prototype.objects.filter(som=active_som).order_by('y', 'x')
+            prototypes = []
+            if active_som:
+                print("Som will be rendered")
+                np_som = np.load(active_som.som_file.path)
+                for y in range(active_som.som_height):
+                    for x in range(active_som.som_width):
+                        np_img = np_som[y][x]
+                        print(np_img.shape)
+                        prototypes.append(plot_image(np_img))
             context = {
                 # Pass some values from the backend here
                 'current': current_project,
                 'active_som': active_som,
-                'prototypes': prototypes
+                'prototypes': prototypes,
             }
         else:
             template = loader.get_template("pinkproject/project_lander.html")

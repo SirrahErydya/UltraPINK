@@ -31,12 +31,12 @@ def train(data, som_dim, layout, number_of_rotations, epochs):
 
     trainer = pink.Trainer(som, number_of_rotations=int(number_of_rotations), euclidean_distance_dim=euclid_dim,
                            distribution_function=pink.GaussianFunctor(1.1, 0.2))
-    pink_data = [pink.Data(data[i]) for i in range(len(data))]
     print("Start training...")
     for e in range(int(epochs)):
         print("Epoch {0}".format(e+1))
-        for point in tqdm(pink_data):
-            trainer(point)
+        for point in tqdm(data):
+            p_point = pink.Data(point.astype(np.float32)/255)
+            trainer(p_point)
     trainer.update_som()
     return som
 

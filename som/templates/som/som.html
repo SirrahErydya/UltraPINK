@@ -6,9 +6,9 @@
     grid-gap: 5px;">
     <div class="magnifier" id="magnify-window" style="display: none;"></div>
     {% for prototype in prototypes %}
-        <div id="{{ prototype.proto_id}}" class="tooltip prototype" onclick="click_image(this.id, true)"
-             style="background-image: url({{ prototype.image.url }})">
+        <div class="tooltip prototype" onclick="click_image(this.id, true)">
             <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
+            <img src="{{ prototype }}"/>
         </div>
     {% endfor %}
 </div>

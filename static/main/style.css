@@ -6,6 +6,7 @@
 
 body {
     font-family: Verdana, Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 .navbar {
@@ -88,6 +89,7 @@ body {
 
 .project-container li {
     margin-top: 5px;
+    margin-bottom: 5px;
     list-style-type: none;
 }
 
@@ -167,7 +169,9 @@ textarea {
 }
 
 .footer {
+    position: relative;
     height: 60px;
+    top: 0px;
 }
 
 .footer, .footer ul {

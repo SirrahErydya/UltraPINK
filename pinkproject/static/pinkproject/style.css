@@ -10,19 +10,37 @@
 }
 
 .project-lander {
+    text-align: center;
+    margin-left: 25vw;
     position: relative;
-    left: 23vw;
-    width: 77vw;
-    margin-top: 100px;
-    min-height: calc(100vh - 215px);
+    margin-top: 50px;
+    min-height: calc(100vh - 110px);
+    height: 100%;
 }
 
 .project-lander .card {
-    margin-left: 25%;
-    margin-right: 25%;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-bottom: 50px;
     text-align: center;
 }
 
+.project-lander .card ul {
+    padding: 5px;
+}
+
+.dataset-overview {
+    margin-top: 20px;
+    display: grid;
+    margin-left: 100px;
+    grid-gap: 5px;
+    grid-template-columns: repeat(3, 33%);
+}
+
+.dataset-overview .card {
+    margin: 0;
+    width: auto;
+}
 .info-panel {
     text-align: left;
     background-color: mistyrose;
@@ -46,8 +64,9 @@
     position: fixed;
     float: left;
     padding: 0px 25px 15px 50px;
-    width: 20vw;
-    min-height: calc(100vh);
+    width: 25vw;
+    min-height: 100vh;
+    height: 100%;
     background-color: pink;
     z-index: 3;
 }

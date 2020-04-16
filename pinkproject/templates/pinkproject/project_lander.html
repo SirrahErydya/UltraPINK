@@ -25,27 +25,44 @@
                     </div>
                 </div>
             </div>
-            <div class="card">
-                {% if soms %}
-                    <h1>Choose a SOM to make further investigations!</h1>
-                        <ul class="project-container">
-                            {% for som in soms %}
-                                <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
-                                    {{ som.som_name }}
-                                </a></li>
-                            {% endfor %}
-                        </ul>
-                {% else %}
+            <h1>Datasets included with this project:</h1>
+            {% if datasets and soms %}
+                <div class="dataset-overview">
+                    {% for ds in datasets %}
+                        <div class="card">
+                            <h1>{{ ds.dataset_name }}</h1>
+                            <p>{{ ds.description }}</p>
+                            <p>{{ ds.length }} data points</p>
+                            <br/>
+                            <b>Trained SOMs:</b>
+                            <ul class="project-container">
+                                {% for som in soms %}
+                                    <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
+                                        {{ som.som_name }}
+                                    </a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                    <div class="card">
+                        <i>Add a new dataset...</i>
+                        <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
+                            Add SOM
+                        </button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card">
                     <h1>No SOMs available</h1>
                     <br/>
                     <p>It looks like there are no self organizing maps associated with this project.
                     Please click one of the buttons below to either <b>train a self-organizing map with PINK</b> or
-                        <b>upload the  binary files of a previously trained map</b>.</p>
-                {% endif %}
-                <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
-                    Add SOM
-                </button>
-            </div>
+                    <b>upload the  binary files of a previously trained map</b>.</p>
+                    <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
+                        Add SOM
+                    </button>
+                </div>
+            {% endif %}
     </div>
 
 {% endblock %}

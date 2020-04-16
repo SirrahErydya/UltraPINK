@@ -16,7 +16,8 @@ class Catalog(models.Model):
 class Dataset(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     dataset_name = models.CharField(max_length=200)
+    description = models.TextField(max_length=2000, default="No description...")
     length = models.IntegerField()
-    data_path = models.FilePathField(path=settings.PROJECT_DIR, recursive=True)
+    data_path = models.FileField(upload_to='projects')
     csv_path = models.FileField(upload_to='projects')
 

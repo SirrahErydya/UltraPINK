@@ -3,6 +3,7 @@ from pinkproject.models import Dataset
 from django.conf import settings
 
 
+
 # Create your models here.
 class SOM(models.Model):
     # SOM properties
@@ -14,7 +15,7 @@ class SOM(models.Model):
     number_of_neurons = models.IntegerField()
 
     # Important for data management
-    som_file = models.FilePathField(path=settings.PROJECT_DIR, recursive=True)
+    som_file = models.FileField(upload_to='projects')
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     heatmap = models.ImageField()
     histogram = models.ImageField()
@@ -22,10 +23,7 @@ class SOM(models.Model):
 
 
 class Prototype(models.Model):
-    proto_id = models.IntegerField(unique=True)
     som = models.ForeignKey(SOM, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='prototypes')
-    histogram = models.ImageField(upload_to='prototypes')
     label = models.CharField(max_length=200, default="")
     x = models.IntegerField()
     y = models.IntegerField()
@@ -39,7 +37,6 @@ class Prototype(models.Model):
         dictionary['x'] = self.x
         dictionary['y'] = self.y
         dictionary['z'] = self.z
-        dictionary['url'] = self.image.url
         dictionary['number_fits'] = self.number_of_fits
         return dictionary
 
