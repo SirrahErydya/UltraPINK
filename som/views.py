@@ -3,18 +3,35 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.db.models import QuerySet
 from pinkproject.models import Project, Dataset
-from io import BytesIO
-from PIL import Image
 from som.models import SOM
 from som.som import *
 import UltraPINK.create_database_entries as dbe
 import json
 import sys, traceback
-import base64
 
 
-def add_som(request, project_id=1):
+def som(request, som_id):
+    template = loader.get_template("pinkproject/project.html")
+    active_som = SOM.objects.get(id=som_id)
+    if active_som:
+        print("Som will be rendered")
+        prototypes = Prototype.objects.filter(som=active_som)
+        context = {
+            # Pass some values from the backend here
+            'current': active_som.dataset.project,
+            'active_som': active_som,
+            'prototypes': prototypes
+        }
+        return HttpResponse(template.render(context, request))
+    raise FileNotFoundError("SOM not found.")
+
+
+def add_som(request, project_id=1, dataset_id=None):
     project_model = Project.objects.get(id=project_id)
+    if dataset_id:
+        current_ds = Dataset.objects.get(id=dataset_id)
+    else:
+        current_ds = None
     soms = QuerySet(SOM)
     datasets = Dataset.objects.filter(project=project_model)
     for ds in datasets:
@@ -23,21 +40,27 @@ def add_som(request, project_id=1):
     context = {
         # Pass some values from the backend here
         'current': project_model,
-        'soms': soms
+        'soms': soms,
+        'dataset': current_ds,
+        'datasets': datasets
     }
     return HttpResponse(template.render(context, request))
 
 
-def save_som(request, project_id):
-    project_model = Project.objects.get(id=project_id)
-
-    # Dataset
+def save_som(request, project_id, dataset_id=None):
     data = request.POST
-    dataset_name = data.get('dataset-name', None)
-    csv_file = request.FILES.get('csv-data', None)
-    data_path = request.FILES.get('dataset', None)
-    dataset = get_data(data_path)
-    dataset_model = dbe.create_dataset_models(dataset_name, dataset, project_model, csv_file)
+    project_model = Project.objects.get(id=project_id)
+    if dataset_id:
+        dataset_model = Dataset.objects.get(id=dataset_id)
+        dataset = get_data(dataset_model.data_path)
+    else:
+        # Dataset
+        dataset_name = data.get('dataset-name', None)
+        dataset_descr = data.get('dataset-descr', None)
+        csv_file = request.FILES.get('csv-data', None)
+        data_path = request.FILES.get('dataset', None)
+        dataset = get_data(data_path)
+        dataset_model = dbe.create_dataset_models(dataset_name, dataset_descr, dataset, project_model, csv_file)
 
     # Input for SOM training
     som_name = data.get('som_name', None)
@@ -53,7 +76,8 @@ def save_som(request, project_id):
     mapping_binfile = request.FILES.get('mapping-file', None)
 
     if som_binfile and mapping_binfile:
-        pink_som = import_som(project_model, dataset_name, som_binfile, mapping_binfile, dataset, csv_file)
+        # pink_som = import_som(project_model, dataset_name, som_binfile, mapping_binfile, dataset, csv_file)
+        raise NotImplementedError("Import of SOMS is currently not implemented")
     elif width and height and depth and layout and rotations and epochs:
         pink_som = train(dataset, (width, height, depth), layout, rotations, epochs)
     else:
@@ -62,13 +86,9 @@ def save_som(request, project_id):
     return redirect('pinkproject:project', project_id=project_id, som_id=som_model.id)
 
 
-def plot_image(np_img):
-    pil_image = Image.fromarray(np_img*255)
-    pil_image = pil_image.convert('L')
-    data = BytesIO()
-    pil_image.save(data, 'PNG')
-    data64 = base64.b64encode(data.getvalue())
-    return u'data:img/png;base64,' + data64.decode('utf-8')
+def map_prototypes(request, som_id):
+    som_model = SOM.objects.get(id=som_id)
+    return redirect('pinkproject:project', project_id=som_model.dataset.project.id, som_id=som_id)
 
 
 def get_protos(request):

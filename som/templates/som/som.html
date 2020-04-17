@@ -6,9 +6,10 @@
     grid-gap: 5px;">
     <div class="magnifier" id="magnify-window" style="display: none;"></div>
     {% for prototype in prototypes %}
-        <div class="tooltip prototype" onclick="click_image(this.id, true)">
+        <div class="tooltip prototype">
             <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
-            <img src="{{ prototype }}"/>
+            <img id="proto{{ prototype.x }}{{ prototype.y }}" src="{{ prototype.image }}"
+                 onclick="click_image(this.id, {{ prototype.id }},  true)"/>
         </div>
     {% endfor %}
 </div>
@@ -45,15 +46,15 @@
     <table id="info-table">
         <tr>
             <th>Dataset:</th>
-            <td>{{ active_som.training_dataset_name }}</td>
+            <td>{{ active_som.dataset.dataset_name }}</td>
         </tr>
         <tr>
-            <th>Total number of images:</th>
-            <td>{{ active_som.number_of_images }}</td>
+            <th>Datset length:</th>
+            <td>{{ active_som.dataset.length }}</td>
         </tr>
         <tr>
-            <th>Number of channels:</th>
-            <td>{{ active_som.number_of_channels }}</td>
+            <th>Neurons:</th>
+            <td>{{ active_som.number_of_neurons }}</td>
         </tr>
         <tr>
             <th>Width:</th>
@@ -69,11 +70,7 @@
         </tr>
     </table>
     <br/>
-    <div class="prototype-info" id="prototype-info">
-    </div>
-    <div class="som-histogram" id="som-histogram">
-        <h3>Histogram of distances to the best matching prototypes</h3>
-        <img src="">
+    <div class="prototype-enlargement" id="prototype-enlargement">
     </div>
     <div class="label-legend" id="label-legend"></div>
 </div>

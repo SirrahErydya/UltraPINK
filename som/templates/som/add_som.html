@@ -23,15 +23,35 @@
     <div class="add-som">
         <h1>Add a SOM to the current project</h1>
         <br/>
-        <form id="add-project-form" action="{% url 'som:create_som' project_id=current.id %}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
+        {% if dataset %}
+            <form id="add-project-form"
+                  action="{% url 'som:create_som' project_id=current.id dataset_id=dataset.id %}" method="post"
+                  enctype="multipart/form-data" >
+        {% else %}
+            <form id="add-project-form" action="{% url 'som:create_som' project_id=current.id %}" method="post"
+                  enctype="multipart/form-data" >
+        {% endif %}
+            {% csrf_token %}
             <h3>The data set</h3>
-            <p>Please add a csv file summarizing the dataset here.</p>
             <div class="input-grid">
+            {% if dataset %}
+                <b>Dataset:</b>
+                <span>{{ dataset.dataset_name }}</span>
+                <span></span>
+                <i>{{ dataset.description }}</i>
+            {% else %}
                 <label for="dataset-name">Dataset name:</label>
                 <input id='dataset-name' type="text" name="dataset-name"
                        value="Dataset name..." maxlength="200"/>
+                <label for="dataset-descr">Description:</label>
+                <input id='dataset-descr' type="text" name="dataset-descr"
+                       value="Description..." maxlength="200"/>
+
+                <label for="dataset">Training data:</label>
+                <input class='upload-button' type="file" id="dataset" name="dataset" style="border-style:none;"/>
                 <label for="csv-data">Additional infos (as .csv)</label>
                 <input class='upload-button' type="file" id="csv-data" name="csv-data" accept="text/csv" multiple/>
+            {% endif %}
             </div>
              <div class="tab-bar">
                 <button class="tab-button active" type="button" id="train-som-tab"
@@ -55,8 +75,6 @@
                         <label for="som-name">SOM name:</label>
                         <input id='som-name' type="text" name="som_name"
                        value="SOM name..." maxlength="200"/>
-                        <label for="dataset">Training data:</label>
-                        <input class='upload-button' type="file" id="dataset" name="dataset" style="border-style:none;"/>
                         <label for="som-width">Layout:</label>
                         <select name="layout">
                             <option value="cartesian-2d" selected>Cartesian</option>

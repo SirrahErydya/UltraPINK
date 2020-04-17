@@ -26,7 +26,10 @@ def train(data, som_dim, layout, number_of_rotations, epochs):
     neuron_dim = int(data.shape[1] / math.sqrt(2.0) * 2.0)
     euclid_dim = int(data.shape[1] * math.sqrt(2.0) / 2.0)
     width, height, depth = som_dim
-    np_som = np.zeros((int(width), int(height), neuron_dim, neuron_dim)).astype(np.float32)
+    if layout == 'cartesian-2d':
+        np_som = np.zeros((int(width), int(height), neuron_dim, neuron_dim)).astype(np.float32)
+    else:
+        raise NotImplementedError("Only cartesian layouts by now")
     som = pink.SOM(np_som, neuron_layout=layout)
 
     trainer = pink.Trainer(som, number_of_rotations=int(number_of_rotations), euclidean_distance_dim=euclid_dim,

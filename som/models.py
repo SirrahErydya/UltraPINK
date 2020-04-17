@@ -3,7 +3,6 @@ from pinkproject.models import Dataset
 from django.conf import settings
 
 
-
 # Create your models here.
 class SOM(models.Model):
     # SOM properties
@@ -13,13 +12,13 @@ class SOM(models.Model):
     som_depth = models.IntegerField()
     layout = models.CharField(max_length=200)
     number_of_neurons = models.IntegerField()
+    mapping_generated = models.BooleanField(default=False)
 
     # Important for data management
     som_file = models.FileField(upload_to='projects')
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    heatmap = models.ImageField()
-    histogram = models.ImageField()
-    current = models.BooleanField(default=False)
+    heatmap = models.ImageField(default=None)
+    histogram = models.ImageField(default=None)
 
 
 class Prototype(models.Model):
@@ -29,10 +28,10 @@ class Prototype(models.Model):
     y = models.IntegerField()
     z = models.IntegerField()
     number_of_fits = models.IntegerField()
+    image = models.CharField(max_length=200, default="")
 
     def to_json(self):
         dictionary = {}
-        dictionary['proto_id'] = self.proto_id
         dictionary['label'] = self.label
         dictionary['x'] = self.x
         dictionary['y'] = self.y

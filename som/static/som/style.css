@@ -6,8 +6,8 @@ body {
 .add-som {
     background-color: mistyrose;
     position: relative;
-    left: 24vw;
-    width: 63vw;
+    left: 30vw;
+    width: 55vw;
     margin: 2.5%;
     padding: 50px;
     min-height: 55vh;
@@ -109,6 +109,10 @@ body {
 
 .view-tools {
     display: inline-block;
+}
+
+.view-tools button {
+    min-width: 100px;
 }
 
 .som-page {
@@ -254,7 +258,9 @@ body {
     padding-top: 15px;
     padding-bottom: 15px;
     font-size: 14pt;
+    width: 20vw;
 }
+
 
 .magnifier {
     position: fixed;

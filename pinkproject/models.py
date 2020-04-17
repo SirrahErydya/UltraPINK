@@ -19,5 +19,5 @@ class Dataset(models.Model):
     description = models.TextField(max_length=2000, default="No description...")
     length = models.IntegerField()
     data_path = models.FileField(upload_to='projects')
-    csv_path = models.FileField(upload_to='projects')
+    csv_path = models.FileField(upload_to='projects', default=None)
 

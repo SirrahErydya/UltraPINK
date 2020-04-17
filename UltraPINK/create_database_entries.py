@@ -5,9 +5,11 @@ This is a collection of functions to automatically create database entries with 
 import som.models as smodels
 import pinkproject.models as pmodels
 import os
-import numpy as np
 from django.conf import settings
-from django.core.files import File
+from PIL import Image
+from io import BytesIO
+import base64
+import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
@@ -31,11 +33,10 @@ def create_som_model(som_name, pink_som, dataset_model):
         som_name=som_name,
         som_width=np_som.shape[0],
         som_height=np_som.shape[1],
-        som_depth=np_som.shape[2],
+        som_depth=1, # By now, only 2d Soms
         layout=pink_som.get_som_layout(),
         number_of_neurons=np.prod(np_som.shape),
-        dataset=dataset_model,
-        current=False
+        dataset=dataset_model
     )
     som_model.som_file = os.path.join(full_path)
     som_model.save()
@@ -45,7 +46,7 @@ def create_som_model(som_name, pink_som, dataset_model):
     return som_model
 
 
-def create_dataset_models(dataset_name, numpy_data, project, csv_file=None):
+def create_dataset_models(dataset_name, descr, numpy_data, project, csv_file=None):
     save_path = os.path.join('projects', project.project_name, "datasets", dataset_name)
     os.makedirs(save_path, exist_ok=True)
     full_path = os.path.join(save_path, "{0}.npy".format(dataset_name))
@@ -53,6 +54,7 @@ def create_dataset_models(dataset_name, numpy_data, project, csv_file=None):
     dataset = pmodels.Dataset(
         project=project,
         dataset_name=dataset_name,
+        description=descr,
         length=len(numpy_data),
         csv_path=csv_file
     )
@@ -66,14 +68,22 @@ def create_prototype_models(som_model):
     Generate images and database entries for each prototype in the map
     :param som_model: The SOM database model that belongs to these prototypes
     """
+    np_som = np.load(som_model.som_file.path)
     for y in range(som_model.som_height):
         for x in range(som_model.som_width):
+            np_img = np_som[y][x]
+            pil_image = Image.fromarray(np_img * 255)
+            pil_image = pil_image.convert('L')
+            data = BytesIO()
+            pil_image.save(data, 'PNG')
+            data64 = base64.b64encode(data.getvalue())
             prototype = smodels.Prototype.objects.create(
                 som = som_model,
                 x = x,
                 y = y,
                 z = 1,
-                number_of_fits = 0
+                number_of_fits = 0,
+                image=u'data:img/png;base64,' + data64.decode('utf-8')
             )
     print("...done.")
 

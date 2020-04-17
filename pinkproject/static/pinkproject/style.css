@@ -41,10 +41,35 @@
     margin: 0;
     width: auto;
 }
+
+.dataset-overview .add-som-button {
+    opacity: 0.5;
+    cursor: pointer;
+    font-size: 32pt;
+}
+
+.dataset-overview .train-with-ds i {
+    position: relative;
+    top: 5px;
+    font-size: 28px;
+}
+
+.dataset-overview i:hover {
+    opacity: 1;
+    color: deeppink;
+}
+
+.train-with-ds {
+    height: 24px;
+    font-size: 20px;
+    display: inline-block;
+}
+
 .info-panel {
     text-align: left;
     background-color: mistyrose;
     padding: 25px;
+    margin-bottom: 20px;
 }
 .info-panel p {
     padding-top: 15px;

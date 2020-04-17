@@ -26,15 +26,18 @@
                 </div>
             </div>
             <h1>Datasets included with this project:</h1>
-            {% if datasets and soms %}
+            {% if datasets%}
                 <div class="dataset-overview">
                     {% for ds in datasets %}
                         <div class="card">
                             <h1>{{ ds.dataset_name }}</h1>
                             <p>{{ ds.description }}</p>
-                            <p>{{ ds.length }} data points</p>
-                            <br/>
-                            <b>Trained SOMs:</b>
+                            <p>{{ ds.length }} data points</p><br/>
+                            <div class="train-with-ds">
+                                <b>Trained SOMs:</b>
+                                <i class="add-som-button medium material-icons"
+                                   onclick="request_page('{% url 'som:add_som' project_id=current.id dataset_id=ds.id%}', [])">add</i>
+                            </div>
                             <ul class="project-container">
                                 {% for som in soms %}
                                     <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
@@ -45,10 +48,11 @@
                         </div>
                     {% endfor %}
                     <div class="card">
-                        <i>Add a new dataset...</i>
-                        <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
-                            Add SOM
-                        </button>
+                        <i>Add a new dataset...</i><br/>
+                        <br/>
+                        <br/>
+                        <i class="add-som-button large material-icons"
+                           onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">add</i>
                     </div>
                 </div>
             {% else %}

@@ -6,7 +6,8 @@
             <br/>
             <h1>{{ active_som.som_name }}</h1>
         {% else %}
-            <h1>Project: {{ current.project_name }}</h1>
+            <h1>Project:
+                <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></h1>
             <p>{{ current.description }}</p>
             <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">Edit</button>
         {% endif %}

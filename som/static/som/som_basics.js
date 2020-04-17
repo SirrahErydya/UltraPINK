@@ -34,19 +34,20 @@ function select_tool(id) {
     tool.classList.add(tool_selected)
 }
 
-function click_image(id, is_proto) {
+function click_image(html_id, db_id, is_proto) {
     var selected_class = is_proto ? 'proto-selected' : 'cutout-selected';
-    var el_id = is_proto ? id : "cutout"+id;
+    var el_id = is_proto ? html_id : "cutout"+html_id;
     var img = document.getElementById(el_id);
+    console.log(img)
     var tool = document.getElementsByClassName(tool_selected)[0];
     if(tool.id == 'pointer') {
-        select_single(img, selected_class);
+        select_single(img, db_id, selected_class);
     } else if(tool.id == 'selection') {
-        select_multiple(img, selected_class)
+        select_multiple(img, db_id, selected_class)
     }
 }
 
-function select_single(img, selected_class) {
+function select_single(img, db_id, selected_class) {
     var already_active = img.classList.contains(selected_class);
     var selected_imgs = document.getElementsByClassName(selected_class);
     for(var i=0; i<selected_imgs.length; i++) {
@@ -60,17 +61,20 @@ function select_single(img, selected_class) {
         }
     }
     if(!already_active) {
+        proto_container = document.getElementById('prototype-enlargement');
+        proto_container.innerHTML = "";
+        proto_container.appendChild(img.cloneNode(true));
         img.classList.add(selected_class);
         if(selected_class == 'proto-selected') {
-            request_prototypes([img.id]);
-            show_selection_info(selected_prototypes[0], 'prototype-info')
+            //request_prototypes([img.id]);
+            //show_selection_info(selected_prototypes[0], 'prototype-info')
         } else if(selected_class == 'cutout-selected') {
-            selected_cutouts.push(img)
+            //selected_cutouts.push(img)
         }
     }
 }
 
-function select_multiple(img, selected_class) {
+function select_multiple(img, db_id, selected_class) {
     if(img.classList.contains(selected_class)) {
         img.classList.remove(selected_class)
         if(selected_class == 'cutout-selected') {
