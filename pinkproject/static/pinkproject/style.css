@@ -31,6 +31,7 @@
 
 .dataset-overview {
     margin-top: 20px;
+    margin-bottom: 20px;
     display: grid;
     margin-left: 100px;
     grid-gap: 5px;
@@ -42,7 +43,7 @@
     width: auto;
 }
 
-.dataset-overview .add-som-button, .remove-som-button {
+.dataset-overview .add-som-button, .remove-som-button, .remove-ds-button {
     opacity: 0.5;
     cursor: pointer;
 }
@@ -60,6 +61,10 @@
 .dataset-overview i:hover {
     opacity: 1;
     color: deeppink;
+}
+
+.remove-ds-button {
+    float: right;
 }
 
 .train-with-ds {
@@ -131,13 +136,17 @@
 }
 
 #datasets {
-    padding-left: 25px;
+    padding: 25px;
     display: none;
 }
 
+#datasets h2 {
+    padding-bottom: 20px;
+}
+
 #datasets ul {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 20px;
+    padding-bottom: 30px;
 }
 
 #datasets ul li {

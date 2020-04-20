@@ -68,3 +68,17 @@ def remove_som(request, som_id):
     som_model.delete()
     return redirect('pinkproject:project', project_id=project_id)
 
+
+def remove_dataset(request, ds_id):
+    ds_model = Dataset.objects.get(id=ds_id)
+    project_id = ds_model.project.id
+    dataset_path = os.path.join('projects', ds_model.project.project_name, 'datasets', ds_model.dataset_name)
+    shutil.rmtree(dataset_path)
+    soms = SOM.objects.filter(dataset=ds_model)
+    for som_model in soms:
+        som_path = os.path.join('projects', som_model.dataset.project.project_name, 'soms', som_model.som_name)
+        shutil.rmtree(som_path, ignore_errors=True)
+    ds_model.delete()
+    return redirect('pinkproject:project', project_id=project_id)
+
+

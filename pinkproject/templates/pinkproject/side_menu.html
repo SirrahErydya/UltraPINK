@@ -16,6 +16,7 @@
         {% include 'som/toolbox.html' %}
     {% else %}
         <div id="datasets" style="display: grid;">
+            <h2>SOMs in this project:</h2>
             <ul>
                 {% for ds in datasets %}
                     <li>
@@ -32,6 +33,9 @@
                     </li>
                 {% endfor %}
             </ul>
+            <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
+                        Add SOM
+            </button>
         </div>
     {% endif %}
 

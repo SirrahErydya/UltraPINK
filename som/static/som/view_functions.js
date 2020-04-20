@@ -23,8 +23,6 @@ function activate_tab(tabName) {
 }
 
 function loading_screen() {
-    setTimeout(function(){
-                loader = document.getElementById('loading-wrapper');
-                loader.style.display = "block";
-            }, 3000);
+    loader = document.getElementById('loading-wrapper');
+    loader.style.display = "block";
 }

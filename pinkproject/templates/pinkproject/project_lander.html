@@ -30,6 +30,8 @@
                 <div class="dataset-overview">
                     {% for ds in datasets %}
                         <div class="card">
+                            <i class="remove-ds-button material-icons"
+                               onclick="request_page('{% url 'pinkproject:remove_ds' ds_id=ds.id %}', [])">close</i>
                             <h1>{{ ds.dataset_name }}</h1>
                             <p>{{ ds.description }}</p>
                             <p>{{ ds.length }} data points</p><br/>
@@ -45,7 +47,7 @@
                                             {{ som.som_name }}
                                         </a>
                                         <i class="remove-som-button small material-icons"
-                                            onclick="request_page('{% url 'pinkproject:remove' som_id=som.id %}', [])">remove</i>
+                                            onclick="request_page('{% url 'pinkproject:remove_som' som_id=som.id %}', [])">remove</i>
                                         </li>
                                     {% endif %}
                                 {% endfor %}
