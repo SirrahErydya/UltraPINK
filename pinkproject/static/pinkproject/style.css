@@ -42,9 +42,12 @@
     width: auto;
 }
 
-.dataset-overview .add-som-button {
+.dataset-overview .add-som-button, .remove-som-button {
     opacity: 0.5;
     cursor: pointer;
+}
+
+.dataset-overview .add-som-button {
     font-size: 32pt;
 }
 
@@ -163,18 +166,39 @@
     opacity: 1;
 }
 
+
+.dataset-overview .project-container li {
+    text-align: right;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
+}
+
+#loading-wrapper {
+    background-color: white;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1000;
+    text-align: center;
+}
+
+#loading-wrapper p {
+    position: relative;
+    top: 50%;
+}
+
 .loader {
     border: 16px solid #FFE4E1;
     border-radius: 50%;
     border-top: 16px solid #FF1493;
     position: fixed;
-    left: 50%;
+    left: calc(50% - 60px);
     top:25%;
     width: 120px;
     height: 120px;
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
-    z-index: 1000;
 }
 
 /* Safari */

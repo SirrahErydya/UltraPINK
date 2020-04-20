@@ -40,9 +40,14 @@
                             </div>
                             <ul class="project-container">
                                 {% for som in soms %}
-                                    <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
-                                        {{ som.som_name }}
-                                    </a></li>
+                                    {% if som.dataset == ds %}
+                                        <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
+                                            {{ som.som_name }}
+                                        </a>
+                                        <i class="remove-som-button small material-icons"
+                                            onclick="request_page('{% url 'pinkproject:remove' som_id=som.id %}', [])">remove</i>
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>

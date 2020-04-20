@@ -6,6 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from pinkproject.models import Project, Dataset
 from som.models import SOM, Prototype
 from som.views import som
+import os
+import shutil
 
 
 #from som.som_postprocessing import SOM as SOM_obj
@@ -58,4 +60,11 @@ def create_project(request, project_id=None):
     return redirect('pinkproject:project', project_id=project_model.id)
 
 
+def remove_som(request, som_id):
+    som_model = SOM.objects.get(id=som_id)
+    project_id = som_model.dataset.project.id
+    som_path = os.path.join('projects', som_model.dataset.project.project_name, 'soms', som_model.som_name)
+    shutil.rmtree(som_path, ignore_errors=True)
+    som_model.delete()
+    return redirect('pinkproject:project', project_id=project_id)
 

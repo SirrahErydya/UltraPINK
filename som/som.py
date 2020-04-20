@@ -38,8 +38,10 @@ def train(data, som_dim, layout, number_of_rotations, epochs):
     for e in range(int(epochs)):
         print("Epoch {0}".format(e+1))
         for point in tqdm(data):
-            p_point = pink.Data(point.astype(np.float32)/255)
-            trainer(p_point)
+            point = point.astype(np.float32)
+            if point.max() > 1:
+                point = point/255
+            trainer(pink.Data(point))
     trainer.update_som()
     return som
 

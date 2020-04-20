@@ -21,3 +21,10 @@ function activate_tab(tabName) {
     document.getElementById(tabName).style.display = "block";
     document.getElementById(tabName+"-tab").classList.add("active")
 }
+
+function loading_screen() {
+    setTimeout(function(){
+                loader = document.getElementById('loading-wrapper');
+                loader.style.display = "block";
+            }, 3000);
+}
