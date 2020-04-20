@@ -50,6 +50,9 @@ function click_image(html_id, db_id, is_proto) {
 function select_single(img, db_id, selected_class) {
     var already_active = img.classList.contains(selected_class);
     var selected_imgs = document.getElementsByClassName(selected_class);
+    proto_container = document.getElementById('prototype-enlargement');
+    proto_container.innerHTML = '';
+    proto_container.appendChild(img.cloneNode(true));
     for(var i=0; i<selected_imgs.length; i++) {
         selected_imgs[i].classList.remove(selected_class);
         if(selected_class == 'proto-selected') {
@@ -60,10 +63,8 @@ function select_single(img, db_id, selected_class) {
             selected_cutouts = []
         }
     }
+
     if(!already_active) {
-        proto_container = document.getElementById('prototype-enlargement');
-        proto_container.innerHTML = "";
-        proto_container.appendChild(img.cloneNode(true));
         img.classList.add(selected_class);
         if(selected_class == 'proto-selected') {
             //request_prototypes([img.id]);
@@ -72,6 +73,11 @@ function select_single(img, db_id, selected_class) {
             //selected_cutouts.push(img)
         }
     }
+}
+
+function clear_preview_image() {
+    proto_container = document.getElementById('prototype-enlargement');
+    proto_container.innerHTML = "";
 }
 
 function select_multiple(img, db_id, selected_class) {

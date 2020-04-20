@@ -18,7 +18,8 @@
     <script type="text/javascript" src="{% static 'som/som_basics.js' %}"></script>
 {% endblock %}
 {% block content %}
-    <div class="som-page">
+    <div class="loader" id="loader"></div>
+    <div class="som-page" id="som-page" onclick="clear_preview_image()">
     {% include 'pinkproject/side_menu.html' %}
     {% if active_som %}
         {% include 'som/som.html' %}
