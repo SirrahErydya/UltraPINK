@@ -22,66 +22,65 @@
     </div>
 
     <h3>Operations:</h3>
+    <div class="edit-tools">
     {% if active_som.mapping_generated %}
-        <div class="edit-tools">
-            {% csrf_token %}
-            <div class="input-grid">
-                <div class="toolbox-input">
-                    <label for="input-cutouts">Show best fits to selection:</label>
-                    <input id='input-cutouts' type="text" name="n_fits" value='10'/>
-                </div>
-                <div class="tooltip">
-                    <i class="material-icons" onclick="show_best_fits()">view_module</i>
-                    <span class="tooltiptext">Show closest dataset entries to selection</span>
-                </div>
-                <div class="toolbox-input">
-                    <label for="input-outliers">Show outliers:</label>
-                    <input id='input-outliers' type="text" name="n_outliers" value='10'/>
-                </div>
-                 <div class="tooltip">
-                     <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
-                    <span class="tooltiptext">Show outliers</span>
-                </div>
-                <div class="toolbox-input">
-                    <label for="label">Apply label</label>
-                    <input id='label' type="text" value='Label...'/>
-                </div>
-                <div class="tooltip">
-                    <i class="material-icons" onclick="label_protos()">local_offer</i>
-                    <span class="tooltiptext">Apply labels</span>
-                </div>
+        {% csrf_token %}
+        <div class="input-grid">
+            <div class="toolbox-input">
+                <label for="input-cutouts">Show best fits to selection:</label>
+                <input id='input-cutouts' type="text" name="n_fits" value='10'/>
             </div>
+            <div class="tooltip">
+                <i class="material-icons" onclick="show_best_fits()">view_module</i>
+                <span class="tooltiptext">Show closest dataset entries to selection</span>
+            </div>
+            <div class="toolbox-input">
+                <label for="input-outliers">Show outliers:</label>
+                <input id='input-outliers' type="text" name="n_outliers" value='10'/>
+            </div>
+             <div class="tooltip">
+                 <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
+                <span class="tooltiptext">Show outliers</span>
+            </div>
+            <div class="toolbox-input">
+                <label for="label">Apply label</label>
+                <input id='label' type="text" value='Label...'/>
+            </div>
+            <div class="tooltip">
+                <i class="material-icons" onclick="label_protos()">local_offer</i>
+                <span class="tooltiptext">Apply labels</span>
+            </div>
+        </div>
+    {% else %}
+        <p>The datapoints in {{ dataset.dataset_name }} are not yet mapped to the map prototypes.
+            Would you like to do so now?</p>
+        <button class="action-button" onclick="request_page('{% url 'som:map_protos' som_id=active_som.id %}', [])">
+            Map datapoints</button>
+    {% endif %}
+    </div>
 
-        {% else %}
-            <p>The datapoints in {{ dataset.dataset_name }} are not yet mapped to the map prototypes.
-                Would you like to do so now?</p>
-            <button class="action-button" onclick="request_page('{% url 'som:map_protos' som_id=active_som.id %}', [])">
-                Map datapoints</button>
-        {% endif %}
-
-        <b>Export operations:</b>
-        <div class="export-tools">
-            <div class="tooltip">
-                <i class="material-icons" onclick="export_catalog('{{ current.project_name }}', {})">file_download</i>
-                <span class="tooltiptext">Export catalog as csv</span>
-            </div>
-            <div class="tooltip">
-                <img align="middle" id="export" src="{% static 'main/icons/topcat.png' %}"
-                onclick="//todo">
-                <span class="tooltiptext">Export Topcat project</span>
-            </div>
-            <div class="tooltip">
-                <i class="material-icons" onclick="//todo">photo_library</i>
-                <span class="tooltiptext">Download Prototype map</span>
-            </div>
-            <div class="tooltip">
-                <i class="material-icons" onclick="//todo">photo_filter</i>
-                <span class="tooltiptext">Download heat map</span>
-            </div>
-            <div class="tooltip">
-                <i class="material-icons" onclick="//todo">insert_chart</i>
-                <span class="tooltiptext">Download histogram</span>
-            </div>
+    <h3>Export operations:</h3>
+    <div class="export-tools">
+        <div class="tooltip">
+            <i class="material-icons" onclick="export_catalog('{{ current.project_name }}', {})">file_download</i>
+            <span class="tooltiptext">Export catalog as csv</span>
+        </div>
+        <div class="tooltip">
+            <img id="export" src="{% static 'main/icons/topcat.png' %}"
+            onclick="//todo">
+            <span class="tooltiptext">Export Topcat project</span>
+        </div>
+        <div class="tooltip">
+            <i class="material-icons" onclick="//todo">photo_library</i>
+            <span class="tooltiptext">Download Prototype map</span>
+        </div>
+        <div class="tooltip">
+            <i class="material-icons" onclick="//todo">photo_filter</i>
+            <span class="tooltiptext">Download heat map</span>
+        </div>
+        <div class="tooltip">
+            <i class="material-icons" onclick="//todo">insert_chart</i>
+            <span class="tooltiptext">Download histogram</span>
         </div>
     </div>
     <h3>View:</h3>

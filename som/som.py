@@ -74,6 +74,18 @@ def import_som(project, dataset_name, som_binfile, mapping_binfile, data_binfile
     return som_model.id
 
 
+def map_som(np_data, np_som, euclidean_dim, layout):
+    som = pink.SOM(np_som, som_layout=layout)
+    mapper = pink.Mapper(som, euclidean_distance_dim=euclidean_dim)
+    map_table = np.zeros((np_data.shape[0], np_som.shape[0]*np_som.shape[1]))
+    best_protos = np.zeros(np_data.shape[0])
+    for i in tqdm(range(np_data.shape[0])):
+        distances = mapper(pink.Data(np_data[i]))
+        map_table[i] = distances
+        best_protos[i] = np.argmax(distances)
+    return map_table, best_protos
+
+
 def get_data(data):
     """
     Get the training data as a numpy array

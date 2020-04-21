@@ -88,6 +88,13 @@ def save_som(request, project_id, dataset_id=None):
 
 def map_prototypes(request, som_id):
     som_model = SOM.objects.get(id=som_id)
+    np_som = np.load(som_model.som_file.path)
+    np_dataset = np.load(som_model.dataset.data_path.path)
+    euclid_dim = int(np_dataset.shape[1] * math.sqrt(2.0) / 2.0)
+    save_path = os.path.join('projects', som_model.dataset.project.project_name, "soms", som_model.som_name)
+    mapping, best_protos = map_som(np_dataset, np_som, euclid_dim, som_model.layout)
+    np.save(os.path.join(save_path, "mapping.npy"), mapping)
+    np.save(os.path.join(save_path, "proto_matching.npy"), best_protos)
     return redirect('pinkproject:project', project_id=som_model.dataset.project.id, som_id=som_id)
 
 

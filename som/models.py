@@ -16,6 +16,8 @@ class SOM(models.Model):
 
     # Important for data management
     som_file = models.FileField(upload_to='projects')
+    mapping_file = models.FileField(upload_to='projects', null=True)
+    protomatch_file = models.FileField(upload_to='projects', null=True)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     heatmap = models.ImageField(default=None)
     histogram = models.ImageField(default=None)

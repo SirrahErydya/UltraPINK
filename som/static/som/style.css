@@ -15,7 +15,7 @@ body {
 
 .edit-tools {
     margin-top: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .edit-tools table {
@@ -41,7 +41,7 @@ body {
     bottom: 80px;
 }
 
-#som-container, .cutouts, .inspection-tools {
+#som-container, .cutouts {
     text-align: center;
     display: grid;
 }
@@ -54,18 +54,24 @@ body {
 }
 
 .inspection-tools {
+    display: grid;
     padding-top: 15px;
     padding-bottom: 15px;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(4, 34px);
     grid-template-rows: repeat(1, auto);
+    grid-gap: 16px;
 }
 
-.export-tools i, .inspection-tools i {
-    font-size: 64px;
+.inspection-tools i {
+    font-size: 34px;
 }
 
-#toolbox .inspection-tools img, #toolbox .export-tools img {
-    width: 64px;
+.export-tools i {
+    font-size: 48px;
+}
+
+#toolbox .export-tools img {
+    width: 48px;
 }
 #toolbox img, #toolbox i {
     opacity: 0.5;
@@ -93,6 +99,14 @@ body {
     float: right;
     grid-template-columns: repeat(2, auto);
     grid-template-rows: repeat(3, 30px);
+}
+
+#toolbox .export-tools {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 48px);
+    grid-template-rows: repeat(1, auto);
+    grid-gap: 10px;
 }
 
 .toolbox-input {
