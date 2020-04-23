@@ -95,6 +95,10 @@ def map_prototypes(request, som_id):
     mapping, best_protos = map_som(np_dataset, np_som, euclid_dim, som_model.layout)
     np.save(os.path.join(save_path, "mapping.npy"), mapping)
     np.save(os.path.join(save_path, "proto_matching.npy"), best_protos)
+    som_model.mapping_file = os.path.join(save_path, "mapping.npy")
+    som_model.protomatch_file = os.path.join(save_path, "proto_matching.npy")
+    som_model.mapping_generated = True
+    som_model.save()
     return redirect('pinkproject:project', project_id=som_model.dataset.project.id, som_id=som_id)
 
 
@@ -104,13 +108,14 @@ def get_protos(request):
     return JsonResponse({'protos': json_protos, "success": True})
 
 
-def get_best_fits_to_protos(request, n_fits=10):
+def get_best_fits_to_protos(request,  n_fits=10):
     protos = json.loads(request.body)['protos']
     if len(protos) == 1:
-        cutouts = get_best_fits(protos[0], n_fits)
+        proto_id = int(''.join(filter(lambda i: i.isdigit(), protos[0])))
+        data_points = get_best_fits(proto_id, n_fits)
     else:
         raise NotImplementedError("No multiple prototype selection for this time")
-    json_cutouts = [cutout.to_json() for cutout in cutouts]
+    json_cutouts = [cutout.to_json() for cutout in data_points]
     return JsonResponse({'best_fits': json_cutouts, "success": True})
 
 

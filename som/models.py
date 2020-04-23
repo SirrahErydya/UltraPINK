@@ -19,8 +19,8 @@ class SOM(models.Model):
     mapping_file = models.FileField(upload_to='projects', null=True)
     protomatch_file = models.FileField(upload_to='projects', null=True)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    heatmap = models.ImageField(default=None)
-    histogram = models.ImageField(default=None)
+    heatmap = models.ImageField(default=None, null=True)
+    histogram = models.ImageField(default=None, null=True)
 
 
 class Prototype(models.Model):
@@ -51,7 +51,7 @@ class DataPoint(models.Model):
     ra = models.DecimalField(decimal_places=15, max_digits=20)
     dec = models.DecimalField(decimal_places=15, max_digits=20)
     label = models.CharField(max_length=200, default="")
-    image = models.ImageField()
+    image = models.CharField(max_length=200, default="")
 
     # Map coordinates and image data
     closest_prototype = models.ForeignKey(Prototype, on_delete=models.CASCADE)

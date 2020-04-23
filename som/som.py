@@ -80,9 +80,12 @@ def map_som(np_data, np_som, euclidean_dim, layout):
     map_table = np.zeros((np_data.shape[0], np_som.shape[0]*np_som.shape[1]))
     best_protos = np.zeros(np_data.shape[0])
     for i in tqdm(range(np_data.shape[0])):
-        distances = mapper(pink.Data(np_data[i]))
+        point = np_data[i].astype(np.float32)
+        if point.max() > 1:
+            point = point/255
+        distances, _ = mapper(pink.Data(point))
         map_table[i] = distances
-        best_protos[i] = np.argmax(distances)
+        best_protos[i] = np.amax(distances)
     return map_table, best_protos
 
 
@@ -102,12 +105,23 @@ def get_data(data):
 
 
 def get_best_fits(proto, n_fits=10):
-    prototype = Prototype.objects.get(proto_id=proto)
-    cutouts = DataPoint.objects.filter(closest_prototype=prototype).order_by('distance')[:n_fits]
-    if len(cutouts) < n_fits:
-        return dbe.create_cutouts_for_prototype(prototype, n_fits)
-    else:
-        return list(cutouts)
+    prototype = Prototype.objects.get(id=proto)
+    match_file = np.load(prototype.som.protomatch_file)
+    print(match_file)
+    distance_file = np.load(prototype.som.mapping_file)
+    proto_id = prototype.som.som_width * prototype.y + prototype.x
+    data_indices = np.where(match_file == proto_id)
+    distances = distance_file[data_indices, proto_id]
+    print(distances)
+    return []
+
+# def get_best_fits(proto, n_fits=10):
+#    prototype = Prototype.objects.get(proto_id=proto)
+#    cutouts = DataPoint.objects.filter(closest_prototype=prototype).order_by('distance')[:n_fits]
+#    if len(cutouts) < n_fits:
+#        return dbe.create_cutouts_for_prototype(prototype, n_fits)
+#    else:
+#        return list(cutouts)
 
 
 def get_protos(proto_ids):

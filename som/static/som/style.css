@@ -203,7 +203,7 @@ body {
     background-repeat: no-repeat;
 }
 
-.proto-selected, .cutout-selected {
+#som-container .proto-selected, .cutout-selected {
     opacity: 0.5;
 }
 

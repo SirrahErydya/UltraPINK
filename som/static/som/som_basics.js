@@ -38,7 +38,6 @@ function click_image(html_id, db_id, is_proto) {
     var selected_class = is_proto ? 'proto-selected' : 'cutout-selected';
     var el_id = is_proto ? html_id : "cutout"+html_id;
     var img = document.getElementById(el_id);
-    console.log(img)
     var tool = document.getElementsByClassName(tool_selected)[0];
     if(tool.id == 'pointer') {
         select_single(img, db_id, selected_class);
@@ -50,20 +49,19 @@ function click_image(html_id, db_id, is_proto) {
 function select_single(img, db_id, selected_class) {
     var already_active = img.classList.contains(selected_class);
     var selected_imgs = document.getElementsByClassName(selected_class);
-    proto_container = document.getElementById('prototype-enlargement');
+    var proto_container = document.getElementById('prototype-enlargement');
     proto_container.innerHTML = '';
-    proto_container.appendChild(img.cloneNode(true));
     for(var i=0; i<selected_imgs.length; i++) {
         selected_imgs[i].classList.remove(selected_class);
         if(selected_class == 'proto-selected') {
-            selection_info = document.getElementById('prototype-info');
-            selection_info.innerHTML = '';
+            //selection_info = document.getElementById('prototype-info');
+            //selection_info.innerHTML = '';
             selected_prototypes = [];
         } else if(selected_class == 'cutout-selected') {
             selected_cutouts = []
         }
     }
-
+    proto_container.appendChild(img.cloneNode(true));
     if(!already_active) {
         img.classList.add(selected_class);
         if(selected_class == 'proto-selected') {
