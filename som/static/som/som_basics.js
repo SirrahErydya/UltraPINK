@@ -61,8 +61,8 @@ function select_single(img, db_id, selected_class) {
             selected_cutouts = []
         }
     }
-    proto_container.appendChild(img.cloneNode(true));
     if(!already_active) {
+        proto_container.appendChild(img.cloneNode(true));
         img.classList.add(selected_class);
         if(selected_class == 'proto-selected') {
             //request_prototypes([img.id]);
@@ -109,7 +109,7 @@ function go_to_aladin(i) {
                    }, 'text');
 }
 
-function show_best_fits() {
+function show_best_fits(som_id) {
     var input_field = document.getElementById('input-cutouts');
     selection = Array.from(document.getElementsByClassName('proto-selected'));
     if(selection.length <= 0){
@@ -117,7 +117,7 @@ function show_best_fits() {
         return;
     }
     var data = JSON.stringify({ 'protos': selection.map(s => s.id)});
-    request_cutouts( '/som/get_best_fits/'+input_field.value, data);
+    request_cutouts( '/som/get_best_fits/'+som_id+'/'+input_field.value, data);
 }
 
 function show_outliers(som_id) {
@@ -223,8 +223,8 @@ function close_cutout_modal() {
     img_container.innerHTML = '';
     proto_preview.innerHTML = '';
     modal.style.display = "none";
-    som_container.style.width = '85vh';
-    som_container.style.height = '85vh';
+    som_container.style.width = '80vh';
+    som_container.style.height = '80vh';
     som_info.style.display = 'block';
     selected_cutouts = []
 }
@@ -383,6 +383,9 @@ function change_view(button) {
     container = document.getElementById('som-container');
     legend_container = document.getElementById('label-legend');
     var som_info = document.getElementById('info-table');
+    if(button.id !== 'heatmap_button') {
+        container.classList.remove('heatmap-view')
+    }
     if(button.id === 'labels_button') {
         som_info.style.display = 'none'
         legend_container.style.backgroundColor = 'lavenderblush';
@@ -394,7 +397,7 @@ function change_view(button) {
             legend_container.innerHTML += '<p style="color: rgb('+r+','+g+','+b+')">'+label+'</p>'
     }
     } else {
-        som_info.style.display = 'block';
+        som_info.style.display = 'table';
         legend_container.innerHTML = "";
         legend_container.style.backgroundColor = 'white';
         button.classList.add("active-action-button")
@@ -404,26 +407,19 @@ function change_view(button) {
  function proto_view(button) {
     change_view(button)
     container.style.backgroundImage = '';
-    elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
-    for(var i=0; i<elements.length; i++) {
-        elements[i].style.backgroundColor = '';
-        elements[i].style.display = 'block';
-    }
+    elements = container.getElementsByClassName('prototype');
  }
 
  function heatmap_view(img, button) {
-    change_view(button)
+    change_view(button);
     container = document.getElementById('som-container');
     container.style.backgroundImage = 'url('+img+')';
-    elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
-    for(var i=0; i<elements.length; i++) {
-        elements[i].style.backgroundColor = '';
-        elements[i].style.display = 'none';
-    }
+    container.classList.add('heatmap-view');
+    elements = container.getElementsByClassName('prototype');
  }
 
  function color_map(button) {
-    proto_view(button)
+    proto_view(button);
     container = document.getElementById('som-container');
     elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
     var prototypes = [];

@@ -17,7 +17,6 @@ class SOM(models.Model):
     # Important for data management
     som_file = models.FileField(upload_to='projects')
     mapping_file = models.FileField(upload_to='projects', null=True)
-    protomatch_file = models.FileField(upload_to='projects', null=True)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     heatmap = models.ImageField(default=None, null=True)
     histogram = models.ImageField(default=None, null=True)
@@ -48,24 +47,24 @@ class DataPoint(models.Model):
     index = models.IntegerField()
 
     # Astronomical details
-    ra = models.DecimalField(decimal_places=15, max_digits=20)
-    dec = models.DecimalField(decimal_places=15, max_digits=20)
+    ra = models.DecimalField(decimal_places=15, max_digits=20, null=True)
+    dec = models.DecimalField(decimal_places=15, max_digits=20, null=True)
     label = models.CharField(max_length=200, default="")
     image = models.CharField(max_length=200, default="")
 
-    # Map coordinates and image data
-    closest_prototype = models.ForeignKey(Prototype, on_delete=models.CASCADE)
-    distance = models.DecimalField(decimal_places=15, max_digits=20)
-
-    def to_json(self):
+    def to_json(self, proto_dist):
         dictionary = {}
         dictionary['ra'] = self.ra
         dictionary['dec'] = self.ra
         dictionary['label'] = self.label
         dictionary['index'] = self.index
-        dictionary['url'] = self.image.url
+        dictionary['url'] = self.image
         dictionary['db_id'] = self.id
+        dictionary['distance'] = proto_dist
         return dictionary
+
+    class Meta:
+        unique_together = ('dataset', 'index')
 
 
 

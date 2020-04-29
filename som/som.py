@@ -74,19 +74,27 @@ def import_som(project, dataset_name, som_binfile, mapping_binfile, data_binfile
     return som_model.id
 
 
-def map_som(np_data, np_som, euclidean_dim, layout):
+def map_som(som_model):
+    np_som = np.load(som_model.som_file.path)
+    np_data = np.load(som_model.dataset.data_path.path)
+    euclidean_dim = int(np_data.shape[1] * math.sqrt(2.0) / 2.0)
+    layout = som_model.layout
     som = pink.SOM(np_som, som_layout=layout)
     mapper = pink.Mapper(som, euclidean_distance_dim=euclidean_dim)
     map_table = np.zeros((np_data.shape[0], np_som.shape[0]*np_som.shape[1]))
-    best_protos = np.zeros(np_data.shape[0])
+    heatmap = np.zeros((np_som.shape[0], np_som.shape[1]))
     for i in tqdm(range(np_data.shape[0])):
         point = np_data[i].astype(np.float32)
         if point.max() > 1:
             point = point/255
         distances, _ = mapper(pink.Data(point))
         map_table[i] = distances
-        best_protos[i] = np.amax(distances)
-    return map_table, best_protos
+        best_proto = np.argmin(distances)
+        proto_x = best_proto % np_som.shape[1]
+        proto_y = int((best_proto - proto_x)/np_som.shape[0])
+        heatmap[proto_y][proto_x] += 1
+        dbe.create_datapoint_models(np_data[i], som_model, i)
+    return map_table, heatmap
 
 
 def get_data(data):
@@ -104,16 +112,14 @@ def get_data(data):
     return data
 
 
-def get_best_fits(proto, n_fits=10):
+def get_distances(proto):
     prototype = Prototype.objects.get(id=proto)
-    match_file = np.load(prototype.som.protomatch_file)
-    print(match_file)
     distance_file = np.load(prototype.som.mapping_file)
+    match_file = np.argmin(distance_file, axis=1)
     proto_id = prototype.som.som_width * prototype.y + prototype.x
-    data_indices = np.where(match_file == proto_id)
+    data_indices = np.where(match_file == proto_id)[0]
     distances = distance_file[data_indices, proto_id]
-    print(distances)
-    return []
+    return distances
 
 # def get_best_fits(proto, n_fits=10):
 #    prototype = Prototype.objects.get(proto_id=proto)
@@ -130,7 +136,8 @@ def get_protos(proto_ids):
 
 def label_protos(proto_ids, label):
     for proto_id in proto_ids:
-        proto = Prototype.objects.get(proto_id=proto_id)
+        p_id = int(''.join([i for i in proto_id if i.isdigit()]))
+        proto = Prototype.objects.get(id=p_id)
         proto.label = label
         proto.save()
 

@@ -31,7 +31,7 @@
                 <input id='input-cutouts' type="text" name="n_fits" value='10'/>
             </div>
             <div class="tooltip">
-                <i class="material-icons" onclick="show_best_fits()">view_module</i>
+                <i class="material-icons" onclick="show_best_fits({{ active_som.id }})">view_module</i>
                 <span class="tooltiptext">Show closest dataset entries to selection</span>
             </div>
             <div class="toolbox-input">
@@ -54,7 +54,7 @@
     {% else %}
         <p>The datapoints in {{ dataset.dataset_name }} are not yet mapped to the map prototypes.
             Would you like to do so now?</p>
-        <button class="action-button" onclick="request_page('{% url 'som:map_protos' som_id=active_som.id %}', [])">
+        <button class="action-button" onclick="loading_screen();request_page('{% url 'som:map_protos' som_id=active_som.id %}', [])">
             Map datapoints</button>
     {% endif %}
     </div>
@@ -87,8 +87,10 @@
     <div class="view-tools">
         <button id="prototype_button" type="button" class="action-button active-action-button"
                 onclick="proto_view(this)">Prototypes</button>
+        {% if active_som.heatmap %}
         <button id="heatmap_button" type="button" class="action-button"
-                onclick="heatmap_view('', this)">Heatmap</button>
+                onclick="heatmap_view('{{ active_som.heatmap.url }}', this)">Heatmap</button>
+        {% endif %}
         <button id="labels_button" type="button" class="action-button"
                 onclick="color_map(this)">Labels</button>
     </div>

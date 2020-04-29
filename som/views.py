@@ -88,15 +88,17 @@ def save_som(request, project_id, dataset_id=None):
 
 def map_prototypes(request, som_id):
     som_model = SOM.objects.get(id=som_id)
-    np_som = np.load(som_model.som_file.path)
-    np_dataset = np.load(som_model.dataset.data_path.path)
-    euclid_dim = int(np_dataset.shape[1] * math.sqrt(2.0) / 2.0)
     save_path = os.path.join('projects', som_model.dataset.project.project_name, "soms", som_model.som_name)
-    mapping, best_protos = map_som(np_dataset, np_som, euclid_dim, som_model.layout)
+    mapping, heatmap = map_som(som_model)
     np.save(os.path.join(save_path, "mapping.npy"), mapping)
-    np.save(os.path.join(save_path, "proto_matching.npy"), best_protos)
+    heatmap_path = os.path.join(save_path, "heatmap.png")
+    dbe.save_heatmap(heatmap, heatmap_path)
+    bmu_distances = np.min(mapping, axis=1)
+    hist_path = os.path.join(save_path, 'histogram.png')
+    dbe.plot_histogram(bmu_distances, hist_path)
     som_model.mapping_file = os.path.join(save_path, "mapping.npy")
-    som_model.protomatch_file = os.path.join(save_path, "proto_matching.npy")
+    som_model.heatmap.name = heatmap_path
+    som_model.histogram.name = hist_path
     som_model.mapping_generated = True
     som_model.save()
     return redirect('pinkproject:project', project_id=som_model.dataset.project.id, som_id=som_id)
@@ -108,15 +110,22 @@ def get_protos(request):
     return JsonResponse({'protos': json_protos, "success": True})
 
 
-def get_best_fits_to_protos(request,  n_fits=10):
+def get_best_fits_to_protos(request, som_id, n_fits=10):
+    som_model = SOM.objects.get(id=som_id)
     protos = json.loads(request.body)['protos']
     if len(protos) == 1:
         proto_id = int(''.join(filter(lambda i: i.isdigit(), protos[0])))
-        data_points = get_best_fits(proto_id, n_fits)
+        distances = get_distances(proto_id)
+        print(distances)
+        best_indices = np.argsort(distances)[:n_fits]
+        data_points = list(map(lambda idx: DataPoint.objects.get(dataset=som_model.dataset, index=idx), best_indices))
     else:
         raise NotImplementedError("No multiple prototype selection for this time")
-    json_cutouts = [cutout.to_json() for cutout in data_points]
-    return JsonResponse({'best_fits': json_cutouts, "success": True})
+    json_points = []
+    upper = n_fits if len(distances) > n_fits else len(distances)
+    for i in range(upper):
+        json_points.append(data_points[i].to_json(distances[best_indices[i]]))
+    return JsonResponse({'best_fits': json_points, "success": True})
 
 
 def label(request, label):
