@@ -54,8 +54,8 @@ function select_single(img, db_id, selected_class) {
     for(var i=0; i<selected_imgs.length; i++) {
         selected_imgs[i].classList.remove(selected_class);
         if(selected_class == 'proto-selected') {
-            //selection_info = document.getElementById('prototype-info');
-            //selection_info.innerHTML = '';
+            selection_info = document.getElementById('proto-info');
+            selection_info.innerHTML = '';
             selected_prototypes = [];
         } else if(selected_class == 'cutout-selected') {
             selected_cutouts = []
@@ -65,13 +65,20 @@ function select_single(img, db_id, selected_class) {
         proto_container.appendChild(img.cloneNode(true));
         img.classList.add(selected_class);
         if(selected_class == 'proto-selected') {
-            //request_prototypes([img.id]);
-            //show_selection_info(selected_prototypes[0], 'prototype-info')
+            request_prototypes([img.id]);
+            show_selection_info(selected_prototypes[0], 'proto-info')
         } else if(selected_class == 'cutout-selected') {
             //selected_cutouts.push(img)
         }
     }
 }
+
+function show_selection_info(selected, element_id) {
+     selection_info = document.getElementById(element_id);
+     selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
+     label = selected.label.trim() !== '' ? selected.label : "Unlabeled";
+     selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
+ }
 
 function clear_preview_image() {
     proto_container = document.getElementById('prototype-enlargement');
@@ -376,9 +383,9 @@ function label_cutouts(cutouts, proto_label) {
 }
 
 function change_view(button) {
-    active_buttons = document.getElementsByClassName('active-action-button')
+    active_buttons = document.getElementsByClassName('view-selected')
     for(i=0; i<active_buttons.length; i++) {
-        active_buttons[i].classList.remove('active-action-button')
+        active_buttons[i].classList.remove('view-selected')
     }
     container = document.getElementById('som-container');
     legend_container = document.getElementById('label-legend');
@@ -400,7 +407,7 @@ function change_view(button) {
         som_info.style.display = 'table';
         legend_container.innerHTML = "";
         legend_container.style.backgroundColor = 'white';
-        button.classList.add("active-action-button")
+        button.classList.add("view-selected")
     }
  }
 
@@ -464,15 +471,6 @@ function change_view(button) {
   var b = Math.floor(Math.random() * 255);
   return [r, g, b];
 }
-
-
- function show_selection_info(selected, element_id) {
-     selection_info = document.getElementById(element_id);
-     selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
-     label = selected.label.trim() !== '' ? selected.label : "Unlabeled";
-     selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
-     selection_info.innerHTML += "<img src='" + selected.url + "'/>";
- }
 
 function export_outliers() {
     var img_container = document.getElementById('cutouts');

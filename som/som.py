@@ -112,8 +112,7 @@ def get_data(data):
     return data
 
 
-def get_distances(proto):
-    prototype = Prototype.objects.get(id=proto)
+def get_distances(prototype):
     distance_file = np.load(prototype.som.mapping_file)
     match_file = np.argmin(distance_file, axis=1)
     proto_id = prototype.som.som_width * prototype.y + prototype.x
@@ -121,23 +120,15 @@ def get_distances(proto):
     distances = distance_file[data_indices, proto_id]
     return distances
 
-# def get_best_fits(proto, n_fits=10):
-#    prototype = Prototype.objects.get(proto_id=proto)
-#    cutouts = DataPoint.objects.filter(closest_prototype=prototype).order_by('distance')[:n_fits]
-#    if len(cutouts) < n_fits:
-#        return dbe.create_cutouts_for_prototype(prototype, n_fits)
-#    else:
-#        return list(cutouts)
+
+def get_protos_from_db(proto_ids):
+    proto_ids = [int(''.join(filter(lambda i: i.isdigit(), proto_id))) for proto_id in proto_ids]
+    return [Prototype.objects.get(id=proto_id) for proto_id in proto_ids]
 
 
-def get_protos(proto_ids):
-    return [Prototype.objects.get(proto_id=proto_id) for proto_id in proto_ids]
-
-
-def label_protos(proto_ids, label):
-    for proto_id in proto_ids:
-        p_id = int(''.join([i for i in proto_id if i.isdigit()]))
-        proto = Prototype.objects.get(id=p_id)
+def label_protos(protos, label):
+    protos = get_protos_from_db(protos)
+    for proto in protos:
         proto.label = label
         proto.save()
 

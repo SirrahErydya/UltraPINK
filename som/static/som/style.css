@@ -57,8 +57,8 @@ body {
     display: grid;
     padding-top: 15px;
     padding-bottom: 15px;
-    grid-template-columns: repeat(4, 34px);
-    grid-template-rows: repeat(1, auto);
+    grid-template-columns: repeat(6, 34px);
+    grid-template-rows: repeat(2, auto);
     grid-gap: 16px;
 }
 
@@ -82,7 +82,7 @@ body {
     cursor: pointer;
 }
 
-#toolbox .tool-selected {
+#toolbox .tool-selected, #toolbox .view-selected {
     opacity: 1;
 }
 
@@ -119,14 +119,6 @@ body {
 
 .toolbox-input #input-outliers {
     margin-left: 150px;
-}
-
-.view-tools {
-    display: inline-block;
-}
-
-.view-tools button {
-    min-width: 100px;
 }
 
 .som-page {

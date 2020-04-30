@@ -19,6 +19,24 @@
             <i id="magnifier" class="material-icons" onclick="select_tool(this.id)">zoom_in</i>
             <span class="tooltiptext">Magnify</span>
         </div>
+        <div></div><div></div>
+        <div class="tooltip">
+            <i id="prototype_button" class="view-selected material-icons" onclick="proto_view(this)">photo_library</i>
+            <span class="tooltiptext">Prototype View</span>
+        </div>
+        <div class="tooltip">
+            <i id="heatmap_button" class="material-icons" onclick="heatmap_view('{{ active_som.heatmap.url }}', this)">photo_filter</i>
+            <span class="tooltiptext">Heatmap View</span>
+        </div>
+        <div class="tooltip">
+            <i id="labels_button" class="material-icons" onclick="color_map(this)">local_offer</i>
+            <span class="tooltiptext">Label View</span>
+        </div>
+        <div></div><div></div>
+        <div class="tooltip">
+            <i class="material-icons" onclick="//todo">insert_chart</i>
+            <span class="tooltiptext">See histogram</span>
+        </div>
     </div>
 
     <h3>Operations:</h3>
@@ -44,7 +62,12 @@
             </div>
             <div class="toolbox-input">
                 <label for="label">Apply label</label>
-                <input id='label' type="text" value='Label...'/>
+                <input id=label type="text" list="labels" value="New Label...."/>
+                <datalist id="labels">
+                  {%  for label in labels %}
+                    <option>{{ label.name }}</option>
+                  {% endfor %}
+                </datalist>
             </div>
             <div class="tooltip">
                 <i class="material-icons" onclick="label_protos()">local_offer</i>
@@ -82,17 +105,6 @@
             <i class="material-icons" onclick="//todo">insert_chart</i>
             <span class="tooltiptext">Download histogram</span>
         </div>
-    </div>
-    <h3>View:</h3>
-    <div class="view-tools">
-        <button id="prototype_button" type="button" class="action-button active-action-button"
-                onclick="proto_view(this)">Prototypes</button>
-        {% if active_som.heatmap %}
-        <button id="heatmap_button" type="button" class="action-button"
-                onclick="heatmap_view('{{ active_som.heatmap.url }}', this)">Heatmap</button>
-        {% endif %}
-        <button id="labels_button" type="button" class="action-button"
-                onclick="color_map(this)">Labels</button>
     </div>
 </div>
 

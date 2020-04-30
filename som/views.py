@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.db.models import QuerySet
 from pinkproject.models import Project, Dataset
-from som.models import SOM
+from som.models import SOM, Label
 from som.som import *
 import UltraPINK.create_database_entries as dbe
 import json
@@ -16,11 +16,13 @@ def som(request, som_id):
     if active_som:
         print("Som will be rendered")
         prototypes = Prototype.objects.filter(som=active_som)
+        labels = Label.objects.filter(som=active_som)
         context = {
             # Pass some values from the backend here
             'current': active_som.dataset.project,
             'active_som': active_som,
-            'prototypes': prototypes
+            'prototypes': prototypes,
+            'labels': labels
         }
         return HttpResponse(template.render(context, request))
     raise FileNotFoundError("SOM not found.")
@@ -105,8 +107,9 @@ def map_prototypes(request, som_id):
 
 
 def get_protos(request):
-    protos = get_protos(json.loads(request.body)['protos'])
+    protos = get_protos_from_db(json.loads(request.body)['protos'])
     json_protos = [prototype.to_json() for prototype in protos]
+    print(json_protos)
     return JsonResponse({'protos': json_protos, "success": True})
 
 
@@ -114,9 +117,8 @@ def get_best_fits_to_protos(request, som_id, n_fits=10):
     som_model = SOM.objects.get(id=som_id)
     protos = json.loads(request.body)['protos']
     if len(protos) == 1:
-        proto_id = int(''.join(filter(lambda i: i.isdigit(), protos[0])))
-        distances = get_distances(proto_id)
-        print(distances)
+        proto = get_protos_from_db(protos)[0]
+        distances = get_distances(proto)
         best_indices = np.argsort(distances)[:n_fits]
         data_points = list(map(lambda idx: DataPoint.objects.get(dataset=som_model.dataset, index=idx), best_indices))
     else:

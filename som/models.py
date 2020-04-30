@@ -22,9 +22,25 @@ class SOM(models.Model):
     histogram = models.ImageField(default=None, null=True)
 
 
+class Label(models.Model):
+    som = models.ForeignKey(SOM, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, default="")
+    color_r = models.IntegerField()
+    color_g = models.IntegerField()
+    color_b = models.IntegerField()
+
+    def to_json(self):
+        dictionary = {}
+        dictionary['name'] = self.name
+        dictionary['r'] = self.color_r
+        dictionary['g'] = self.color_g
+        dictionary['b'] = self.color_b
+        return dictionary
+
+
 class Prototype(models.Model):
     som = models.ForeignKey(SOM, on_delete=models.CASCADE)
-    label = models.CharField(max_length=200, default="")
+    label = models.ForeignKey(Label, on_delete=models.SET_NULL, null=True)
     x = models.IntegerField()
     y = models.IntegerField()
     z = models.IntegerField()
@@ -33,7 +49,7 @@ class Prototype(models.Model):
 
     def to_json(self):
         dictionary = {}
-        dictionary['label'] = self.label
+        dictionary['label'] = self.label.to_json()
         dictionary['x'] = self.x
         dictionary['y'] = self.y
         dictionary['z'] = self.z
@@ -49,22 +65,24 @@ class DataPoint(models.Model):
     # Astronomical details
     ra = models.DecimalField(decimal_places=15, max_digits=20, null=True)
     dec = models.DecimalField(decimal_places=15, max_digits=20, null=True)
-    label = models.CharField(max_length=200, default="")
+    label = models.ForeignKey(Label, on_delete=models.SET_NULL, null=True)
     image = models.CharField(max_length=200, default="")
 
-    def to_json(self, proto_dist):
+    def to_json(self, proto_dist=None):
         dictionary = {}
         dictionary['ra'] = self.ra
         dictionary['dec'] = self.ra
-        dictionary['label'] = self.label
+        dictionary['label'] = self.label.to_json()
         dictionary['index'] = self.index
         dictionary['url'] = self.image
         dictionary['db_id'] = self.id
-        dictionary['distance'] = proto_dist
+        if proto_dist:
+            dictionary['distance'] = proto_dist
         return dictionary
 
     class Meta:
         unique_together = ('dataset', 'index')
+
 
 
 

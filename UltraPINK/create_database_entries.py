@@ -86,7 +86,7 @@ def create_prototype_models(som_model):
 
 
 def save_heatmap(heatmap, path):
-    figure = plt.figure(frameon=False)
+    figure = plt.figure(figsize=heatmap.shape, frameon=False)
     axis = plt.Axes(figure, [0., 0., 1., 1.])
     axis.set_axis_off()
     figure.add_axes(axis)
@@ -95,6 +95,7 @@ def save_heatmap(heatmap, path):
             axis.text(x, y, heatmap[y][x], ha="center", va="center", color="w")
     axis.imshow(heatmap)
     figure.savefig(path)
+    plt.close()
 
 
 def create_datapoint_models(np_data, som, index):
@@ -120,19 +121,11 @@ def np_image_link(np_img):
     return u'data:img/png;base64,' + data64.decode('utf-8')
 
 
-def create_som_histogram(som_model):
-    som_obj = som_model.load_som_obj()
-    bmu_distances = np.max(som_obj.data_map, axis=1)
-    file_name = os.path.join('data', som_model.training_dataset_name, 'histogram.png')
-    plot_histogram(bmu_distances, os.path.join(settings.MEDIA_ROOT, file_name))
-    som_model.histogram.name = file_name
-    som_model.save()
-
-
 def plot_histogram(bmu_distances, save_path, bins=100):
+    # TODO: Find out why this function goes bananas
     plt.hist(bmu_distances, bins=bins)
     plt.xlabel('Summed Euclidian (SE) distance to best matching prototype')
-    plt.ylabel('Number of radio-sources per bin')
+    plt.ylabel('Number of sources per bin')
     plt.tight_layout()
     plt.savefig(os.path.join(settings.MEDIA_ROOT,save_path), transparent=True)
     plt.close()
