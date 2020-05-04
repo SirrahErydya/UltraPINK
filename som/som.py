@@ -4,7 +4,7 @@ Create, train and import SOMs with PINK
 """
 import pink
 import math
-from som.models import Prototype, DataPoint
+from som.models import Prototype, DataPoint, Label
 from django.conf import settings
 import numpy as np
 import csv
@@ -128,8 +128,22 @@ def get_protos_from_db(proto_ids):
 
 def label_protos(protos, label):
     protos = get_protos_from_db(protos)
+    try:
+        label_model = Label.objects.get(name=label)
+    except Label.DoesNotExist:
+        r = np.random.randint(0, 255)
+        g = np.random.randint(0, 255)
+        b = np.random.randint(0, 255)
+        label_model = Label(
+            som=protos[0].som,
+            name=label,
+            color_r=r,
+            color_g=g,
+            color_b=b
+        )
+        label_model.save()
     for proto in protos:
-        proto.label = label
+        proto.label = label_model
         proto.save()
 
 

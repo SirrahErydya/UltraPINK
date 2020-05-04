@@ -24,7 +24,7 @@ class SOM(models.Model):
 
 class Label(models.Model):
     som = models.ForeignKey(SOM, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, default="")
+    name = models.CharField(max_length=200, unique=True)
     color_r = models.IntegerField()
     color_g = models.IntegerField()
     color_b = models.IntegerField()
@@ -49,7 +49,10 @@ class Prototype(models.Model):
 
     def to_json(self):
         dictionary = {}
-        dictionary['label'] = self.label.to_json()
+        if self.label:
+            dictionary['label'] = self.label.to_json()
+        else:
+            dictionary['label'] = ""
         dictionary['x'] = self.x
         dictionary['y'] = self.y
         dictionary['z'] = self.z
@@ -70,9 +73,13 @@ class DataPoint(models.Model):
 
     def to_json(self, proto_dist=None):
         dictionary = {}
-        dictionary['ra'] = self.ra
-        dictionary['dec'] = self.ra
-        dictionary['label'] = self.label.to_json()
+        if self.ra and self.dec:
+            dictionary['ra'] = self.ra
+            dictionary['dec'] = self.ra
+        if self.label:
+            dictionary['label'] = self.label.to_json()
+        else:
+            dictionary['label'] = ""
         dictionary['index'] = self.index
         dictionary['url'] = self.image
         dictionary['db_id'] = self.id

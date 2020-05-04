@@ -24,19 +24,23 @@
             <i id="prototype_button" class="view-selected material-icons" onclick="proto_view(this)">photo_library</i>
             <span class="tooltiptext">Prototype View</span>
         </div>
+        {%  if active_som.heatmap %}
         <div class="tooltip">
             <i id="heatmap_button" class="material-icons" onclick="heatmap_view('{{ active_som.heatmap.url }}', this)">photo_filter</i>
             <span class="tooltiptext">Heatmap View</span>
         </div>
+        {% endif %}
         <div class="tooltip">
-            <i id="labels_button" class="material-icons" onclick="color_map(this)">local_offer</i>
+            <i id="labels_button" class="material-icons" onclick="change_view(this)">local_offer</i>
             <span class="tooltiptext">Label View</span>
         </div>
         <div></div><div></div>
+        {% if active_som.histogram %}
         <div class="tooltip">
-            <i class="material-icons" onclick="//todo">insert_chart</i>
+            <i id='hist-button' class="material-icons" onclick="toggle_histogram(this)">insert_chart</i>
             <span class="tooltiptext">See histogram</span>
         </div>
+        {% endif %}
     </div>
 
     <h3>Operations:</h3>

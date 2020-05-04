@@ -1,12 +1,12 @@
 # UltraPINK - Goals 2020
 
 ## PINK Embedding
-* [ ] PINK Core operations available from UltraPINK
-    * [ ] Installation of PINK Python Package 
-    * [ ] Routines for SOM Training
-    * [ ] Interface for SOM Training
+* [x] PINK Core operations available from UltraPINK
+    * [x] Installation of PINK Python Package 
+    * [x] Routines for SOM Training
+    * [x] Interface for SOM Training
 * [ ] Storage of SOMs
-    * [ ] Suitable Data Models and Tables
+    * [x] Suitable Data Models and Tables
     * [ ] Input and Output Formats
     * [ ] Bridge for binary encoding (no need for image source files...?)
 
@@ -26,7 +26,7 @@
     * [ ] Topcat
     * [ ] Export whole project
 * [ ] Refine labeling function and label storage
-* [ ] Statistics
-    * [ ] Heatmap
-    * [ ] Histogram
+* [x] Statistics
+    * [x] Heatmap
+    * [x] Histogram
 * [ ] requirements.txt !!

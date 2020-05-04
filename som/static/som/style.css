@@ -285,19 +285,36 @@ body {
     margin-bottom: 15px;
 }
 
-.prototype-info img {
-    width: 65%;
-}
-
-#prototype-preview {
+.proto-preview {
     padding-top: 20px;
 }
-#prototype-preview img {
-    width: 20%;
+.proto-preview img {
+    width: 75%;
+}
+
+#label-legend {
+    background-color: mistyrose;
+    margin-top: 15px;
+    padding: 15px;
+    display: none;
+}
+
+#histogram {
+    margin-top: -30px;
+    display: none;
+}
+
+#histogram img {
+    width: 100%;
 }
 
 .label-legend {
-    margin-top: 15px;
-    padding: 15px;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.square {
+    height: 50px;
+    width: 50px;
 }
 

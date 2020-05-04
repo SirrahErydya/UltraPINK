@@ -72,9 +72,28 @@
         </tr>
     </table>
     <br/>
+    <div id="label-legend">
+        <h3>Labels</h3><br/>
+        {% if labels %}
+        <div class="label-legend" style="grid-template-rows: repeat({{ labels|length}}, auto)">
+        {% for label in labels %}
+            {{ label.name }}:
+            <div class="square"
+                 style="background-color: rgb({{ label.color_r }},{{ label.color_g }},{{ label.color_b }});"></div>
+        </div>
+        {% endfor %}
+        {% else %}
+            <i>No labels in this SOM</i>
+        {% endif %}
+    </div>
+    <div id="histogram">
+        <h3>Map Histogram</h3>
+        {% if active_som.histogram %}
+            <img src="{{ active_som.histogram.url }}"/>
+        {% endif %}
+    </div>
     <div class="proto-preview">
-        <div class="prototype-enlargement" id="prototype-enlargement"></div>
+        <div id="prototype-enlargement"></div>
         <div id="proto-info"></div>
     </div>
-    <div class="label-legend" id="label-legend"></div>
 </div>

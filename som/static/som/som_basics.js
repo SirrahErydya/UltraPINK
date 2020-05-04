@@ -76,18 +76,14 @@ function select_single(img, db_id, selected_class) {
 function show_selection_info(selected, element_id) {
      selection_info = document.getElementById(element_id);
      selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
-     label = selected.label.trim() !== '' ? selected.label : "Unlabeled";
+     label = selected.label.name.trim() !== '' ? selected.label.name : "Unlabeled";
      selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
  }
 
-function clear_preview_image() {
-    proto_container = document.getElementById('prototype-enlargement');
-    proto_container.innerHTML = "";
-}
 
 function select_multiple(img, db_id, selected_class) {
     if(img.classList.contains(selected_class)) {
-        img.classList.remove(selected_class)
+        img.classList.remove(selected_class);
         if(selected_class == 'cutout-selected') {
             selected_cutouts.filter(i => i !== img)
         }
@@ -383,9 +379,11 @@ function label_cutouts(cutouts, proto_label) {
 }
 
 function change_view(button) {
-    active_buttons = document.getElementsByClassName('view-selected')
+    active_buttons = document.getElementsByClassName('view-selected');
     for(i=0; i<active_buttons.length; i++) {
-        active_buttons[i].classList.remove('view-selected')
+        if(active_buttons[i].id !== 'hist-button') {
+            active_buttons[i].classList.remove('view-selected');
+        }
     }
     container = document.getElementById('som-container');
     legend_container = document.getElementById('label-legend');
@@ -394,25 +392,17 @@ function change_view(button) {
         container.classList.remove('heatmap-view')
     }
     if(button.id === 'labels_button') {
-        som_info.style.display = 'none'
-        legend_container.style.backgroundColor = 'lavenderblush';
-        legend_container.innerHTML = '<h3>Label legend</h3>';
-        for(var label in label_colors) {
-            var r = label_colors[label][0];
-            var g = label_colors[label][1];
-            var b = label_colors[label][2];
-            legend_container.innerHTML += '<p style="color: rgb('+r+','+g+','+b+')">'+label+'</p>'
-    }
+        som_info.style.display = 'none';
+        legend_container.style.display = 'block';
     } else {
         som_info.style.display = 'table';
-        legend_container.innerHTML = "";
-        legend_container.style.backgroundColor = 'white';
-        button.classList.add("view-selected")
+        legend_container.style.display = 'none';
     }
- }
+    button.classList.add("view-selected");
+}
 
  function proto_view(button) {
-    change_view(button)
+    change_view(button);
     container.style.backgroundImage = '';
     elements = container.getElementsByClassName('prototype');
  }
@@ -425,58 +415,33 @@ function change_view(button) {
     elements = container.getElementsByClassName('prototype');
  }
 
- function color_map(button) {
-    proto_view(button);
-    container = document.getElementById('som-container');
-    elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
-    var prototypes = [];
-    var data = JSON.stringify({ 'protos': elements.map(el => el.id)});
-    var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
-    $.ajaxSetup({
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader("X-CSRFToken", csrf_token);
-        }
-    });
-    $.ajax({
-        url: '/som/get_protos',
-        data: data,
-        dataType: 'json',
-        method: 'POST',
-        success: function (data) {
-            if (data.success) {
-                prototypes = data.protos
-            }
-        },
-        async: false
-    });
-
-    for(var i=0; i < prototypes.length; i++) {
-        label = prototypes[i].label;
-        if(label !== '') {
-            if(!(label in label_colors)) {
-                color = getRandomColor();
-                label_colors[label] = color
-            }
-            var r = label_colors[label][0];
-            var g = label_colors[label][1];
-            var b = label_colors[label][2];
-            document.getElementById(prototypes[i].proto_id).style.backgroundColor = "rgba("+r+","+g+","+b+",0.7)";
-        }
-     }
- }
-
- function getRandomColor() {
-  var r = Math.floor(Math.random() * 255);
-  var g = Math.floor(Math.random() * 255);
-  var b = Math.floor(Math.random() * 255);
-  return [r, g, b];
-}
-
 function export_outliers() {
     var img_container = document.getElementById('cutouts');
     outliers = Array.from(img_container.childNodes);
     var data = { 'outlier_ids': outliers.filter(c => c.id).map(c => c.id.match(/\d/g).join(""))};
     export_catalog('outliers', data)
+}
+
+function toggle_histogram(button) {
+    var hist_container = document.getElementById('histogram');
+    var legend_container = document.getElementById('label-legend');
+    var som_info = document.getElementById('info-table');
+    if(button.classList.contains('view-selected')) {
+        hist_container.style.display = 'none';
+        button.classList.remove('view-selected');
+        active_view = document.getElementsByClassName('view-selected')[0];
+        if(active_view.id === 'labels_button') {
+            legend_container.style.display = 'block';
+        } else {
+            som_info.style.display = 'block';
+        }
+    } else {
+        button.classList.add('view-selected');
+        hist_container.style.display = 'block';
+        legend_container.style.display = 'none';
+        som_info.style.display = 'none';
+    }
+
 }
 
 function export_catalog(filename, data) {
