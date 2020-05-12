@@ -25,9 +25,9 @@ class SOM(models.Model):
 class Label(models.Model):
     som = models.ForeignKey(SOM, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, unique=True)
-    color_r = models.IntegerField()
-    color_g = models.IntegerField()
-    color_b = models.IntegerField()
+    color_r = models.IntegerField(default=255)
+    color_g = models.IntegerField(default=255)
+    color_b = models.IntegerField(default=255)
 
     def to_json(self):
         dictionary = {}

@@ -10,7 +10,7 @@ import json
 import sys, traceback
 
 
-def som(request, som_id):
+def som(request, som_id, view='proto'):
     template = loader.get_template("pinkproject/project.html")
     active_som = SOM.objects.get(id=som_id)
     if active_som:
@@ -22,7 +22,8 @@ def som(request, som_id):
             'current': active_som.dataset.project,
             'active_som': active_som,
             'prototypes': prototypes,
-            'labels': labels
+            'labels': labels,
+            'view': view
         }
         return HttpResponse(template.render(context, request))
     raise FileNotFoundError("SOM not found.")

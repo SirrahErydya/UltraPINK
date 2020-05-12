@@ -13,7 +13,7 @@ import shutil
 #from som.som_postprocessing import SOM as SOM_obj
 
 
-def pinkproject(request, project_id, som_id=None):
+def pinkproject(request, project_id, som_id=None, view='proto'):
     no_template = loader.get_template("pinkproject/no_project.html")
     try:
         current_project = Project.objects.get(id=project_id)
@@ -22,7 +22,7 @@ def pinkproject(request, project_id, som_id=None):
         for ds in datasets:
             soms = soms | SOM.objects.filter(dataset=ds)
         if som_id is not None:
-            return som(request, som_id)
+            return som(request, som_id, view)
         else:
             template = loader.get_template("pinkproject/project_lander.html")
             context = {

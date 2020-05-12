@@ -76,7 +76,7 @@ function select_single(img, db_id, selected_class) {
 function show_selection_info(selected, element_id) {
      selection_info = document.getElementById(element_id);
      selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
-     label = selected.label.name.trim() !== '' ? selected.label.name : "Unlabeled";
+     label = selected.label === '' ?  "Unlabeled" : selected.label.name;
      selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
  }
 
@@ -378,7 +378,7 @@ function label_cutouts(cutouts, proto_label) {
     apply_label(data, label)
 }
 
-function change_view(button) {
+function change_view(img, button) {
     active_buttons = document.getElementsByClassName('view-selected');
     for(i=0; i<active_buttons.length; i++) {
         if(active_buttons[i].id !== 'hist-button') {
@@ -387,13 +387,18 @@ function change_view(button) {
     }
     container = document.getElementById('som-container');
     legend_container = document.getElementById('label-legend');
+    container.style.backgroundImage = 'url('+img+')';
+    elements = container.getElementsByClassName('prototype');
     var som_info = document.getElementById('info-table');
-    if(button.id !== 'heatmap_button') {
-        container.classList.remove('heatmap-view')
+    if(button.id === 'prototype_button') {
+        container.classList.remove('transparent-view')
+    } else {
+        container.classList.add('transparent-view');
     }
     if(button.id === 'labels_button') {
         som_info.style.display = 'none';
         legend_container.style.display = 'block';
+        color_protos(container, color)
     } else {
         som_info.style.display = 'table';
         legend_container.style.display = 'none';
@@ -401,19 +406,21 @@ function change_view(button) {
     button.classList.add("view-selected");
 }
 
- function proto_view(button) {
-    change_view(button);
-    container.style.backgroundImage = '';
-    elements = container.getElementsByClassName('prototype');
- }
+function proto_display(proto_id, r, g, b, view) {
+    img = document.getElementById(proto_id);
+    proto = img.parentElement;
+    if(view === 'proto') {
+        proto.style.backgroundColor = 'rgba(255,255,255,1)';
+        img.style.opacity = '1';
+    } else if(view === 'heatmap') {
+        proto.style.backgroundColor = 'rgba(255,255,255,0)';
+        img.style.opacity = '0.5';
+    } else if(view === 'labels') {
+        proto.style.backgroundColor = 'rgba(' + r + ',' + g + ',' + b + ',' + 1 + ')';
+        img.style.opacity = '0.5';
+    }
+}
 
- function heatmap_view(img, button) {
-    change_view(button);
-    container = document.getElementById('som-container');
-    container.style.backgroundImage = 'url('+img+')';
-    container.classList.add('heatmap-view');
-    elements = container.getElementsByClassName('prototype');
- }
 
 function export_outliers() {
     var img_container = document.getElementById('cutouts');
