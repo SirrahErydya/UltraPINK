@@ -31,7 +31,7 @@ body {
 }
 
 .edit-tools #label {
-    width: 190px;
+    width: 90%;
 }
 
 
@@ -93,10 +93,9 @@ body {
 }
 
 #toolbox .input-grid {
+    width: 100%;
     margin-top: 15px;
     margin-bottom: 25px;
-    text-align: right;
-    float: right;
     grid-template-columns: repeat(2, auto);
     grid-template-rows: repeat(3, 30px);
 }
@@ -111,14 +110,14 @@ body {
 
 .toolbox-input {
     width: 100%;
+    margin-top: 10px;
 }
 
-.toolbox-input #input-cutouts {
-    margin-left: 60px;
-}
-
-.toolbox-input #input-outliers {
-    margin-left: 150px;
+#toolbox .input-grid .input-grid {
+    grid-template-columns: auto 63px;
+    margin-left: 10px;
+    grid-template-rows: repeat(1, auto);
+    grid-gap: 0;
 }
 
 .som-page {
@@ -135,7 +134,7 @@ body {
     bottom: 20px;
     grid-gap: 0;
     position: fixed;
-    left: 600px;
+    left: 25vw;
 }
 
 .cutouts {
@@ -223,9 +222,9 @@ body {
     position: absolute;
     background-color: lavenderblush;
     color: black;
-    width: 50vw;
-    top: 70px;
-    left: 45vw;
+    width: calc(80vh - 50px);
+    left: 25vw;
+    top: 55px;
 }
 
 .modal_window .icon {
@@ -311,10 +310,11 @@ body {
 .label-legend {
     display: grid;
     grid-template-columns: auto auto;
+    grid-gap: 2px;
 }
 
 .square {
-    height: 50px;
-    width: 50px;
+    height: 25px;
+    width: 25px;
 }
 

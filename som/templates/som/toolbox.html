@@ -21,17 +21,26 @@
         </div>
         <div></div><div></div>
         <div class="tooltip">
-            <i id="prototype_button" class="view-selected material-icons" onclick="change_view('', this)">photo_library</i>
+            <i id="prototype_button" class="view-selected material-icons"
+               onclick="request_page(
+                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="proto" %}', [])">
+                photo_library</i>
             <span class="tooltiptext">Prototype View</span>
         </div>
         {%  if active_som.heatmap %}
         <div class="tooltip">
-            <i id="heatmap_button" class="material-icons" onclick="change_view('{{ active_som.heatmap.url }}', this)">photo_filter</i>
+            <i id="heatmap_button" class="material-icons"
+               onclick="request_page(
+                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="heatmap" %}', [])">
+                photo_filter</i>
             <span class="tooltiptext">Heatmap View</span>
         </div>
         {% endif %}
         <div class="tooltip">
-            <i id="labels_button" class="material-icons" onclick="change_view('', this)">local_offer</i>
+            <i id="labels_button" class="material-icons"
+               onclick="request_page(
+                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="labels" %}', [])">
+                local_offer</i>
             <span class="tooltiptext">Label View</span>
         </div>
         <div></div><div></div>
@@ -48,15 +57,15 @@
     {% if active_som.mapping_generated %}
         {% csrf_token %}
         <div class="input-grid">
-            <div class="toolbox-input">
-                <label for="input-cutouts">Show best fits to selection:</label>
+            <div class="toolbox-input input-grid">
+                <label for="input-cutouts">Show best fits:</label>
                 <input id='input-cutouts' type="text" name="n_fits" value='10'/>
             </div>
             <div class="tooltip">
                 <i class="material-icons" onclick="show_best_fits({{ active_som.id }})">view_module</i>
                 <span class="tooltiptext">Show closest dataset entries to selection</span>
             </div>
-            <div class="toolbox-input">
+            <div class="toolbox-input input-grid">
                 <label for="input-outliers">Show outliers:</label>
                 <input id='input-outliers' type="text" name="n_outliers" value='10'/>
             </div>
@@ -65,8 +74,7 @@
                 <span class="tooltiptext">Show outliers</span>
             </div>
             <div class="toolbox-input">
-                <label for="label">Apply label</label>
-                <input id=label type="text" list="labels" value="New Label...."/>
+                <input id=label type="text" list="labels" value="Apply Label...."/>
                 <datalist id="labels">
                   {%  for label in labels %}
                     <option>{{ label.name }}</option>

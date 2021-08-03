@@ -1,17 +1,23 @@
-<div class="side-menu">
-    <div class="info-panel">
-        {% if active_som %}
+{% if active_som %}
+    <div class="side-menu" style="width: 20vw;">
+        <div class="info-panel">
             <b>Back to <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></b>
             <br/>
             <br/>
             <h1>{{ active_som.som_name }}</h1>
-        {% else %}
+    </div>
+{% else %}
+    <div class="side-menu" style="width: 25vw;">
+        <div class="info-panel">
             <h1>Project:
                 <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></h1>
             <p>{{ current.description }}</p>
-            <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">Edit</button>
-        {% endif %}
-    </div>
+            <button class="action-button"
+                    onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">
+                Edit
+            </button>
+        </div>
+{% endif %}
     {% if active_som %}
         {% include 'som/toolbox.html' %}
     {% else %}

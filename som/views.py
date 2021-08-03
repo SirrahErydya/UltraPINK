@@ -119,7 +119,7 @@ def get_best_fits_to_protos(request, som_id, n_fits=10):
     protos = json.loads(request.body)['protos']
     if len(protos) == 1:
         proto = get_protos_from_db(protos)[0]
-        distances = get_distances(proto)
+        distances = get_distances(som_model, proto)
         best_indices = np.argsort(distances)[:n_fits]
         data_points = list(map(lambda idx: DataPoint.objects.get(dataset=som_model.dataset, index=idx), best_indices))
     else:
@@ -152,10 +152,12 @@ def label(request, label):
 
 
 def get_outliers(request, som_id, n_fits=10):
-    outliers = Outlier.objects.all()[:n_fits]
-    if len(outliers) < n_fits:
-        outliers = dbe.create_outliers(som_id, n_fits)
-    json_outliers = [outlier.to_json() for outlier in outliers]
+    som_model = SOM.objects.get(id=som_id)
+    distances = get_distances(som_model)
+    worst_distances = np.max(distances, axis=1)
+    worst_indices = np.argsort(-worst_distances)[:n_fits]
+    data_points = list(map(lambda idx: DataPoint.objects.get(dataset=som_model.dataset, index=idx), worst_indices))
+    json_outliers = [outlier.to_json() for outlier in data_points]
     return JsonResponse({'best_fits':  json_outliers, 'success': True})
 
 

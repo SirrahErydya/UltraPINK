@@ -112,13 +112,13 @@ def get_data(data):
     return data
 
 
-def get_distances(prototype):
-    distance_file = np.load(prototype.som.mapping_file)
-    match_file = np.argmin(distance_file, axis=1)
-    proto_id = prototype.som.som_width * prototype.y + prototype.x
-    data_indices = np.where(match_file == proto_id)[0]
-    distances = distance_file[data_indices, proto_id]
-    return distances
+def get_distances(som, prototype=None):
+    distance_file = np.load(som.mapping_file)
+    if prototype:
+        proto_id = prototype.som.som_width * prototype.y + prototype.x
+        distances = distance_file[:, proto_id]
+        return distances
+    return distance_file
 
 
 def get_protos_from_db(proto_ids):
@@ -129,7 +129,7 @@ def get_protos_from_db(proto_ids):
 def label_protos(protos, label):
     protos = get_protos_from_db(protos)
     try:
-        label_model = Label.objects.get(name=label)
+        label_model = Label.objects.get(name=label, som=protos[0].som_id)
     except Label.DoesNotExist:
         r = np.random.randint(0, 255)
         g = np.random.randint(0, 255)

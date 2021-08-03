@@ -177,11 +177,8 @@ function request_cutouts(url, data) {
 function cutout_view() {
     var som_container = document.getElementById('som-container');
     var modal = document.getElementById('modal-window');
-    var som_info = document.getElementById('som-info');
-    som_container.style.width = '40vh';
-    som_container.style.height = '40vh';
+    som_container.style.display = "none";
     modal.style.display = 'block';
-    som_info.style.display = 'none';
 }
 
 function create_cutout_images(best_fits, protos, outlier_case) {
@@ -200,10 +197,6 @@ function create_cutout_images(best_fits, protos, outlier_case) {
         proto_label_button1.style.display = 'inline';
         proto_label_button2.style.display = 'inline';
         export_outliers_button.style.display = 'none';
-
-        for(var i=0; i<protos.length; i++) {
-            show_selection_info(protos[i], "prototype-preview")
-        }
     }
     for(var i=0; i<best_fits.length; i++) {
         url = best_fits[i].url;
@@ -220,15 +213,10 @@ function create_cutout_images(best_fits, protos, outlier_case) {
 function close_cutout_modal() {
     var som_container = document.getElementById('som-container');
     var modal = document.getElementById('modal-window');
-    var som_info = document.getElementById('som-info');
     var img_container = document.getElementById('cutouts');
-    var proto_preview = document.getElementById('prototype-preview');
     img_container.innerHTML = '';
-    proto_preview.innerHTML = '';
     modal.style.display = "none";
-    som_container.style.width = '80vh';
-    som_container.style.height = '80vh';
-    som_info.style.display = 'block';
+    som_container.style.display = 'grid';
     selected_cutouts = []
 }
 
@@ -378,7 +366,7 @@ function label_cutouts(cutouts, proto_label) {
     apply_label(data, label)
 }
 
-function change_view(img, button) {
+function view(view, img) {
     active_buttons = document.getElementsByClassName('view-selected');
     for(i=0; i<active_buttons.length; i++) {
         if(active_buttons[i].id !== 'hist-button') {
@@ -387,18 +375,23 @@ function change_view(img, button) {
     }
     container = document.getElementById('som-container');
     legend_container = document.getElementById('label-legend');
-    container.style.backgroundImage = 'url('+img+')';
-    elements = container.getElementsByClassName('prototype');
     var som_info = document.getElementById('info-table');
-    if(button.id === 'prototype_button') {
-        container.classList.remove('transparent-view')
+    if(view === 'proto') {
+        container.classList.remove('transparent-view');
+        button = document.getElementById('prototype_button');
     } else {
         container.classList.add('transparent-view');
     }
-    if(button.id === 'labels_button') {
+    if(view === 'heatmap') {
+        container.style.backgroundImage = 'url('+img+')';
+        button = document.getElementById('heatmap_button')
+    } else {
+        container.style.backgroundImage = '';
+    }
+    if(view === 'labels') {
         som_info.style.display = 'none';
         legend_container.style.display = 'block';
-        color_protos(container, color)
+        button = document.getElementById('labels_button')
     } else {
         som_info.style.display = 'table';
         legend_container.style.display = 'none';
@@ -406,18 +399,15 @@ function change_view(img, button) {
     button.classList.add("view-selected");
 }
 
-function proto_display(proto_id, r, g, b, view) {
+function proto_color(proto_id, r, g, b, view) {
     img = document.getElementById(proto_id);
     proto = img.parentElement;
     if(view === 'proto') {
         proto.style.backgroundColor = 'rgba(255,255,255,1)';
-        img.style.opacity = '1';
     } else if(view === 'heatmap') {
         proto.style.backgroundColor = 'rgba(255,255,255,0)';
-        img.style.opacity = '0.5';
     } else if(view === 'labels') {
         proto.style.backgroundColor = 'rgba(' + r + ',' + g + ',' + b + ',' + 1 + ')';
-        img.style.opacity = '0.5';
     }
 }
 

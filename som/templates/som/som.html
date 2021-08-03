@@ -1,7 +1,7 @@
 <div id="loading-wrapper" style="display: none;">
-        <div class="loader"></div>
-        <p>Generate mapping... Grab a coffee, this may take a while ;)</p>
-    </div>
+    <div class="loader"></div>
+    <p>Generate mapping... Grab a coffee, this may take a while ;)</p>
+</div>
 <div id="som-container" style="
     background-size: 100%;
     grid-template-columns: repeat({{ active_som.som_width }}, auto);
@@ -15,13 +15,13 @@
         </div>
         <script>
             {% if prototype.label %}
-            proto_display("proto{{ prototype.id }}",
+            proto_color("proto{{ prototype.id }}",
                 {{ prototype.label.color_r }},
                 {{ prototype.label.color_g }},
                 {{ prototype.label.color_b}},
-                "{{ active_som.view }}");
+                "{{ view }}");
             {% else %}
-            proto_display("proto{{ prototype.id }}", 255, 255, 255,
+            proto_color("proto{{ prototype.id }}", 255, 255, 255,
                 "{{ view }}");
             {% endif %}
         </script>
@@ -33,8 +33,6 @@
         <img src="{% static 'main/icons/error.png' %}" onclick="close_cutout_modal()"/>
     </div>
     <div id="modal-header"></div>
-    <div class="prototype-info" id="prototype-preview">
-    </div>
     <div id="cutouts" class="cutouts">
     </div>
     <input style="width:300px" id='cutout-label' type="text" value='Label...'/>
@@ -48,13 +46,6 @@
             onclick="label_all_cutouts(true)">Apply prototype label to all</button>
     <button id="export-outliers" class="action-button"
             onclick="export_outliers()">Export outliers</button>
-</div>
- <div id="modal-o" class="modal">
-    <div class="modal_window">
-        <h1>These are 10 examples for so-called outliers: Images that do not seem to fit to any prototype.</h1>
-        <div id="cutouts-o" class="cutouts">
-        </div>
-    </div>
 </div>
 <div class="som-info" id="som-info">
     <table id="info-table">
@@ -109,3 +100,6 @@
         <div id="proto-info"></div>
     </div>
 </div>
+<script>
+    view("{{ view }}", "{{ active_som.heatmap.url }}");
+</script>
