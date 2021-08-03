@@ -1,10 +1,8 @@
 from django.core.management.base import BaseCommand
-from django.conf import settings
-import os
-from som.som_postprocessing import SOM, plot_image, return_cutout
+from som.som_postprocessing import SOM
 import som.models
 import csv
-from som.create_database_entries import create_outliers
+from UltraPINK.create_database_entries import create_outliers
 
 
 class Command(BaseCommand):

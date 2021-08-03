@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from som.models import SOM
-import som.create_database_entries as dbe
+import UltraPINK.create_database_entries as dbe
 
 
 class Command(BaseCommand):

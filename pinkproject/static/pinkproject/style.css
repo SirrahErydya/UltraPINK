@@ -1,18 +1,83 @@
 
 .create-project {
     background-color: mistyrose;
-    margin-left: 25%;
-    margin-right: 25%;
+    margin-left: 20%;
+    margin-right: 20%;
     padding: 50px;
 }
 
 #create-project-form {
 }
 
+.project-lander {
+    text-align: center;
+    margin-left: 25vw;
+    position: relative;
+    margin-top: 50px;
+    min-height: calc(100vh - 110px);
+    height: 100%;
+}
+
+.project-lander .card {
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.project-lander .card ul {
+    padding: 5px;
+}
+
+.dataset-overview {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: grid;
+    margin-left: 100px;
+    grid-gap: 5px;
+    grid-template-columns: repeat(3, 33%);
+}
+
+.dataset-overview .card {
+    margin: 0;
+    width: auto;
+}
+
+.dataset-overview .add-som-button, .remove-som-button, .remove-ds-button {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.dataset-overview .add-som-button {
+    font-size: 32pt;
+}
+
+.dataset-overview .train-with-ds i {
+    position: relative;
+    top: 5px;
+    font-size: 28px;
+}
+
+.dataset-overview i:hover {
+    opacity: 1;
+    color: deeppink;
+}
+
+.remove-ds-button {
+    float: right;
+}
+
+.train-with-ds {
+    height: 24px;
+    font-size: 20px;
+    display: inline-block;
+}
+
 .info-panel {
     text-align: left;
     background-color: mistyrose;
     padding: 25px;
+    margin-bottom: 20px;
 }
 .info-panel p {
     padding-top: 15px;
@@ -26,6 +91,134 @@
     grid-template-columns: repeat(2, 12em);
     grid-template-rows: repeat(2, auto);
     margin-bottom: 50px;
+}
+
+.side-menu {
+    position: fixed;
+    float: left;
+    padding: 0px 25px 15px 50px;
+    width: 20vw;
+    min-height: 100vh;
+    height: 100%;
+    background-color: pink;
+    z-index: 3;
+}
+
+.side-menu input {
+    width: 30px;
+    margin-left: 10px;
+    margin-right:10px;
+    border: none;
+    padding: 2px;
+    background-color: lavenderblush;
+}
+
+.collapsible {
+    font-family: Verdana, Arial, sans-serif;
+    width: 100%;
+    font-size: 15pt;
+    margin-top: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: palevioletred;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+.collapsible:hover {
+    background-color: deeppink;
+}
+
+#datasets, #toolbox {
+    padding: 15px;
+    background-color: mistyrose;
+}
+
+#datasets {
+    padding: 25px;
+    display: none;
+}
+
+#datasets h2 {
+    padding-bottom: 20px;
+}
+
+#datasets ul {
+    padding-top: 20px;
+    padding-bottom: 30px;
+}
+
+#datasets ul li {
+    list-style: none;
+}
+
+#datasets .action-button{
+    width: 120px;
+}
+
+.project-lander .export-tools {
+    padding-top: 25px;
+}
+.project-lander .export-tools i {
+    font-size: 64px;
+    opacity: 0.5;
+}
+
+.project-lander .export-tools .tooltip {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.project-lander .export-tools i:hover {
+    opacity: 1;
+}
+
+
+.dataset-overview .project-container li {
+    text-align: right;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
+}
+
+#loading-wrapper {
+    background-color: white;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1000;
+    text-align: center;
+}
+
+#loading-wrapper p {
+    position: relative;
+    top: 50%;
+}
+
+.loader {
+    border: 16px solid #FFE4E1;
+    border-radius: 50%;
+    border-top: 16px solid #FF1493;
+    position: fixed;
+    left: calc(50% - 60px);
+    top:25%;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 input[type=file] {

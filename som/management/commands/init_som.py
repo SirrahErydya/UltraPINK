@@ -1,12 +1,10 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
 import os
-from som.som_postprocessing import SOM, plot_image, return_cutout
-import som.models
+from som.som_postprocessing import SOM
 from pinkproject.models import Project
 import csv
-import numpy as np
-import som.create_database_entries as dbe
+import UltraPINK.create_database_entries as dbe
 
 
 class Command(BaseCommand):

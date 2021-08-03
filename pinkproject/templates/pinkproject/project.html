@@ -18,10 +18,12 @@
     <script type="text/javascript" src="{% static 'som/som_basics.js' %}"></script>
 {% endblock %}
 {% block content %}
-    {% include 'som/side_menu.html' %}
+    <div class="som-page">
+    {% include 'pinkproject/side_menu.html' %}
     {% if active_som %}
         {% include 'som/som.html' %}
     {% else %}
         {% include 'som/no_som.html' %}
     {% endif %}
+    </div>
 {% endblock %}

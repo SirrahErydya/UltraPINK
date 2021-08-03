@@ -34,25 +34,27 @@ function select_tool(id) {
     tool.classList.add(tool_selected)
 }
 
-function click_image(id, is_proto) {
+function click_image(html_id, db_id, is_proto) {
     var selected_class = is_proto ? 'proto-selected' : 'cutout-selected';
-    var el_id = is_proto ? id : "cutout"+id;
+    var el_id = is_proto ? html_id : "cutout"+html_id;
     var img = document.getElementById(el_id);
     var tool = document.getElementsByClassName(tool_selected)[0];
     if(tool.id == 'pointer') {
-        select_single(img, selected_class);
+        select_single(img, db_id, selected_class);
     } else if(tool.id == 'selection') {
-        select_multiple(img, selected_class)
+        select_multiple(img, db_id, selected_class)
     }
 }
 
-function select_single(img, selected_class) {
+function select_single(img, db_id, selected_class) {
     var already_active = img.classList.contains(selected_class);
     var selected_imgs = document.getElementsByClassName(selected_class);
+    var proto_container = document.getElementById('prototype-enlargement');
+    proto_container.innerHTML = '';
     for(var i=0; i<selected_imgs.length; i++) {
         selected_imgs[i].classList.remove(selected_class);
         if(selected_class == 'proto-selected') {
-            selection_info = document.getElementById('prototype-info');
+            selection_info = document.getElementById('proto-info');
             selection_info.innerHTML = '';
             selected_prototypes = [];
         } else if(selected_class == 'cutout-selected') {
@@ -60,19 +62,28 @@ function select_single(img, selected_class) {
         }
     }
     if(!already_active) {
+        proto_container.appendChild(img.cloneNode(true));
         img.classList.add(selected_class);
         if(selected_class == 'proto-selected') {
             request_prototypes([img.id]);
-            show_selection_info(selected_prototypes[0], 'prototype-info')
+            show_selection_info(selected_prototypes[0], 'proto-info')
         } else if(selected_class == 'cutout-selected') {
-            selected_cutouts.push(img)
+            //selected_cutouts.push(img)
         }
     }
 }
 
-function select_multiple(img, selected_class) {
+function show_selection_info(selected, element_id) {
+     selection_info = document.getElementById(element_id);
+     selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
+     label = selected.label === '' ?  "Unlabeled" : selected.label.name;
+     selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
+ }
+
+
+function select_multiple(img, db_id, selected_class) {
     if(img.classList.contains(selected_class)) {
-        img.classList.remove(selected_class)
+        img.classList.remove(selected_class);
         if(selected_class == 'cutout-selected') {
             selected_cutouts.filter(i => i !== img)
         }
@@ -101,7 +112,7 @@ function go_to_aladin(i) {
                    }, 'text');
 }
 
-function show_best_fits() {
+function show_best_fits(som_id) {
     var input_field = document.getElementById('input-cutouts');
     selection = Array.from(document.getElementsByClassName('proto-selected'));
     if(selection.length <= 0){
@@ -109,7 +120,7 @@ function show_best_fits() {
         return;
     }
     var data = JSON.stringify({ 'protos': selection.map(s => s.id)});
-    request_cutouts( '/som/get_best_fits/'+input_field.value, data);
+    request_cutouts( '/som/get_best_fits/'+som_id+'/'+input_field.value, data);
 }
 
 function show_outliers(som_id) {
@@ -166,11 +177,8 @@ function request_cutouts(url, data) {
 function cutout_view() {
     var som_container = document.getElementById('som-container');
     var modal = document.getElementById('modal-window');
-    var som_info = document.getElementById('som-info');
-    som_container.style.width = '40vh';
-    som_container.style.height = '40vh';
+    som_container.style.display = "none";
     modal.style.display = 'block';
-    som_info.style.display = 'none';
 }
 
 function create_cutout_images(best_fits, protos, outlier_case) {
@@ -189,10 +197,6 @@ function create_cutout_images(best_fits, protos, outlier_case) {
         proto_label_button1.style.display = 'inline';
         proto_label_button2.style.display = 'inline';
         export_outliers_button.style.display = 'none';
-
-        for(var i=0; i<protos.length; i++) {
-            show_selection_info(protos[i], "prototype-preview")
-        }
     }
     for(var i=0; i<best_fits.length; i++) {
         url = best_fits[i].url;
@@ -209,15 +213,10 @@ function create_cutout_images(best_fits, protos, outlier_case) {
 function close_cutout_modal() {
     var som_container = document.getElementById('som-container');
     var modal = document.getElementById('modal-window');
-    var som_info = document.getElementById('som-info');
     var img_container = document.getElementById('cutouts');
-    var proto_preview = document.getElementById('prototype-preview');
     img_container.innerHTML = '';
-    proto_preview.innerHTML = '';
     modal.style.display = "none";
-    som_container.style.width = '85vh';
-    som_container.style.height = '85vh';
-    som_info.style.display = 'block';
+    som_container.style.display = 'grid';
     selected_cutouts = []
 }
 
@@ -367,114 +366,79 @@ function label_cutouts(cutouts, proto_label) {
     apply_label(data, label)
 }
 
-function change_view(button) {
-    active_buttons = document.getElementsByClassName('active-action-button')
+function view(view, img) {
+    active_buttons = document.getElementsByClassName('view-selected');
     for(i=0; i<active_buttons.length; i++) {
-        active_buttons[i].classList.remove('active-action-button')
+        if(active_buttons[i].id !== 'hist-button') {
+            active_buttons[i].classList.remove('view-selected');
+        }
     }
     container = document.getElementById('som-container');
     legend_container = document.getElementById('label-legend');
     var som_info = document.getElementById('info-table');
-    if(button.id === 'labels_button') {
-        som_info.style.display = 'none'
-        legend_container.style.backgroundColor = 'lavenderblush';
-        legend_container.innerHTML = '<h3>Label legend</h3>';
-        for(var label in label_colors) {
-            var r = label_colors[label][0];
-            var g = label_colors[label][1];
-            var b = label_colors[label][2];
-            legend_container.innerHTML += '<p style="color: rgb('+r+','+g+','+b+')">'+label+'</p>'
-    }
+    if(view === 'proto') {
+        container.classList.remove('transparent-view');
+        button = document.getElementById('prototype_button');
     } else {
-        som_info.style.display = 'block';
-        legend_container.innerHTML = "";
-        legend_container.style.backgroundColor = 'white';
-        button.classList.add("active-action-button")
+        container.classList.add('transparent-view');
     }
- }
-
- function proto_view(button) {
-    change_view(button)
-    container.style.backgroundImage = '';
-    elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
-    for(var i=0; i<elements.length; i++) {
-        elements[i].style.backgroundColor = '';
-        elements[i].style.display = 'block';
+    if(view === 'heatmap') {
+        container.style.backgroundImage = 'url('+img+')';
+        button = document.getElementById('heatmap_button')
+    } else {
+        container.style.backgroundImage = '';
     }
- }
-
- function heatmap_view(img, button) {
-    change_view(button)
-    container = document.getElementById('som-container');
-    container.style.backgroundImage = 'url('+img+')';
-    elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
-    for(var i=0; i<elements.length; i++) {
-        elements[i].style.backgroundColor = '';
-        elements[i].style.display = 'none';
+    if(view === 'labels') {
+        som_info.style.display = 'none';
+        legend_container.style.display = 'block';
+        button = document.getElementById('labels_button')
+    } else {
+        som_info.style.display = 'table';
+        legend_container.style.display = 'none';
     }
- }
-
- function color_map(button) {
-    proto_view(button)
-    container = document.getElementById('som-container');
-    elements = Array.from(container.childNodes).filter(el => parseInt(el.id) == el.id);
-    var prototypes = [];
-    var data = JSON.stringify({ 'protos': elements.map(el => el.id)});
-    var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
-    $.ajaxSetup({
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader("X-CSRFToken", csrf_token);
-        }
-    });
-    $.ajax({
-        url: '/som/get_protos',
-        data: data,
-        dataType: 'json',
-        method: 'POST',
-        success: function (data) {
-            if (data.success) {
-                prototypes = data.protos
-            }
-        },
-        async: false
-    });
-
-    for(var i=0; i < prototypes.length; i++) {
-        label = prototypes[i].label;
-        if(label !== '') {
-            if(!(label in label_colors)) {
-                color = getRandomColor();
-                label_colors[label] = color
-            }
-            var r = label_colors[label][0];
-            var g = label_colors[label][1];
-            var b = label_colors[label][2];
-            document.getElementById(prototypes[i].proto_id).style.backgroundColor = "rgba("+r+","+g+","+b+",0.7)";
-        }
-     }
- }
-
- function getRandomColor() {
-  var r = Math.floor(Math.random() * 255);
-  var g = Math.floor(Math.random() * 255);
-  var b = Math.floor(Math.random() * 255);
-  return [r, g, b];
+    button.classList.add("view-selected");
 }
 
+function proto_color(proto_id, r, g, b, view) {
+    img = document.getElementById(proto_id);
+    proto = img.parentElement;
+    if(view === 'proto') {
+        proto.style.backgroundColor = 'rgba(255,255,255,1)';
+    } else if(view === 'heatmap') {
+        proto.style.backgroundColor = 'rgba(255,255,255,0)';
+    } else if(view === 'labels') {
+        proto.style.backgroundColor = 'rgba(' + r + ',' + g + ',' + b + ',' + 1 + ')';
+    }
+}
 
- function show_selection_info(selected, element_id) {
-     selection_info = document.getElementById(element_id);
-     selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
-     label = selected.label.trim() !== '' ? selected.label : "Unlabeled";
-     selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
-     selection_info.innerHTML += "<img src='" + selected.url + "'/>";
- }
 
 function export_outliers() {
     var img_container = document.getElementById('cutouts');
     outliers = Array.from(img_container.childNodes);
     var data = { 'outlier_ids': outliers.filter(c => c.id).map(c => c.id.match(/\d/g).join(""))};
     export_catalog('outliers', data)
+}
+
+function toggle_histogram(button) {
+    var hist_container = document.getElementById('histogram');
+    var legend_container = document.getElementById('label-legend');
+    var som_info = document.getElementById('info-table');
+    if(button.classList.contains('view-selected')) {
+        hist_container.style.display = 'none';
+        button.classList.remove('view-selected');
+        active_view = document.getElementsByClassName('view-selected')[0];
+        if(active_view.id === 'labels_button') {
+            legend_container.style.display = 'block';
+        } else {
+            som_info.style.display = 'block';
+        }
+    } else {
+        button.classList.add('view-selected');
+        hist_container.style.display = 'block';
+        legend_container.style.display = 'none';
+        som_info.style.display = 'none';
+    }
+
 }
 
 function export_catalog(filename, data) {

@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from som.models import SOM, Prototype, SomCutout
+from som.models import SOM, Prototype, DataPoint
 import numpy as np
 from matplotlib import pyplot as plt
 from django.conf import settings
@@ -21,7 +21,7 @@ class Command(BaseCommand):
         axis.set_axis_off()
         figure.add_axes(axis)
         for prototype in prototypes:
-            no_fits = SomCutout.objects.filter(closest_prototype=prototype).count()
+            no_fits = DataPoint.objects.filter(closest_prototype=prototype).count()
             heatmap[prototype.y][prototype.x] = no_fits
             axis.text(prototype.x, prototype.y, no_fits, ha="center", va="center", color="w")
         axis.imshow(heatmap)

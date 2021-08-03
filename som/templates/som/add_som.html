@@ -19,29 +19,98 @@
     <script type="text/javascript" src="{% static 'som/som_basics.js' %}"></script>
 {% endblock %}
 {% block content %}
-    {% include 'som/side_menu.html' %}
+    <div id="loading-wrapper" style="display: none;">
+        <div class="loader"></div>
+        <p>Training your SOM... Grab a coffee, this may take a while ;)</p>
+    </div>
+    {% include 'pinkproject/side_menu.html' %}
     <div class="add-som">
         <h1>Add a SOM to the current project</h1>
         <br/>
-        <form id="add-project-form" action="{% url 'som:create_som' project_id=current.id %}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
+        {% if dataset %}
+            <form id="add-project-form"
+                  action="{% url 'som:create_som' project_id=current.id dataset_id=dataset.id %}" method="post"
+                  enctype="multipart/form-data" >
+        {% else %}
+            <form id="add-project-form" action="{% url 'som:create_som' project_id=current.id %}" method="post"
+                  enctype="multipart/form-data" >
+        {% endif %}
+            {% csrf_token %}
             <h3>The data set</h3>
-            <p>Please add a csv file summarizing the dataset here.</p>
             <div class="input-grid">
+            {% if dataset %}
+                <b>Dataset:</b>
+                <span>{{ dataset.dataset_name }}</span>
+                <span></span>
+                <i>{{ dataset.description }}</i>
+            {% else %}
                 <label for="dataset-name">Dataset name:</label>
                 <input id='dataset-name' type="text" name="dataset-name"
                        value="Dataset name..." maxlength="200"/>
+                <label for="dataset-descr">Description:</label>
+                <input id='dataset-descr' type="text" name="dataset-descr"
+                       value="Description..." maxlength="200"/>
+
+                <label for="dataset">Training data:</label>
+                <input class='upload-button' type="file" id="dataset" name="dataset" style="border-style:none;"/>
                 <label for="csv-data">Additional infos (as .csv)</label>
                 <input class='upload-button' type="file" id="csv-data" name="csv-data" accept="text/csv" multiple/>
+            {% endif %}
             </div>
-            <h3>Binary files</h3>
-            <p>To process the map, the binary files of the SOM, the mapping, and the images That were created during the training with PINK are necessary.
-            Please provide the binary files here.</p>
-            <div class="input-grid">
-                <label for="som-file">SOM file (.bin): </label><input class='upload-button' type="file" id="som-file" name="som-file"/>
-                <label for="mapping-file">Mapping file (.bin): </label><input class='upload-button' type="file" id="mapping-file" name="mapping-file"/>
-                <label for="image-file">Image file (.bin): </label><input class='upload-button' type="file" id="image-file" name="image-file"/>
+             <div class="tab-bar">
+                <button class="tab-button active" type="button" id="train-som-tab"
+                        onclick="activate_tab('train-som')">Train SOM</button>
+                <button class="tab-button" type="button"  id="import-bin-tab"
+                        onclick="activate_tab('import-bin')">Import from Binaries</button>
+                <button class="tab-button" type="button" id="import-python-tab"
+                        onclick="activate_tab('import-python')">Import Python object</button>
             </div>
-            <input class='action-button' type="submit" value="Save"/>
+            <div class="tab-content">
+                <div id="train-som" class="tab">
+                    <h3>Train a SOM</h3>
+                    <br/>
+                    <p>Give link the folder containing the data below. The folder can contain data in the following formats</p>
+                    <ul>
+                        <li>Images</li>
+                    </ul>
+                    <p>Furthermore, you need to specifiy the dimensions of the map and for how many epochs you want to train the model.</p>
+                    <br/>
+                    <div class="input-grid">
+                        <label for="som-name">SOM name:</label>
+                        <input id='som-name' type="text" name="som_name"
+                       value="SOM name..." maxlength="200"/>
+                        <label for="som-width">Layout:</label>
+                        <select name="layout">
+                            <option value="cartesian-2d" selected>Cartesian</option>
+                            <option value="hexagonal-2d">Hexagonal</option>
+                        </select>
+                        <label for="som-width">Width:</label>
+                        <input id='som-width' type="text" name="som_width" value='10'/>
+                        <label for="som-heigt">Height:</label>
+                        <input id='som-height' type="text" name="som_height" value='10'/>
+                        <label for="som-depth">Depth:</label>
+                        <input id='som-depth' type="text" name="som_depth" value='1'/>
+                        <label for="rotations">Number of rotations:</label>
+                        <input id='rotations' type="text" name="rotations" value='360'/>
+                        <label for="som-depth">Epochs:</label>
+                        <input id='epochs' type="text" name="epochs" value='10'/>
+                    </div>
+                </div>
+                <div id="import-bin" class="tab" style="display: none">
+                    <h3>Binary files</h3>
+                    <p>To process the map, the binary files of the SOM, the mapping, and the images That were created during the training with PINK are necessary.
+                    Please provide the binary files here.</p>
+                    <div class="input-grid">
+                        <label for="som-file">SOM file (.bin): </label><input class='upload-button' type="file" id="som-file" name="som-file"/>
+                        <label for="mapping-file">Mapping file (.bin): </label><input class='upload-button' type="file" id="mapping-file" name="mapping-file"/>
+                        <label for="image-file">Image file (.bin): </label><input class='upload-button' type="file" id="image-file" name="image-file"/>
+                    </div>
+                </div>
+                <div id="import-python" class="tab" style="display: none">
+
+                </div>
+                <input class='action-button' onclick="loading_screen()" type="submit" value="Save"/>
+            </div>
         </form>
     </div>
 {% endblock %}

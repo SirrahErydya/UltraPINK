@@ -1,46 +1,46 @@
 {% extends "main/base.html" %}
 {% block content %}
-    <div class="card">
-        {% load static %}
-        <span class="headline">Welcome to </span><img class='inline-img' align="middle" src="{% static 'main/Logo/pink-logo-small.png' %}">
-        <p>
-            UltraPINK is a Python-based web application to visualize self-organizing maps <i>(SOMs)</i> created with
-            the <b>PINK</b> framework. PINK is a tool to generate <b>p</b>arallelized <b>in</b>variant <b>K</b>ohonen maps
-            structuring data according to their morphological features. Thus, a semi-automatic analysis of the data is possible.
-        </p>
-        <br/>
-        <a href="https://github.com/HITS-AIN/PINK">
-            <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-32px.png' %}"/>
-            View PINK sources
-        </a>
-        <a href="https://github.com/SirrahErydya/UltraPINK">
-            <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-32px.png' %}"/>
-            View UltraPINK sources
-        </a> <br/>
-        <button class="action-button" href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2016-116.pdf">
-            View Publication
-        </button>
-        <button class="action-button" href="">
-            Learn more
-        </button>
+    <div class="content">
+        <div class="card">
+            {% load static %}
+            <span class="headline">Welcome to </span><img class='inline-img' align="middle" src="{% static 'main/Logo/pink-logo-small.png' %}">
+            <p>
+                UltraPINK is a Python-based web application to visualize self-organizing maps <i>(SOMs)</i> created with
+                the <b>PINK</b> framework. PINK is a tool to generate <b>p</b>arallelized <b>in</b>variant <b>K</b>ohonen maps
+                structuring data according to their morphological features. Thus, a semi-automatic analysis of the data is possible.
+            </p>
+            <br/>
+            <a href="https://github.com/HITS-AIN/PINK">
+                <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-32px.png' %}"/>
+                View PINK sources
+            </a>
+            <a href="https://github.com/SirrahErydya/UltraPINK">
+                <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-32px.png' %}"/>
+                View UltraPINK sources
+            </a> <br/>
+            <button class="action-button" href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2016-116.pdf">
+                View Publication
+            </button>
+            <button class="action-button" href="">
+                Learn more
+            </button>
+        </div>
+        <div class="card">
+            <h1>Projects</h1>
+            <ul class="project-container">
+                {% for project in projects %}
+                    <li>
+                        <a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a><br/>
+                        {{ project.description }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', [])">
+                Create new
+            </button>
+            <button class="action-button" onclick="request_page('{% url 'pinkproject:all' %}', [])">
+                All projects
+            </button>
+        </div>
     </div>
-    <div class="card">
-        <h1>Projects</h1>
-        <ul class="project-container">
-            {% for project in projects %}
-                <li>
-                    <a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a><br/>
-                    {{ project.description }}
-                </li>
-            {% endfor %}
-        </ul>
-        <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', [])">
-            Create new
-        </button>
-        <button class="action-button" onclick="request_page('{% url 'pinkproject:all' %}', [])">
-            All projects
-        </button>
-    </div>
-
-
 {% endblock %}

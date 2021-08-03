@@ -1,0 +1,48 @@
+{% if active_som %}
+    <div class="side-menu" style="width: 20vw;">
+        <div class="info-panel">
+            <b>Back to <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></b>
+            <br/>
+            <br/>
+            <h1>{{ active_som.som_name }}</h1>
+    </div>
+{% else %}
+    <div class="side-menu" style="width: 25vw;">
+        <div class="info-panel">
+            <h1>Project:
+                <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></h1>
+            <p>{{ current.description }}</p>
+            <button class="action-button"
+                    onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">
+                Edit
+            </button>
+        </div>
+{% endif %}
+    {% if active_som %}
+        {% include 'som/toolbox.html' %}
+    {% else %}
+        <div id="datasets" style="display: grid;">
+            <h2>SOMs in this project:</h2>
+            <ul>
+                {% for ds in datasets %}
+                    <li>
+                        <b>{{ ds.dataset_name }}</b>
+                        <ul>
+                        {% for som in soms %}
+                            {% if som.dataset == ds %}
+                                <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
+                                    {{ som.som_name}}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+            <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
+                        Add SOM
+            </button>
+        </div>
+    {% endif %}
+
+</div>

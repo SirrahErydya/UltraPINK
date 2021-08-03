@@ -1,15 +1,30 @@
-
+<div id="loading-wrapper" style="display: none;">
+    <div class="loader"></div>
+    <p>Generate mapping... Grab a coffee, this may take a while ;)</p>
+</div>
 <div id="som-container" style="
     background-size: 100%;
     grid-template-columns: repeat({{ active_som.som_width }}, auto);
-    grid-template-rows: repeat({{ active_som.som_height}}, auto);
-    grid-gap: 5px;">
+    grid-template-rows: repeat({{ active_som.som_height}}, calc(80vh/{{ active_som.som_height}}));">
     <div class="magnifier" id="magnify-window" style="display: none;"></div>
     {% for prototype in prototypes %}
-        <div id="{{ prototype.proto_id}}" class="tooltip prototype" onclick="click_image(this.id, true)"
-             style="background-image: url({{ prototype.image.url }})">
+        <div class="tooltip prototype">
             <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
+            <img id="proto{{ prototype.id }}" src="{{ prototype.image }}"
+                 onclick="click_image(this.id, {{ prototype.id }},  true)"/>
         </div>
+        <script>
+            {% if prototype.label %}
+            proto_color("proto{{ prototype.id }}",
+                {{ prototype.label.color_r }},
+                {{ prototype.label.color_g }},
+                {{ prototype.label.color_b}},
+                "{{ view }}");
+            {% else %}
+            proto_color("proto{{ prototype.id }}", 255, 255, 255,
+                "{{ view }}");
+            {% endif %}
+        </script>
     {% endfor %}
 </div>
 <div class="modal_window" id="modal-window" style="display: none">
@@ -18,8 +33,6 @@
         <img src="{% static 'main/icons/error.png' %}" onclick="close_cutout_modal()"/>
     </div>
     <div id="modal-header"></div>
-    <div class="prototype-info" id="prototype-preview">
-    </div>
     <div id="cutouts" class="cutouts">
     </div>
     <input style="width:300px" id='cutout-label' type="text" value='Label...'/>
@@ -38,15 +51,15 @@
     <table id="info-table">
         <tr>
             <th>Dataset:</th>
-            <td>{{ active_som.training_dataset_name }}</td>
+            <td>{{ active_som.dataset.dataset_name }}</td>
         </tr>
         <tr>
-            <th>Total number of images:</th>
-            <td>{{ active_som.number_of_images }}</td>
+            <th>Datset length:</th>
+            <td>{{ active_som.dataset.length }}</td>
         </tr>
         <tr>
-            <th>Number of channels:</th>
-            <td>{{ active_som.number_of_channels }}</td>
+            <th>Neurons:</th>
+            <td>{{ active_som.number_of_neurons }}</td>
         </tr>
         <tr>
             <th>Width:</th>
@@ -62,11 +75,31 @@
         </tr>
     </table>
     <br/>
-    <div class="prototype-info" id="prototype-info">
+    <div id="label-legend">
+        <h3>Labels</h3><br/>
+        {% if labels %}
+        <div class="label-legend" style="grid-template-rows: repeat({{ labels|length}}, auto)">
+        {% for label in labels %}
+            {{ label.name }}:
+            <div class="square"
+                 style="background-color: rgb({{ label.color_r }},{{ label.color_g }},{{ label.color_b }});"></div>
+        {% endfor %}
+        </div>
+        {% else %}
+            <i>No labels in this SOM</i>
+        {% endif %}
     </div>
-    <div class="som-histogram" id="som-histogram">
-        <h3>Histogram of distances to the best matching prototypes</h3>
-        <img src="{{ active_som.histogram.url }}">
+    <div id="histogram">
+        <h3>Map Histogram</h3>
+        {% if active_som.histogram %}
+            <img src="{{ active_som.histogram.url }}"/>
+        {% endif %}
     </div>
-    <div class="label-legend" id="label-legend"></div>
+    <div class="proto-preview">
+        <div id="prototype-enlargement"></div>
+        <div id="proto-info"></div>
+    </div>
 </div>
+<script>
+    view("{{ view }}", "{{ active_som.heatmap.url }}");
+</script>

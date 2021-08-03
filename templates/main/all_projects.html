@@ -1,22 +1,23 @@
 {% extends "main/base.html" %}
 {% block content %}
-    <div class="card">
-        <h1>Projects</h1>
-        <ul class="project-container">
-            {% for project in projects %}
-                <li>
-                    <a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a><br/>
-                    {{ project.description }}
-                </li>
-            {% endfor %}
-        </ul>
-        <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', [])">
-            Create new
-        </button>
-        <button class="action-button" onclick="request_page('{% url 'pinkproject:all' %}', [])">
-            All projects
-        </button>
+    <div class="content">
+        <div class="card">
+            <h1>Projects</h1>
+            <ul class="project-container">
+                {% for project in projects %}
+                    <li>
+                        <a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a><br/>
+                        {{ project.description }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', [])">
+                Create new
+            </button>
+            <button class="action-button" onclick="request_page('{% url 'pinkproject:all' %}', [])">
+                All projects
+            </button>
+        </div>
     </div>
-
 
 {% endblock %}
