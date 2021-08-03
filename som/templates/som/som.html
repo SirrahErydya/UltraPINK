@@ -10,8 +10,8 @@
     {% for prototype in prototypes %}
         <div class="tooltip prototype">
             <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
-            <img id="proto{{ prototype.id }}" src="{{ prototype.image }}"
-                 onclick="click_image(this.id, {{ prototype.id }},  true)"/>
+            <img id="proto{{ prototype.id}}" src="{{ prototype.image }}"
+                 onclick="click_image(this.id, {{ prototype.id }},  true)" onmouseover="show_hover_preview(this.id)"/>
         </div>
         <script>
             {% if prototype.label %}
@@ -102,4 +102,5 @@
 </div>
 <script>
     view("{{ view }}", "{{ active_som.heatmap.url }}");
+    //magnify({{ active_som.som_width }}, {{ active_som.som_height }});
 </script>

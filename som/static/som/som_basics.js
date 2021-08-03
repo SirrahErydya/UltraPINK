@@ -73,6 +73,15 @@ function select_single(img, db_id, selected_class) {
     }
 }
 
+function show_hover_preview(hovered) {
+    if(selected_prototypes.length !== 1) {
+        var proto_container = document.getElementById('prototype-enlargement');
+        img = document.getElementById(hovered);
+        proto_container.innerHTML = '';
+        proto_container.appendChild(img.cloneNode(true));
+    }
+}
+
 function show_selection_info(selected, element_id) {
      selection_info = document.getElementById(element_id);
      selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
@@ -241,19 +250,18 @@ function show_in_aladin(ra, dec, div_id) {
     aladin.setFov(12/60);
 }
 
-function magnify(event) {
-    zoom = 10;
+function magnify(som_width, som_height) {
+    zoom = 1;
     var glass, w, h, bw;
 
     container = document.getElementById('som-container');
 
     /* Create magnifier glass: */
     glass = document.getElementById('magnify-window');
-    pos = getCursorPos(event);
-    glass.style.display = 'block';
-    glass.style.backgroundImage = container.style.backgroundImage;
+    glass.style.display = "block";
     glass.style.backgroundRepeat = "no-repeat";
     glass.style.backgroundSize = 100 * zoom + '%';
+
 
     /* Set background properties for the magnifier glass: */
     w = glass.offsetWidth / 2;
@@ -266,6 +274,7 @@ function magnify(event) {
     /*and also for touch screens:*/
     glass.addEventListener("touchmove", moveMagnifier);
     container.addEventListener("touchmove", moveMagnifier);
+
 
     function moveMagnifier(e) {
         var pos, x, y;
@@ -281,9 +290,22 @@ function magnify(event) {
         glass.style.top =  glass_top + "px";
         /* Display what the magnifier glass "sees": */
         container_bb = container.getBoundingClientRect();
-        bg_x = container_bb.left - x;
-        bg_y = container_bb.top - y;
-        glass.style.backgroundPosition = (bg_x * (zoom/4)) + "px " +  (bg_y * (zoom/4)) + "px";
+        img_width = container_bb.width / som_width;
+        img_height = container_bb.height / som_height;
+        proto_x = Math.floor((x - container_bb.left)/img_width);
+        proto_y = Math.floor((y - container_bb.top)/img_height);
+        if(0 <= proto_x && proto_x < som_width && 0 <= proto_y && proto_y < som_height) {
+            console.log(proto_y);
+            console.log(proto_x);
+            console.log("proto" + proto_x + proto_y);
+            img = document.getElementById("proto" + proto_x + proto_y);
+            glass.style.backgroundImage = "url('" + img.src + "')";
+            img_bb = img.getBoundingClientRect();
+            bg_x = img_bb.left - x;
+            bg_y = img_bb.top - y;
+            //glass.style.backgroundPosition = (bg_x * (zoom/4)) + "px " +  (bg_y * (zoom/4)) + "px";
+        }
+
     }
 
     function getCursorPos(e) {
