@@ -10,14 +10,13 @@ var selected_cutouts = [];
 var label_colors = {};
 
 
-function select_tool(id) {
+function select_tool(id, grid_path) {
     var som_container = document.getElementById('som-container');
     var selected_tools = document.getElementsByClassName(tool_selected);
     var tool = document.getElementById(id);
     for(var i=0; i<selected_tools.length; i++) {
         if(selected_tools[i].id == 'magnifier') {
-            som_container.removeEventListener("mousedown", magnify);
-            som_container.removeEventListener("mouseup", remove_magnifier);
+            remove_magnifier();
         } else if(selected_tools[i].id == 'zoom') {
             som_container.removeEventListener('wheel', zoom_som);
             som_container.style.backgroundSize = '100%';
@@ -26,8 +25,7 @@ function select_tool(id) {
         selected_tools[i].classList.remove(tool_selected);
     }
     if(id == "magnifier") {
-        som_container.addEventListener("mousedown", magnify);
-        som_container.addEventListener("mouseup", remove_magnifier);
+        magnify(grid_path);
     } else if(id == "zoom") {
         som_container.addEventListener('wheel', zoom_som);
     }
@@ -250,22 +248,24 @@ function show_in_aladin(ra, dec, div_id) {
     aladin.setFov(12/60);
 }
 
-function magnify(som_width, som_height) {
-    zoom = 1;
+function magnify(img_path) {
+    zoom = 5;
     var glass, w, h, bw;
 
     container = document.getElementById('som-container');
 
     /* Create magnifier glass: */
     glass = document.getElementById('magnify-window');
+    glass.style.backgroundImage = "url('" + img_path + "')";
     glass.style.display = "block";
     glass.style.backgroundRepeat = "no-repeat";
-    glass.style.backgroundSize = 100 * zoom + '%';
+    glass.style.backgroundSize = (container.scrollWidth * zoom) + "px " + (container.scrollHeight * zoom) + "px";
 
 
     /* Set background properties for the magnifier glass: */
     w = glass.offsetWidth / 2;
     h = glass.offsetHeight / 2;
+    bw = 1; // Border width
 
     /* Execute a function when someone moves the magnifier glass over the image: */
     glass.addEventListener("mousemove", moveMagnifier);
@@ -284,27 +284,19 @@ function magnify(som_width, som_height) {
         pos = getCursorPos(e);
         x = pos.x;
         y = pos.y;
-        glass_left = (x-5);
-        glass_top = (y-5);
+        /* Prevent the magnifier glass from being positioned outside the image: */
+        container_bb = container.getBoundingClientRect();
+        if (x > container_bb.right - (w )) {x = container_bb.right - (w );}
+        if (x < container_bb.left + (w )) {x = container_bb.left + (w );}
+        if (y > container_bb.bottom - (h )) {y = container_bb.bottom - (h );}
+        if (y < container_bb.top + (h )) {y = container_bb.top + (h );}
+        glass_left = (x-w);
+        glass_top = (y-h);
         glass.style.left = glass_left + "px";
         glass.style.top =  glass_top + "px";
         /* Display what the magnifier glass "sees": */
-        container_bb = container.getBoundingClientRect();
-        img_width = container_bb.width / som_width;
-        img_height = container_bb.height / som_height;
-        proto_x = Math.floor((x - container_bb.left)/img_width);
-        proto_y = Math.floor((y - container_bb.top)/img_height);
-        if(0 <= proto_x && proto_x < som_width && 0 <= proto_y && proto_y < som_height) {
-            console.log(proto_y);
-            console.log(proto_x);
-            console.log("proto" + proto_x + proto_y);
-            img = document.getElementById("proto" + proto_x + proto_y);
-            glass.style.backgroundImage = "url('" + img.src + "')";
-            img_bb = img.getBoundingClientRect();
-            bg_x = img_bb.left - x;
-            bg_y = img_bb.top - y;
-            //glass.style.backgroundPosition = (bg_x * (zoom/4)) + "px " +  (bg_y * (zoom/4)) + "px";
-        }
+        glass.style.backgroundPosition = "-" + (((x-container_bb.left) * zoom) - w + bw) + "px -" +
+            (((y-container_bb.top) * zoom) - h + bw) + "px";
 
     }
 

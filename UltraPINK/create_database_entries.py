@@ -12,6 +12,8 @@ from io import BytesIO
 import base64
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import gridspec as gridspec
+from matplotlib import image as mpimg
 import csv
 
 
@@ -83,6 +85,27 @@ def create_prototype_models(som_model):
                 image=img_link
             )
     print("...done.")
+
+
+def save_prototype_grid(som_model, path):
+    """
+    Create an image of the whole SOM grid
+    :param som_model: The SOM database model
+    """
+    prototypes = smodels.Prototype.objects.filter(som=som_model)
+    figure = plt.figure(figsize=(10, 10), frameon=False)
+    grid = gridspec.GridSpec(som_model.som_width, som_model.som_height, wspace=0.0, hspace=0.0,
+                             bottom=0, top=1, left=0, right=1)
+    i = 0
+    for prototype in prototypes:
+        axis = plt.subplot(grid[i])
+        axis.set_axis_off()
+        axis.set_aspect('equal')
+        axis.imshow(mpimg.imread(prototype.image), cmap='gray')
+        i += 1
+    plt.subplots_adjust(wspace=0.0, hspace=0.0)
+    figure.savefig(path)
+    plt.close()
 
 
 def save_heatmap(heatmap, path):

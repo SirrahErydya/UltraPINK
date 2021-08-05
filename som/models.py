@@ -20,6 +20,7 @@ class SOM(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     heatmap = models.ImageField(default=None, null=True)
     histogram = models.ImageField(default=None, null=True)
+    proto_grid = models.ImageField(default=None, null=True)
 
 
 class Label(models.Model):

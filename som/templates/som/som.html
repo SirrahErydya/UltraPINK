@@ -54,7 +54,7 @@
             <td>{{ active_som.dataset.dataset_name }}</td>
         </tr>
         <tr>
-            <th>Datset length:</th>
+            <th>Dataset length:</th>
             <td>{{ active_som.dataset.length }}</td>
         </tr>
         <tr>
@@ -100,7 +100,8 @@
         <div id="proto-info"></div>
     </div>
 </div>
+{% if active_som.heatmap %}
 <script>
     view("{{ view }}", "{{ active_som.heatmap.url }}");
-    //magnify({{ active_som.som_width }}, {{ active_som.som_height }});
 </script>
+{% endif %}

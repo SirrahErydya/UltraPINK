@@ -274,8 +274,8 @@ body {
     position: fixed;
     border: 1px solid #d4d4d4;
     /*set the size of the lens:*/
-    width: 300px;
-    height: 300px;
+    width: 100px;
+    height: 100px;
     z-index: 500;
 }
 

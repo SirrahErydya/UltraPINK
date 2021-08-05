@@ -86,6 +86,13 @@ def save_som(request, project_id, dataset_id=None):
     else:
         raise FileNotFoundError("No files to train or import are SOM are provided.")
     som_model = dbe.create_som_model(som_name, pink_som, dataset_model)
+
+    # Save proto grid
+    save_path = os.path.join('projects', som_model.dataset.project.project_name, "soms", som_model.som_name)
+    grid_path = os.path.join(save_path, "proto_grid.png")
+    dbe.save_prototype_grid(som_model, grid_path)
+    som_model.proto_grid.name = grid_path
+    som_model.save()
     return redirect('pinkproject:project', project_id=project_id, som_id=som_model.id)
 
 
@@ -94,11 +101,17 @@ def map_prototypes(request, som_id):
     save_path = os.path.join('projects', som_model.dataset.project.project_name, "soms", som_model.som_name)
     mapping, heatmap = map_som(som_model)
     np.save(os.path.join(save_path, "mapping.npy"), mapping)
+
+    # Save heatmap
     heatmap_path = os.path.join(save_path, "heatmap.png")
     dbe.save_heatmap(heatmap, heatmap_path)
+
+    # Save histrogram
     bmu_distances = np.min(mapping, axis=1)
     hist_path = os.path.join(save_path, 'histogram.png')
     dbe.plot_histogram(bmu_distances, hist_path)
+
+    # Update path links in model
     som_model.mapping_file = os.path.join(save_path, "mapping.npy")
     som_model.heatmap.name = heatmap_path
     som_model.histogram.name = hist_path

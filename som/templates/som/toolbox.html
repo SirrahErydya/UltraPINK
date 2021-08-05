@@ -4,19 +4,19 @@
     <h3>Inspection:</h3>
     <div class="inspection-tools">
         <div class="tooltip">
-            <i id="pointer" class="tool-selected material-icons" onclick="select_tool(this.id)">mouse</i>
+            <i id="pointer" class="tool-selected material-icons" onclick="select_tool(this.id, null)">mouse</i>
             <span class="tooltiptext">Select</span>
         </div>
         <div class="tooltip">
-            <i id="selection" class="material-icons" onclick="select_tool(this.id)">select_all</i>
+            <i id="selection" class="material-icons" onclick="select_tool(this.id, null)">select_all</i>
             <span class="tooltiptext">Select multiple</span>
         </div>
         <div class="tooltip">
-            <i id="zoom" class="material-icons" onclick="select_tool(this.id)">zoom_out_map</i>
+            <i id="zoom" class="material-icons" onclick="select_tool(this.id, null)">zoom_out_map</i>
             <span class="tooltiptext">Zoom into map</span>
         </div>
         <div class="tooltip">
-            <i id="magnifier" class="material-icons" onclick="select_tool(this.id)">zoom_in</i>
+            <i id="magnifier" class="material-icons" onclick="select_tool(this.id, '{{ active_som.proto_grid.url }}')">zoom_in</i>
             <span class="tooltiptext">Magnify</span>
         </div>
         <div></div><div></div>
