@@ -6,14 +6,20 @@
     <link rel="icon" href="{% static 'main/Logo/icon.png' %}">
     <!-- materialize sheet for icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
     {% block stylesheets %}<!-- Additional sheets added in subpages -->{% endblock %}
     <script type="text/javascript" src="{% static 'main/basic_functions.js' %}"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     {% block javascript %}<!-- Additional scripts added in subpages -->{% endblock %}
     <title>{% block title %}UltraPINK{% endblock %}</title>
 </head>
 <body>
     <div class="navbar">
+    {% block banner %}
+    {% endblock %}
     {% block navbar %}
         <ul>
             <li><a href="{% url 'home' %}">Home</a></li>

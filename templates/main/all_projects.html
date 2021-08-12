@@ -1,23 +1,30 @@
 {% extends "main/base.html" %}
 {% block content %}
-    <div class="content">
-        <div class="card">
-            <h1>Projects</h1>
-            <ul class="project-container">
-                {% for project in projects %}
-                    <li>
-                        <a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a><br/>
-                        {{ project.description }}
-                    </li>
-                {% endfor %}
-            </ul>
+    <div class="content all-projects">
+            <p class="headline">My Projects </p>
             <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', [])">
                 Create new
             </button>
-            <button class="action-button" onclick="request_page('{% url 'pinkproject:all' %}', [])">
-                All projects
-            </button>
-        </div>
+            <table class="responsive-table highlight">
+                <thead>
+                    <tr>
+                        <th>Project name</th>
+                        <th>Description</th>
+                        <th>No. Datasets</th>
+                        <th>No. SOMs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                        <tr>
+                            <td><a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a></td>
+                            <td>{{ project.description }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
     </div>
 
 {% endblock %}

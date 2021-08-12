@@ -9,12 +9,17 @@ body {
     overflow-x: hidden;
 }
 
-.navbar {
-    height: 50px;
+.banner {
+    background-image: url('imgs/pink_web.jpg');
+    background-size: cover;
+    background-position: 50%;
+    color: white;
+    text-align: center;
+    padding: 2% 10% 2% 10%;
 }
+
+
 .navbar, .navbar ul {
-    position: -webkit-sticky; /* Safari */
-    position: sticky;
     top: 0;
     background-color: pink;
     z-index: 42;
@@ -46,17 +51,22 @@ body {
 
 
 .content {
-    min-height: calc(100vh - 215px);
-    margin-left: 15%;
-    margin-right: 15%;
-    margin-top: 50px;
-    margin-bottom: 50px;
+    min-height: calc(100vh - 115px);
+    padding: 50px 10% 50px 10%;
 }
 
 .headline {
     font-size: 40pt;
     font-weight: bolder;
-    margin-bottom: 50px;
+}
+
+.carousel {
+    height: 600px;
+}
+
+.carousel .carousel-item{
+    width: 500px;
+    height: 400px;
 }
 
 .card {
@@ -66,7 +76,6 @@ body {
     position: relative;
     background-color: mistyrose;
     padding: 50px;
-    border-radius: 25px;
     min-height: 180px;
     text-align: justify;
 }
@@ -78,6 +87,18 @@ body {
 .card a {
     margin-right: 15px;
     text-decoration: none;
+}
+
+
+.carousel .carousel-item .card {
+    margin: 0;
+    min-height: 400px;
+    padding: 0;
+    color: black;
+}
+
+.carousel .carousel-item .card:hover {
+    color: deeppink;
 }
 
 .project-container {
@@ -105,6 +126,28 @@ a:link, a:visited, a:active {
 a:hover {
     color: deeppink;
 }
+
+.about {
+    background-image: url('imgs/pink_web.jpg');
+    background-size: cover;
+    color: white;
+    padding-left: 10%;
+    padding-right: 10%;
+    text-align: center;
+}
+
+.all-projects table {
+
+}
+
+.all-projects td{
+    padding-right: 2px;
+    padding-left: 2px;
+    max-width: 25vw;
+    word-wrap: break-word;
+}
+
+
 
 input[type=text], textarea {
     border: none;

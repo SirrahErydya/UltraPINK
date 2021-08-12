@@ -135,6 +135,8 @@ body {
     grid-gap: 0;
     position: fixed;
     left: 25vw;
+    transform-origin: 0px 0px;
+    transform: scale(1) translate(0px, 0px);
 }
 
 .cutouts {
