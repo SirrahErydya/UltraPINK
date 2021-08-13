@@ -1,12 +1,33 @@
 
-.create-project {
-    background-color: mistyrose;
-    margin-left: 20%;
-    margin-right: 20%;
-    padding: 50px;
+.create-project textarea {
+    margin-top: 10px;
+    background-color: white;
+    width: 100%;
 }
 
+.create-project label {
+    vertical-align: bottom;
+}
+
+#create-project-form .input-field input[type=text]:focus + label,
+#create-project-form .input-field textarea:focus + label {
+    color: deeppink;
+}
+
+#create-project-form .input-field input[type=text]:focus,
+.input-field input[type=text].valid {
+     border-bottom: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+#create-project-form .input-field textarea:focus {
+     border: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+
 #create-project-form {
+    margin-top: 30px;
 }
 
 .project-lander {
@@ -82,15 +103,6 @@
 .info-panel p {
     padding-top: 15px;
     padding-bottom: 15px;
-}
-
-.input-grid {
-    margin-top: 50px;
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(2, 12em);
-    grid-template-rows: repeat(2, auto);
-    margin-bottom: 50px;
 }
 
 .side-menu {

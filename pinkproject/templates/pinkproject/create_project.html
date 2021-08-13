@@ -4,21 +4,39 @@
     <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
 {% endblock %}
 {% block content %}
-    <div class="content">
-        <div class="create-project">
-            <h1>Create a new project</h1>
-            <form id="create-project-form" action="{% url 'pinkproject:create_new' %}{{ project.id }}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
-                <div class="input-grid">
-                    <label for="project-name">Project name: </label>
-                    <input id='project-name' type="text" name="project-name"
-                           value='{{ project.project_name|default:"Enter name..."}}' maxlength="200"/>
-                    <label for="project-desc">Description: </label>
-                    <textarea class="large-input" id='project-desc'
-                              maxlength="2000" name="project-desc">{{ project.description|default:"Enter description..."}}
-                    </textarea>
-                </div>
-                <input class='action-button' type="submit" value="Save"/>
-            </form>
+    <div class="content create-project">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">Create a new project</span>
+                <form id="create-project-form" action="{% url 'pinkproject:create_new' %}{{ project.id }}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
+                    <div class="input-field">
+                        <input id='project-name' type="text" name="project-name"
+                               value='{{ project.project_name|default:"Enter name..."}}' maxlength="200"/>
+                        <label for="project-name" class="active">Project name: </label>
+                    </div>
+                    <div class="input-field">
+                        <textarea class="large-input" id='project-desc'
+                                  maxlength="2000" name="project-desc">{{ project.description|default:"Enter description..."}}
+                        </textarea>
+                        <label for="project-desc">Description: </label>
+                    </div>
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Thumbnail</span>
+                            <input type="file">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                    <input class='action-button' type="submit" value="Save"/>
+                </form>
+            </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            M.updateTextFields();
+          });
+    </script>
 {% endblock %}

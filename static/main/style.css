@@ -19,6 +19,8 @@ body {
 }
 
 
+
+
 .navbar, .navbar ul {
     top: 0;
     background-color: pink;
@@ -152,8 +154,6 @@ a:hover {
 input[type=text], textarea {
     border: none;
     width: 500px;
-    margin-left: 10px;
-    margin-right:10px;
     padding: 5px;
     font-family: Verdana, Arial, sans-serif;
     font-size: 12pt;
@@ -167,13 +167,24 @@ textarea {
     min-height: 150px;
 }
 
+.home {
+    text-align: center;
+}
+
+.btn {
+    background-color: hotpink;
+}
+
+.btn:hover {
+    background-color: deeppink;
+}
 .action-button {
     padding: 15px;
     margin-top: 15px;
     margin-bottom: 15px;
     border-style: none;
     min-width: 200px;
-    background-color: palevioletred;
+    background-color: hotpink;
     color: white;
     text-align: center;
     font-family: Verdana, Arial, sans-serif;

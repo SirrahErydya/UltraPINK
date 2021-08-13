@@ -9,58 +9,60 @@
             structuring data according to their morphological features. Thus, a semi-automatic analysis of the data is possible.
         </p>
         <br/>
-        <a href="https://github.com/HITS-AIN/PINK">
-            <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-Light-32px.png' %}"/>
-            View PINK sources
-        </a>
-        <a href="https://github.com/SirrahErydya/UltraPINK">
-            <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-Light-32px.png' %}"/>
-            View UltraPINK sources
-        </a> <br/>
-        <button class="action-button" href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2016-116.pdf">
-            View Publication
-        </button>
-        <button class="action-button" href="">
-            Learn more
-        </button>
+        <div class="row">
+            <div class="col s6" style="text-align: right;">
+                <a href="https://github.com/HITS-AIN/PINK">
+                    <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-Light-32px.png' %}"/>
+                    View PINK sources
+                </a>
+            </div>
+            <div class="col s6=" style="text-align: left;">
+                <a href="https://github.com/SirrahErydya/UltraPINK">
+                    <img align="middle" src="{%  static 'main/GitHub-Mark/PNG/GitHub-Mark-Light-32px.png' %}"/>
+                    View UltraPINK sources
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s6" style="text-align: right;">
+                <button class="btn" href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2016-116.pdf">
+                    View Publication
+                </button>
+            </div>
+            <div class="col s6" style="text-align: left;">
+                <button class="btn" href="{% url 'about' %}">
+                    Learn more
+                </button>
+            </div>
+        </div>
+
+
     </div>
 {% endblock %}
 {% block content %}
-    <div class="content">
-        <!--<div class="card">
-            <h1>Projects</h1>
-            <ul class="project-container">
-                {% for project in projects %}
-                    <li>
-                        <a href="{% url 'pinkproject:project' project_id=project.id  %}">{{ project.project_name }}</a><br/>
-                        {{ project.description }}
-                    </li>
-                {% endfor %}
-            </ul>
-            <button class="action-button" onclick="request_page('{% url 'pinkproject:create_project' %}', [])">
+    <div class="content home">
+        <p class="headline">My projects</p>
+        <div class="carousel">
+            {% for project in projects %}
+                <a class="carousel-item" href="{% url 'pinkproject:project' project_id=project.id  %}">
+                    <div class="card">
+                        <div class="card-image">
+                          <img src="{% static 'main/imgs/pink_web.jpg' %}">
+                          <span class="card-title">{{ project.project_name }}</span>
+                        </div>
+                        <div class="card-content">
+                            <p>{{ project.description }}</p>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        <button class="btn" onclick="request_page('{% url 'pinkproject:create_project' %}', [])">
                 Create new
-            </button>
-            <button class="action-button" onclick="request_page('{% url 'pinkproject:all' %}', [])">
-                All projects
-            </button>
-        </div> -->
-    <div class="carousel">
-        {% for project in projects %}
-            <a class="carousel-item" href="{% url 'pinkproject:project' project_id=project.id  %}">
-                <div class="card">
-                    <div class="card-image">
-                      <img src="{% static 'main/imgs/pink_web.jpg' %}">
-                      <span class="card-title">{{ project.project_name }}</span>
-                    </div>
-                    <div class="card-content">
-                        <p>{{ project.description }}</p>
-                    </div>
-                </div>
-            </a>
-        {% endfor %}
-    </div>
-
-
+        </button>
+        <button class="btn" onclick="request_page('{% url 'pinkproject:all' %}', [])">
+            All projects
+        </button>
 
     </div>
     <script>
