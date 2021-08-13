@@ -7,6 +7,7 @@
 body {
     font-family: Verdana, Arial, sans-serif;
     overflow-x: hidden;
+    height: 100%;
 }
 
 .banner {
@@ -21,34 +22,40 @@ body {
 
 
 
-.navbar, .navbar ul {
+#nav {
     top: 0;
     background-color: pink;
     z-index: 42;
-}
-
-.navbar ul {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    list-style-type: none;
-}
-
-.navbar ul li {
-    margin-left: 15px;
-    margin-right: 15px;
+    text-align: center;
     display: inline-block;
 }
 
-.navbar ul li a:link, .navbar ul li a:visited, .navbar ul li a:active,
+.nav-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+#nav ul li a:link, #nav ul li a:visited, #nav ul li a:active,
 .footer ul li a:link, .footer ul li a:visited, .footer ul li a:active {
     color: black;
     text-decoration: none;
 }
 
-.navbar ul li a:hover,
+#nav ul li a:hover,
 .footer ul li a:hover {
     color: deeppink;
     text-decoration: underline;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%
+}
+
+/* Add some top padding to the page content to prevent sudden quick movement (as the header gets a new position at the top of the page (position:fixed and top:0) */
+.sticky + .content {
+  padding-top: 102px;
 }
 
 

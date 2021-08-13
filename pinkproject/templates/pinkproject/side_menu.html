@@ -1,4 +1,36 @@
-{% if active_som %}
+
+
+{% load static %}
+  <ul id="slide-out" class="sidenav sidenav-fixed">
+    <li><div class="user-view">
+      <div class="background">
+        <img src="{% static 'main/imgs/pink_web.jpg'%}">
+      </div>
+      <a href="{% url 'pinkproject:project' project_id=current.id  %}" class="headline"> {{ current.project_name }} </a>
+      <a href="{% url 'pinkproject:create_project' %}"><i class="material-icons">create</i>Edit</a>
+      <a href=""><i class="material-icons">file_download</i>Export</a>
+        {% if active_som %}
+            <p class="headline"> {{ active_som.som_name }} </p>
+        {% endif %}
+    </div></li>
+      {% if active_som %}
+            {% include 'som/toolbox.html' %}
+      {% else %}
+          <li><a class="subheader">Project description</a></li>
+          <li><p>{{ current.description }}</p></li>
+          <li><a href="#!"><i class="material-icons">add</i>Add dataset</a></li>
+          <li><div class="divider"></div></li>
+          <li><a href="{% url 'all_projects' %}"><i class="material-icons">chevron_left</i>Back to all projects</a></li>
+      {% endif %}
+
+
+
+
+  </ul>
+  <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+
+
+<!--{% if active_som %}
     <div class="side-menu" style="width: 20vw;">
         <div class="info-panel">
             <b>Back to <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></b>
@@ -9,8 +41,8 @@
 {% else %}
     <div class="side-menu" style="width: 25vw;">
         <div class="info-panel">
-            <h1>Project:
-                <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></h1>
+            <p><b>Project:
+                <a href="{% url 'pinkproject:project' project_id=current.id  %}">{{ current.project_name }}</a></b></p>
             <p>{{ current.description }}</p>
             <button class="action-button"
                     onclick="request_page('{% url 'pinkproject:create_project' %}', ['{{ current.id }}'])">
@@ -45,4 +77,19 @@
         </div>
     {% endif %}
 
-</div>
+</div> -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      options = [];
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems, options);
+  });
+
+  // Initialize collapsible (uncomment the lines below if you use the dropdown variation)
+  // var collapsibleElem = document.querySelector('.collapsible');
+  // var collapsibleInstance = M.Collapsible.init(collapsibleElem, options);
+
+  // Or with jQuery
+
+</script>

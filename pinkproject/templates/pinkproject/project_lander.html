@@ -4,7 +4,7 @@
 {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
 {% endblock %}
-
+<div class="content project-lander">
 {% block content %}
     {% include 'pinkproject/side_menu.html' %}
         <div class="project-lander">
@@ -75,5 +75,5 @@
                 </div>
             {% endif %}
     </div>
-
+</div>
 {% endblock %}

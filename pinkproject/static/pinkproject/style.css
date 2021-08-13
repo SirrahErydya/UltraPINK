@@ -105,25 +105,34 @@
     padding-bottom: 15px;
 }
 
-.side-menu {
-    position: fixed;
-    float: left;
-    padding: 0px 25px 15px 50px;
-    width: 20vw;
-    min-height: 100vh;
-    height: 100%;
+.sidenav {
     background-color: pink;
-    z-index: 3;
 }
 
-.side-menu input {
-    width: 30px;
-    margin-left: 10px;
-    margin-right:10px;
-    border: none;
-    padding: 2px;
-    background-color: lavenderblush;
+.sidenav .user-view {
+    padding-top: 30%;
+    color: white;
+    padding-bottom: 10px;
 }
+
+.sidenav .user-view .headline {
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+.sidenav p {
+    padding: 0 32px;
+    line-height: 1.4;
+}
+
+.sidenav .user-view a {
+    padding-right: 30px;
+    color: white;
+}
+.sidenav .user-view a:hover {
+    color: deeppink;
+}
+
 
 .collapsible {
     font-family: Verdana, Arial, sans-serif;
