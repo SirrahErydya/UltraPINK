@@ -95,12 +95,32 @@ body {
     padding-right: 35px;
 }
 
+.sidenav .headline {
+    font-size: 16pt;
+    padding-top: 10px;
+    line-height: 2;
+}
+
+.sidenav #toolbox li > a{
+    padding: 0;
+}
+
+#toolbox p {
+    padding: 0;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+#toolbox li.active, #toolbox .collapsible, #toolbox .collapsible-header, #toolbox .collapsible-body {
+    background-color: seashell;
+}
+
 .inspection-tools {
     display: grid;
     padding-top: 15px;
     padding-bottom: 15px;
     grid-template-columns: repeat(6, 34px);
-    grid-template-rows: repeat(2, auto);
+    grid-template-rows: repeat(1, auto);
     grid-gap: 16px;
 }
 

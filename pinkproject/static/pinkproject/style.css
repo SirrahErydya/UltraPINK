@@ -141,52 +141,6 @@
 }
 
 
-.collapsible {
-    font-family: Verdana, Arial, sans-serif;
-    width: 100%;
-    font-size: 15pt;
-    margin-top: 15px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    background-color: palevioletred;
-    color: white;
-    cursor: pointer;
-    border: none;
-}
-
-.collapsible:hover {
-    background-color: deeppink;
-}
-
-#datasets, #toolbox {
-    padding: 15px;
-    background-color: mistyrose;
-}
-
-#datasets {
-    padding: 25px;
-    display: none;
-}
-
-#datasets h2 {
-    padding-bottom: 20px;
-}
-
-#datasets ul {
-    padding-top: 20px;
-    padding-bottom: 30px;
-}
-
-#datasets ul li {
-    list-style: none;
-}
-
-#datasets .action-button{
-    width: 120px;
-}
-
-
-
 #loading-wrapper {
     background-color: white;
     position: fixed;

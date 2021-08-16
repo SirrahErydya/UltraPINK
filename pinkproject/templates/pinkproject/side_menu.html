@@ -2,18 +2,24 @@
 
 {% load static %}
   <ul id="slide-out" class="sidenav sidenav-fixed">
-    <li><div class="user-view">
-      <div class="background">
-        <img src="{% static 'main/imgs/pink_web.jpg'%}">
-      </div>
-      <a href="{% url 'pinkproject:project' project_id=current.id  %}" class="headline"> {{ current.project_name }} </a>
-      <a href="{% url 'pinkproject:create_project' %}"><i class="material-icons">create</i>Edit</a>
-      <a href=""><i class="material-icons">file_download</i>Export</a>
-        {% if active_som %}
-            <p class="headline"> {{ active_som.som_name }} </p>
-        {% endif %}
-    </div></li>
+      <li>
+          <div class="user-view">
+              <div class="background">
+                <img src="{% static 'main/imgs/pink_web.jpg'%}">
+              </div>
+              <a href="{% url 'pinkproject:project' project_id=current.id  %}" class="headline">
+                  {% if active_som %}
+                      <i class="material-icons">chevron_left</i>
+                  {% endif %}
+                  {{ current.project_name }}
+              </a> <br/>
+              <a href="{% url 'pinkproject:create_project' %}"><i class="material-icons">create</i>Edit</a>
+              <a href=""><i class="material-icons">file_download</i>Export</a>
+          </div>
+      </li>
       {% if active_som %}
+            <p class="headline"> {{ active_som.som_name }} </p>
+            <p><b>Dataset:</b> {{ active_som.dataset.dataset_name }}</p>
             {% include 'som/toolbox.html' %}
       {% else %}
           <li><a class="subheader">Project description</a></li>
