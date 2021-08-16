@@ -31,37 +31,34 @@
 }
 
 .project-lander {
-    text-align: center;
-    margin-left: 25vw;
     position: relative;
-    margin-top: 50px;
+    left: 20vw;
+    width: 80vw;
+    padding-left: 5%;
+    padding-right: 5%;
     min-height: calc(100vh - 110px);
     height: 100%;
 }
 
-.project-lander .card {
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-bottom: 50px;
-    text-align: center;
-}
+
 
 .project-lander .card ul {
     padding: 5px;
 }
 
+
 .dataset-overview {
     margin-top: 20px;
     margin-bottom: 20px;
     display: grid;
-    margin-left: 100px;
-    grid-gap: 5px;
+    grid-gap: 30px;
     grid-template-columns: repeat(3, 33%);
 }
 
 .dataset-overview .card {
     margin: 0;
     width: auto;
+    color: black;
 }
 
 .dataset-overview .add-som-button, .remove-som-button, .remove-ds-button {
@@ -83,6 +80,15 @@
     opacity: 1;
     color: deeppink;
 }
+
+.card-action {
+    font-size: 16pt;
+}
+
+.card-action .row {
+    margin-bottom: 0px;
+}
+
 
 .remove-ds-button {
     float: right;
@@ -106,7 +112,8 @@
 }
 
 .sidenav {
-    background-color: pink;
+    background-color: seashell;
+    width: 20vw;
 }
 
 .sidenav .user-view {
@@ -178,31 +185,7 @@
     width: 120px;
 }
 
-.project-lander .export-tools {
-    padding-top: 25px;
-}
-.project-lander .export-tools i {
-    font-size: 64px;
-    opacity: 0.5;
-}
 
-.project-lander .export-tools .tooltip {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-
-.project-lander .export-tools i:hover {
-    opacity: 1;
-}
-
-
-.dataset-overview .project-container li {
-    text-align: right;
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    grid-template-rows: repeat(2, auto);
-}
 
 #loading-wrapper {
     background-color: white;

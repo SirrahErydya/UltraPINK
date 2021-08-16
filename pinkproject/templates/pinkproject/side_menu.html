@@ -18,7 +18,7 @@
       {% else %}
           <li><a class="subheader">Project description</a></li>
           <li><p>{{ current.description }}</p></li>
-          <li><a href="#!"><i class="material-icons">add</i>Add dataset</a></li>
+          <li><a href="{% url 'som:add_som' project_id=current.id %}"><i class="material-icons">add</i>Add dataset</a></li>
           <li><div class="divider"></div></li>
           <li><a href="{% url 'all_projects' %}"><i class="material-icons">chevron_left</i>Back to all projects</a></li>
       {% endif %}

@@ -8,72 +8,50 @@
 {% block content %}
     {% include 'pinkproject/side_menu.html' %}
         <div class="project-lander">
-            <div class="card">
-                <h1>Welcome to the project {{ current.project_name }}!</h1>
-                <br/>
-                <p><i>{{ current.description }}</i></p>
-                <div class="export-tools">
-                    <div class="tooltip">
-                        <i class="material-icons" onclick="//todo">archive</i>
-                        <span class="tooltiptext">Export map prototypes, heatmaps, and catalogues for the whole project.</span>
-                        <p>Export as .zip</p>
-                    </div>
-                    <div class="tooltip">
-                        <i class="material-icons" onclick="//todo">file_download</i>
-                        <span class="tooltiptext">Export a catalog from all SOMs as csv</span>
-                        <p>Export collaborative catalogue</p>
-                    </div>
-                </div>
-            </div>
-            <h1>Datasets included with this project:</h1>
-            {% if datasets%}
-                <div class="dataset-overview">
-                    {% for ds in datasets %}
-                        <div class="card">
-                            <i class="remove-ds-button material-icons"
-                               onclick="request_page('{% url 'pinkproject:remove_ds' ds_id=ds.id %}', [])">close</i>
-                            <h1>{{ ds.dataset_name }}</h1>
+            <p class="headline">Welcome to the project {{ current.project_name }}!</p>
+
+            <p style="font-size: 16pt">Datasets included with this project:</p>
+            <a href="{% url 'som:add_som' project_id=current.id %}"><i class="material-icons">add</i>Add dataset</a>
+            <div class="dataset-overview">
+                {% for ds in datasets %}
+                    <div class="card">
+                        <i class="remove-ds-button material-icons"
+                           onclick="request_page('{% url 'pinkproject:remove_ds' ds_id=ds.id %}', [])">close</i>
+                        <div class="card-content">
+                            <span class="card-title">{{ ds.dataset_name }}</span>
                             <p>{{ ds.description }}</p>
-                            <p>{{ ds.length }} data points</p><br/>
+                            <p>{{ ds.length }} data points</p>
+                        </div>
+                        <div class="card-action">
                             <div class="train-with-ds">
                                 <b>Trained SOMs:</b>
                                 <i class="add-som-button medium material-icons"
                                    onclick="request_page('{% url 'som:add_som' project_id=current.id dataset_id=ds.id%}', [])">add</i>
                             </div>
-                            <ul class="project-container">
+                            <ul>
                                 {% for som in soms %}
                                     {% if som.dataset == ds %}
-                                        <li><a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
-                                            {{ som.som_name }}
-                                        </a>
-                                        <i class="remove-som-button small material-icons"
-                                            onclick="request_page('{% url 'pinkproject:remove_som' som_id=som.id %}', [])">remove</i>
+                                        <li>
+                                            <div class="row">
+                                                <div class="col s10">
+                                                    <a href="{% url 'pinkproject:project'  project_id=current.id  som_id=som.id  %}">
+                                                        {{ som.som_name }}
+                                                    </a>
+                                                </div>
+                                                <div class="col s2">
+                                                    <i class="remove-som-button small material-icons"
+                                                        onclick="request_page('{% url 'pinkproject:remove_som' som_id=som.id %}', [])">remove</i>
+
+                                                </div>
+                                            </div>
                                         </li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>
-                    {% endfor %}
-                    <div class="card">
-                        <i>Add a new dataset...</i><br/>
-                        <br/>
-                        <br/>
-                        <i class="add-som-button large material-icons"
-                           onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">add</i>
                     </div>
-                </div>
-            {% else %}
-                <div class="card">
-                    <h1>No SOMs available</h1>
-                    <br/>
-                    <p>It looks like there are no self organizing maps associated with this project.
-                    Please click one of the buttons below to either <b>train a self-organizing map with PINK</b> or
-                    <b>upload the  binary files of a previously trained map</b>.</p>
-                    <button class="action-button" onclick="request_page('{% url 'som:add_som' project_id=current.id %}', [])">
-                        Add SOM
-                    </button>
-                </div>
-            {% endif %}
+                {% endfor %}
+            </div>
     </div>
 </div>
 {% endblock %}

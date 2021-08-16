@@ -83,7 +83,7 @@ body {
     margin-left: 20%;
     margin-right: 20%;
     position: relative;
-    background-color: mistyrose;
+    background-color: seashell;
     padding: 50px;
     min-height: 180px;
     text-align: justify;
@@ -98,6 +98,23 @@ body {
     text-decoration: none;
 }
 
+a {
+    display: block;
+    line-height: 48px;
+    height: 48px;
+}
+
+a i.material-icons {
+    line-height: 48px;
+    height: 48px;
+    float: left;
+    margin-right: 10px;
+}
+
+.home .carousel a {
+    line-height: 1.4;
+}
+
 
 .carousel .carousel-item .card {
     margin: 0;
@@ -106,25 +123,16 @@ body {
     color: black;
 }
 
-.carousel .carousel-item .card:hover {
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-large):not(.btn-floating){
+    color: hotpink;
+}
+
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-large):not(.btn-floating):hover {
     color: deeppink;
 }
 
-.project-container {
-    margin-top: 25px;
-    margin-bottom: 25px;
-    background-color: lavenderblush;
-    padding: 25px;
-}
-
-.project-container li {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    list-style-type: none;
-}
-
-.project-container li a {
-    font-size: 16pt;
+.carousel .carousel-item .card:hover {
+    color: deeppink;
 }
 
 a:link, a:visited, a:active {
@@ -154,6 +162,10 @@ a:hover {
     padding-left: 2px;
     max-width: 25vw;
     word-wrap: break-word;
+}
+
+.dropdown-content li > span{
+    color: deeppink;
 }
 
 

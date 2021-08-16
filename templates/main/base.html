@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
     {% block stylesheets %}<!-- Additional sheets added in subpages -->{% endblock %}
-    <script type="text/javascript" src="{% static 'main/basic_functions.js' %}"></script>
     <!-- Compiled and minified JavaScript -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript" src="{% static 'main/basic_functions.js' %}"></script>
     {% block javascript %}<!-- Additional scripts added in subpages -->{% endblock %}
     <title>{% block title %}UltraPINK{% endblock %}</title>
 </head>

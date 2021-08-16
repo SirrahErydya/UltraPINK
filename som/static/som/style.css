@@ -4,13 +4,55 @@ body {
 }
 
 .add-som {
-    background-color: mistyrose;
     position: relative;
-    left: 30vw;
-    width: 55vw;
-    margin: 2.5%;
-    padding: 50px;
+    left: 20vw;
+    top: 0px;
+    width: 80vw;
     min-height: 55vh;
+    margin-top: -50px;
+}
+
+.add-som .card {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+#add-som-form {
+    border-top: solid 1px;
+    border-color: #d4d4d4;
+    margin-top: 25px;
+    padding-top: 15px;
+}
+
+#add-som-form .tabs {
+    background-color: seashell;
+}
+
+
+#add-som-form .tab-inner {
+    background-color: seashell;
+}
+
+#add-som-form .tab-inner .input-field {
+    width: 50%;
+    margin-top: 25px;
+}
+
+
+#add-som-form .input-field input[type=text]:focus + label,
+#create-project-form .input-field textarea:focus + label {
+    color: deeppink;
+}
+
+#add-som-form .input-field input[type=text]:focus,
+.input-field input[type=text].valid {
+     border-bottom: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+#add-som-form .input-field textarea:focus {
+     border: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
 }
 
 .edit-tools {
@@ -147,38 +189,6 @@ body {
     grid-template-rows: repeat(2, auto);
     grid-gap: 10px;
 }
-
-.tab-bar {
-    border-color: deeppink;
-    border-bottom-style: solid;
-}
-
-.tab-button {
-    padding: 10px;
-    color: black;
-    font-size: 14pt;
-    background-color: lightpink;
-    cursor: pointer;
-    border: none;
-    font-family: Verdana, Arial, sans-serif;
-}
-
-.tab-button:hover, .tab-bar .active {
-    background-color: deeppink;
-    color: white;
-}
-
-.tab-content {
-    background-color: white;
-    padding: 20px;
-}
-
-.tab-content input {
-    border-color: #d4d4d4;
-    border-width: 1px;
-    border-style: solid;
-}
-
 
 #som-container img, .cutouts img {
     width: 100%;
