@@ -40,11 +40,12 @@ body {
 
 
 #add-som-form .input-field input[type=text]:focus + label,
-#create-project-form .input-field textarea:focus + label {
+.edit-tools .input-field input[type=text]:focus + label {
     color: deeppink;
 }
 
 #add-som-form .input-field input[type=text]:focus,
+.edit-tools .input-field input[type=text]:focus,
 .input-field input[type=text].valid {
      border-bottom: 1px solid deeppink;
      box-shadow: 0 1px 0 0 deeppink;
@@ -65,16 +66,19 @@ body {
 }
 
 .edit-tools img {
-    width: 48px;
+    width: 32px;
 }
 
 .edit-tools i {
-    font-size: 48px;
+    font-size: 32px;
 }
 
-.edit-tools #label {
-    width: 90%;
+.operation-button {
+    margin-top: 50%;
+    align-items: center;
 }
+
+
 
 
 .icon-disclaimer {
@@ -148,19 +152,10 @@ body {
     opacity: 1;
 }
 
-#toolbox .action-button {
-    min-width: 32%;
-    width: 32%;
-    max-width: 32%;
+#toolbox .input-field label {
+    line-height: 2;
 }
 
-#toolbox .input-grid {
-    width: 100%;
-    margin-top: 15px;
-    margin-bottom: 25px;
-    grid-template-columns: repeat(2, auto);
-    grid-template-rows: repeat(3, 30px);
-}
 
 #toolbox .export-tools {
     margin-top: 10px;
@@ -175,20 +170,15 @@ body {
     margin-top: 10px;
 }
 
-#toolbox .input-grid .input-grid {
-    grid-template-columns: auto 63px;
-    margin-left: 10px;
-    grid-template-rows: repeat(1, auto);
-    grid-gap: 0;
-}
-
 .som-page {
     min-height: calc(100vh - 115px);
     height: 100%;
+    position: fixed;
+    overflow: hidden;
 }
 
 #som-container {
-    top: 60px;
+    top: 100px;
     background-repeat: no-repeat;
     background-size: 100%;
     width: 80vh;

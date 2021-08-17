@@ -75,34 +75,59 @@
                     <div class="edit-tools">
                     {% if active_som.mapping_generated %}
                         {% csrf_token %}
-                        <div class="input-grid">
-                            <div class="toolbox-input input-grid">
-                                <label for="input-cutouts">Show best fits:</label>
-                                <input id='input-cutouts' type="text" name="n_fits" value='10'/>
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="toolbox-input input-field">
+                                    <input id='input-cutouts' type="text" name="n_fits" value='10'/>
+                                    <label for="input-cutouts">Show best fits:</label>
+                                </div>
                             </div>
-                            <div class="tooltip">
-                                <i class="material-icons" onclick="show_best_fits({{ active_som.id }})">view_module</i>
-                                <span class="tooltiptext">Show closest dataset entries to selection</span>
+                            <div class="col s2">
+                                <div class="tooltip operation-button">
+                                    <i class="material-icons" onclick="show_best_fits({{ active_som.id }})">view_module</i>
+                                    <span class="tooltiptext">Show closest dataset entries to selection</span>
+                                </div>
                             </div>
-                            <div class="toolbox-input input-grid">
-                                <label for="input-outliers">Show outliers:</label>
-                                <input id='input-outliers' type="text" name="n_outliers" value='10'/>
+                        </div>
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="toolbox-input input-field">
+                                    <input id='input-outliers' type="text" name="n_outliers" value='10'/>
+                                    <label for="input-outliers">Show outliers:</label>
+                                </div>
                             </div>
-                             <div class="tooltip">
-                                 <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
-                                <span class="tooltiptext">Show outliers</span>
+                            <div class="col s2">
+                                 <div class="tooltip operation-button">
+                                     <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
+                                    <span class="tooltiptext">Show outliers</span>
+                                </div>
                             </div>
-                            <div class="toolbox-input">
-                                <input id=label type="text" list="labels" value="Apply Label...."/>
-                                <datalist id="labels">
-                                  {%  for label in labels %}
-                                    <option>{{ label.name }}</option>
-                                  {% endfor %}
-                                </datalist>
+                        </div>
+                        <div class="row">
+                            <div class="col s10">
+                                <div class="toolbox-input input-field">
+                                    <select id="label-select" name="label-select" onchange="SelectionToInput(event)">
+                                        <option value="" disabled selected>Choose label...</option>
+                                        {%  for label in labels %}
+                                            <option>{{ label.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="label-select">Choose label from existing...</label>
+                                </div>
                             </div>
-                            <div class="tooltip">
-                                <i class="material-icons" onclick="label_protos()">local_offer</i>
-                                <span class="tooltiptext">Apply labels</span>
+                        </div>
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="toolbox-input input-field">
+                                    <input id="label" name="label-input" type="text" value="Label..."/>
+                                    <label for="label">Apply label</label>
+                                </div>
+                            </div>
+                            <div class="col s2">
+                                <div class="tooltip operation-button">
+                                    <i class="material-icons" onclick="label_protos()">local_offer</i>
+                                    <span class="tooltiptext">Apply labels</span>
+                                </div>
                             </div>
                         </div>
                     {% else %}
@@ -156,5 +181,9 @@
         var collapsibleElems = document.querySelectorAll('.collapsible');
         var collapsibleInstances = M.Collapsible.init(collapsibleElems);
     });
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+  });
 </script>
 
