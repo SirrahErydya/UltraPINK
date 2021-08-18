@@ -98,7 +98,7 @@
     </table>
     <br/>
     <div id="label-legend">
-        <h3>Labels</h3><br/>
+        <p class="subheadline">Labels</p><br/>
         {% if labels %}
         <div class="label-legend" style="grid-template-rows: repeat({{ labels|length}}, auto)">
         {% for label in labels %}
@@ -112,7 +112,7 @@
         {% endif %}
     </div>
     <div id="histogram">
-        <h3>Map Histogram</h3>
+        <p class="subheadline">Map Histogram</p>
         {% if active_som.histogram %}
             <img src="{{ active_som.histogram.url }}"/>
         {% endif %}

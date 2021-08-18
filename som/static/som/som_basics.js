@@ -82,7 +82,7 @@ function show_hover_preview(hovered) {
 
 function show_selection_info(selected, element_id) {
      selection_info = document.getElementById(element_id);
-     selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
+     selection_info.innerHTML = '<p class="subheadline">Selected: Prototype ('+ selected.x + ',' +  selected.y +')</p>';
      label = selected.label === '' ?  "Unlabeled" : selected.label.name;
      selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
  }
