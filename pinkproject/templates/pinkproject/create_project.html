@@ -7,7 +7,11 @@
     <div class="content create-project">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">Create a new project</span>
+                {% if project.id %}
+                    <span class="card-title">Edit project</span>
+                {% else %}
+                    <span class="card-title">Create a new project</span>
+                {% endif %}
                 <form id="create-project-form" action="{% url 'pinkproject:create_new' %}{{ project.id }}" method="post"  enctype="multipart/form-data" >{% csrf_token %}
                     <div class="input-field">
                         <input id='project-name' type="text" name="project-name"
@@ -23,7 +27,7 @@
                     <div class="file-field input-field">
                         <div class="btn">
                             <span>Thumbnail</span>
-                            <input type="file">
+                            <input type="file" id="thumbail" name="thumbnail">
                         </div>
                         <div class="file-path-wrapper">
                             <input class="file-path validate" type="text">

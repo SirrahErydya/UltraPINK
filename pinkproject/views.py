@@ -49,13 +49,16 @@ def create_project(request, project_id=None):
     data = request.POST
     name = data['project-name']
     desc = data['project-desc']
+    files = request.FILES
+    thumbnail = files['thumbnail']
 
     if project_id is None:
-        project_model = Project(project_name=name, description=desc)
+        project_model = Project(project_name=name, description=desc, thumbnail=thumbnail)
     else:
         project_model = Project.objects.get(id=project_id)
         project_model.project_name = name
         project_model.description = desc
+        project_model.thumbnail = thumbnail
     project_model.save()
     return redirect('pinkproject:project', project_id=project_model.id)
 

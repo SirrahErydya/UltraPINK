@@ -47,7 +47,11 @@
                 <a class="carousel-item" href="{% url 'pinkproject:project' project_id=project.id  %}">
                     <div class="card">
                         <div class="card-image">
-                          <img src="{% static 'main/imgs/pink_web.jpg' %}">
+                            {% if project.thumbnail %}
+                                <img src="{{ project.thumbnail.url }}">
+                            {% else %}
+                                <img src="{% static 'main/imgs/pink_web.jpg' %}">
+                            {% endif %}
                           <span class="card-title">{{ project.project_name }}</span>
                         </div>
                         <div class="card-content">

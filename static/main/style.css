@@ -93,6 +93,15 @@ body {
     text-align: justify;
 }
 
+.card .card-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.card .card-image {
+    object-fit: cover;
+}
+
 .card h2 {
     margin-bottom: 5px;
 }

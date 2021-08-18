@@ -5,7 +5,11 @@
       <li>
           <div class="user-view">
               <div class="background">
-                <img src="{% static 'main/imgs/pink_web.jpg'%}">
+                  {% if current.thumbnail %}
+                    <img src="{{ current.thumbnail.url }}">
+                  {% else %}
+                    <img src="{% static 'main/imgs/pink_web.jpg'%}">
+                  {% endif %}
               </div>
               <a href="{% url 'pinkproject:project' project_id=current.id  %}" class="headline">
                   {% if active_som %}
@@ -13,7 +17,7 @@
                   {% endif %}
                   {{ current.project_name }}
               </a> <br/>
-              <a href="{% url 'pinkproject:create_project' %}"><i class="material-icons">create</i>Edit</a>
+              <a href="{% url 'pinkproject:create_project' project_id=current.id%}"><i class="material-icons">create</i>Edit</a>
               <a href=""><i class="material-icons">file_download</i>Export</a>
           </div>
       </li>

@@ -7,7 +7,7 @@ import pinkproject.models as pmodels
 import os
 from django.conf import settings
 from django.db import IntegrityError
-from PIL import Image
+from PIL import Image, ImageDraw
 from io import BytesIO
 import base64
 import numpy as np
@@ -138,6 +138,7 @@ def create_datapoint_models(np_data, som, index):
 def np_image_link(np_img):
     pil_image = Image.fromarray(np_img * 255)
     pil_image = pil_image.convert('L')
+
     data = BytesIO()
     pil_image.save(data, 'PNG')
     data64 = base64.b64encode(data.getvalue())
