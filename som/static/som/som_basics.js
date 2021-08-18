@@ -209,12 +209,12 @@ function create_cutout_images(best_fits, protos, outlier_case) {
     var proto_label_button2 = document.getElementById("label-all-cutouts-proto");
     var export_outliers_button = document.getElementById("export-outliers");
     if(outlier_case) {
-        modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" images that fit the least to any of the prototypes.</h1>";
+        modal_header.innerHTML = "<p>These are the "+ best_fits.length +" images that fit the least to any of the prototypes.</p>";
         proto_label_button1.style.display = 'none';
         proto_label_button2.style.display = 'none';
         export_outliers_button.style.display = 'inline';
     } else {
-        modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" best matching images to your choice.</h1>";
+        modal_header.innerHTML = "<p>These are the "+ best_fits.length +" best matching images to your choice.</p>";
         proto_label_button1.style.display = 'inline';
         proto_label_button2.style.display = 'inline';
         export_outliers_button.style.display = 'none';

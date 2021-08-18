@@ -27,7 +27,7 @@
         </script>
     {% endfor %}
 </div>
-<div class="modal_window" id="modal-window" style="display: none">
+<div class="modal modal_window" id="modal-window" style="display: none">
     {% load static %}
     <div class="icon">
         <img src="{% static 'main/icons/error.png' %}" onclick="close_cutout_modal()"/>
@@ -35,17 +35,39 @@
     <div id="modal-header"></div>
     <div id="cutouts" class="cutouts">
     </div>
-    <input style="width:300px" id='cutout-label' type="text" value='Label...'/>
-    <button id="label-cutouts" class="action-button"
-            onclick="label_selected_cutouts(false)">Label selection</button>
-    <button id="label-cutouts-proto" class="action-button"
-            onclick="label_selected_cutouts(true)">Apply prototype label to selection</button>
-    <button id="label-all-cutouts" class="action-button"
-            onclick="label_all_cutouts(false)">Label all</button>
-    <button id="label-all-cutouts-proto" class="action-button"
-            onclick="label_all_cutouts(true)">Apply prototype label to all</button>
-    <button id="export-outliers" class="action-button"
-            onclick="export_outliers()">Export outliers</button>
+    <div class="row">
+        <div class="col s8">
+            <div class="input-field">
+                <input style="width:300px" id='cutout-label' type="text" value='Label...'/>
+                <label for="cutout-label">Label</label>
+            </div>
+        </div>
+        <div class="col s4">
+            <button id="label-cutouts" class="btn"
+                    onclick="label_selected_cutouts(false)">Label</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s4">
+            <button id="label-all-cutouts" class="btn"
+                    onclick="label_all_cutouts(false)">Label all</button>
+        </div>
+        <div class="col s4">
+            <button id="label-cutouts-proto" class="btn"
+                    onclick="label_selected_cutouts(true)">Apply proto label</button>
+        </div>
+        <div class="col s4">
+            <button id="label-all-cutouts-proto" class="btn"
+                    onclick="label_all_cutouts(true)">Proto label to all</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s4">
+            <button id="export-outliers" class="btn"
+                    onclick="export_outliers()">Export outliers</button>
+        </div>
+    </div>
+
 </div>
 <div class="som-info" id="som-info">
     <table id="info-table">

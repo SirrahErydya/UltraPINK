@@ -40,12 +40,14 @@ body {
 
 
 #add-som-form .input-field input[type=text]:focus + label,
-.edit-tools .input-field input[type=text]:focus + label {
+.edit-tools .input-field input[type=text]:focus + label,
+.modal_window .input-field input[type=text]:focus + label{
     color: deeppink;
 }
 
 #add-som-form .input-field input[type=text]:focus,
 .edit-tools .input-field input[type=text]:focus,
+.modal_window .input-field input[type=text]:focus,
 .input-field input[type=text].valid {
      border-bottom: 1px solid deeppink;
      box-shadow: 0 1px 0 0 deeppink;
@@ -170,8 +172,14 @@ body {
     margin-top: 10px;
 }
 
+.som-view {
+    margin: 0;
+    padding: 0;
+}
+
 .som-page {
     min-height: calc(100vh - 115px);
+    width: 100%;
     height: 100%;
     position: fixed;
     overflow: hidden;
@@ -227,26 +235,24 @@ body {
     cursor: pointer;
 }
 
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.7);
-    width: 100%;
-    height: 100%;
-}
-
 .modal_window {
     padding: 50px;
     position: absolute;
-    background-color: lavenderblush;
+    background-color: seashell;
     color: black;
-    width: calc(80vh - 50px);
+    width: 80vh;
     left: 25vw;
-    top: 55px;
+    margin: 0;
+}
+
+.modal_window .btn {
+    width: 100%;
+    height: 48px;
+    line-height: 1.4;
+}
+
+.modal_window p {
+    font-size: 16pt;
 }
 
 .modal_window .icon {
