@@ -201,7 +201,8 @@ body {
 
 #som-container.hex-som {
     display: grid;
-    grid-gap: 1px;
+    grid-column-gap: 1px;
+    grid-row-gap: 2px;
 
 }
 
