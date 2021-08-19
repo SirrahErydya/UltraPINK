@@ -71,30 +71,34 @@ if __name__ == "__main__":
                              bottom=0, top=1, left=0, right=1)
     fig, ax = plt.subplots(1, figsize=(10, 10))
 
-    image = np.zeros((som_dim[0], som_dim[0], neuron_dim, neuron_dim, 4))
+    som_width = som_dim[0] # assume squared som
+    border = 1
+    image = Image.new('RGB', (int(som_width*neuron_dim + (som_width-1)*border),
+                              int(neuron_dim + (som_width-1)*(0.77*neuron_dim) + (som_width-2)* border)),
+                              (255, 255, 255))
+    x_pos = 0
+    y_pos = 0
     som_idx = 0
-    for grid_idx in range(som_dim[0]*som_dim[0]):
-        row = int(grid_idx / som_dim[0])
-        col = grid_idx % som_dim[0]
-        print(row, col)
-        cols_allowed = int(som_dim[0] - (np.abs(row - np.floor(som_dim[0]/2))))
-        if cols_allowed <= col:
-            continue
-        else:
+    for row in range(som_width):
+        cols_allowed = int(som_width - (np.abs(row - np.floor(som_width/2))))
+        x_pos = int(((som_dim[0] - cols_allowed) / 2)*neuron_dim)
+        y_pos = int(row * (0.77*neuron_dim))
+        if row != 0 and row != som_width-1:
+            y_pos += border
+        print("X:", x_pos)
+        print("Y:", y_pos)
+        for col in range(cols_allowed):
             pil_image = Image.fromarray(np_som[som_idx] * 255)
             pil_image = pil_image.convert('L')
             mask = Image.new('RGBA', pil_image.size)
             d = ImageDraw.Draw(mask)
             d.polygon(((neuron_dim / 2, 0), (neuron_dim, neuron_dim / 4), (neuron_dim, 3 * neuron_dim / 4),
                        (neuron_dim / 2, neuron_dim), (0, 3 * neuron_dim / 4), (0, neuron_dim / 4)), fill='#FFF')
-            out = Image.new('RGBA', pil_image.size)
-            out.paste(pil_image, (0, 0), mask)
-            print(out)
-            print(np.array(out, dtype=np.int64).reshape((neuron_dim, neuron_dim)).shape)
-            print(image.shape)
-            image[row][col] = np.array(out, dtype=np.int64)
+            image.paste(pil_image, (x_pos, y_pos), mask)
+            x_pos += neuron_dim
+            if col != cols_allowed-1:
+                x_pos += border
             som_idx += 1
 
-    plt.imshow(image)
-    plt.show()
+    image.show()
 

@@ -199,6 +199,20 @@ body {
     transform: scale(1) translate(0px, 0px);
 }
 
+#som-container.hex-som {
+    display: grid;
+    grid-gap: 1px;
+
+}
+
+#som-container.hex-som .prototype {
+    grid-column: auto / span 2;
+    overflow: visible;
+    background-color: rgba(0,0,0,0);
+}
+
+
+
 .cutouts {
     position: relative;
     padding-top: 20px;

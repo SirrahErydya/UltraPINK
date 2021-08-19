@@ -23,7 +23,8 @@ def som(request, som_id, view='proto'):
             'active_som': active_som,
             'prototypes': prototypes,
             'labels': labels,
-            'view': view
+            'view': view,
+            'half_som_width': int(active_som.som_width / 2)
         }
         return HttpResponse(template.render(context, request))
     raise FileNotFoundError("SOM not found.")
@@ -85,7 +86,7 @@ def save_som(request, project_id, dataset_id=None):
         pink_som = train(dataset, (width, height, depth), layout, rotations, epochs)
     else:
         raise FileNotFoundError("No files to train or import are SOM are provided.")
-    som_model = dbe.create_som_model(som_name, pink_som, dataset_model)
+    som_model = dbe.create_som_model(som_name, pink_som, (width, height, depth), dataset_model)
 
     # Save proto grid
     save_path = os.path.join('projects', som_model.dataset.project.project_name, "soms", som_model.som_name)

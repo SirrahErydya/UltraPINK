@@ -463,7 +463,7 @@ function proto_color(proto_id, r, g, b, view) {
     img = document.getElementById(proto_id);
     proto = img.parentElement;
     if(view === 'proto') {
-        proto.style.backgroundColor = 'rgba(255,255,255,1)';
+        proto.style.backgroundColor = 'rgba(255,255,255,0)';
     } else if(view === 'heatmap') {
         proto.style.backgroundColor = 'rgba(255,255,255,0)';
     } else if(view === 'labels') {

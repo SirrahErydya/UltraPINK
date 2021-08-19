@@ -12,6 +12,7 @@
 {% block javascript %}
     {% load static %}
     <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static 'som/view_functions.js' %}"></script>
     <script>var prototypes = '{{ prototypes }}';</script>
 {% endblock %}
 {% block content %}

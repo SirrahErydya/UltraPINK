@@ -89,6 +89,9 @@ def map_som(som_model):
     mapper = pink.Mapper(som, euclidean_distance_dim=euclidean_dim)
     map_table = np.zeros((np_data.shape[0], np_som.shape[0]*np_som.shape[1]))
     heatmap = np.zeros((np_som.shape[0], np_som.shape[1]))
+    if layout == 'hexagonal-2d':
+        map_table = np.zeros((np_data.shape[0], np_som.shape[0]))
+        heatmap = np.zeros((som_model.som_width, som_model.som_width))
     for i in tqdm(range(np_data.shape[0])):
         point = np_data[i].astype(np.float32)
         if point.max() > 1:
@@ -96,8 +99,18 @@ def map_som(som_model):
         distances, _ = mapper(pink.Data(point))
         map_table[i] = distances
         best_proto = np.argmin(distances)
-        proto_x = best_proto % np_som.shape[1]
-        proto_y = int((best_proto - proto_x)/np_som.shape[0])
+        if layout == 'cartesian-2d':
+            proto_x = best_proto % np_som.shape[1]
+            proto_y = int((best_proto - proto_x) / np_som.shape[0])
+
+        elif layout == 'hexagonal-2d':
+            proto_x = best_proto % som_model.som_width
+            proto_y = int((best_proto - proto_x) / som_model.som_width)
+            cols_allowed = int(som_model.som_width - (np.abs(proto_y - np.floor(som_model.som_width / 2))))
+            while proto_x >= cols_allowed:
+                proto_y += 1
+                proto_x -= cols_allowed
+                cols_allowed = int(som_model.som_width - (np.abs(proto_y - np.floor(som_model.som_width / 2))))
         heatmap[proto_y][proto_x] += 1
         dbe.create_datapoint_models(np_data[i], som_model, i)
     return map_table, heatmap

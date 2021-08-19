@@ -2,31 +2,11 @@
     <div class="loader"></div>
     <p>Generate mapping... Grab a coffee, this may take a while ;)</p>
 </div>
-<div id="som-container" style="
-    background-size: 100%;
-    grid-template-columns: repeat({{ active_som.som_width }}, auto);
-    grid-template-rows: repeat({{ active_som.som_height}}, calc(80vh/{{ active_som.som_height}}));">
-    <div class="magnifier" id="magnify-window" style="display: none;"></div>
-    {% for prototype in prototypes %}
-        <div class="tooltip prototype">
-            <span class="tooltiptext">({{ prototype.x }},{{ prototype.y }})</span>
-            <img id="proto{{ prototype.id}}" src="{{ prototype.image }}"
-                 onclick="click_image(this.id, {{ prototype.id }},  true)" onmouseover="show_hover_preview(this.id)"/>
-        </div>
-        <script>
-            {% if prototype.label %}
-            proto_color("proto{{ prototype.id }}",
-                {{ prototype.label.color_r }},
-                {{ prototype.label.color_g }},
-                {{ prototype.label.color_b}},
-                "{{ view }}");
-            {% else %}
-            proto_color("proto{{ prototype.id }}", 255, 255, 255,
-                "{{ view }}");
-            {% endif %}
-        </script>
-    {% endfor %}
-</div>
+{% if active_som.layout == 'hexagonal-2d' %}
+    {% include 'som/hex_som.html' %}
+{% else %}
+    {% include 'som/cart_som.html' %}
+{% endif %}
 <div class="modal modal_window" id="modal-window" style="display: none">
     {% load static %}
     <div class="icon">
