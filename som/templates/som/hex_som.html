@@ -1,5 +1,5 @@
 <div id="som-container" class="hex-som" style="
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(calc({{active_som.som_width}}*2), 1fr);
     grid-template-rows: repeat({{ active_som.som_height}}, calc(3*calc(80vh/{{ active_som.som_height}})/4));">
     <div class="magnifier" id="magnify-window" style="display: none;"></div>
     {% for prototype in prototypes %}
