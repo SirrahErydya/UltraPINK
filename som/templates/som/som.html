@@ -13,6 +13,9 @@
         <img src="{% static 'main/icons/error.png' %}" onclick="close_cutout_modal()"/>
     </div>
     <div id="modal-header"></div>
+    <a href="{% url 'cutouts:cutout_view' project_id=current.id som_id=active_som.id cutout_id=1 %})">
+        <button id="inspect-cutout" class="btn">Inspect selected image</button>
+        </a>
     <div id="cutouts" class="cutouts">
     </div>
     <div class="row">

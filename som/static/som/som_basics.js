@@ -226,7 +226,8 @@ function create_cutout_images(best_fits, protos, outlier_case) {
         id = best_fits[i].db_id;
         img_container.innerHTML +=
             "<div class='cutout-img' id='cutout"+id+"' onclick='click_image("+id+",  false)'>"+
-            "<img src='" + url + "' alt='cutout" + i + "'>" +
+            "<a href='{% url &apos;cutouts:cutout_view&apos; project_id=current.id som_id=active_som.id cutout_id="+id+" %}'>"+
+            "<img src='" + url + "' alt='cutout" + i + "'><a/>" +
             "</div>";
     }
 }

@@ -81,8 +81,8 @@ def import_som(project, dataset_name, som_binfile, mapping_binfile, data_binfile
 
 
 def map_som(som_model):
-    np_som = np.load(som_model.som_file.path)
-    np_data = np.load(som_model.dataset.data_path.path)
+    np_som = np.load(som_model.som_file.path, allow_pickle=True)
+    np_data = np.load(som_model.dataset.data_path.path, allow_pickle=True)
     euclidean_dim = int(np_data.shape[1] * math.sqrt(2.0) / 2.0)
     layout = som_model.layout
     som = pink.SOM(np_som, som_layout=layout)
@@ -123,7 +123,7 @@ def get_data(data):
     """
     file_ending = data.name.split('.')[-1]
     if file_ending == 'npy':
-        data = np.load(data)
+        data = np.load(data, allow_pickle=True)
         np.random.shuffle(data)
         data = np.squeeze(data)
     else:
