@@ -107,6 +107,11 @@ body {
     line-height: 2;
 }
 
+.sidenav table {
+    margin-left: 32px;
+    width: 80%;
+}
+
 .sidenav #toolbox li > a{
     padding: 0;
 }

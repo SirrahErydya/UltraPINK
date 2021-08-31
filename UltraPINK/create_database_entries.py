@@ -53,6 +53,7 @@ def create_dataset_models(dataset_name, descr, numpy_data, project, csv_file=Non
     save_path = os.path.join('projects', project.project_name, "datasets", dataset_name)
     os.makedirs(save_path, exist_ok=True)
     full_path = os.path.join(save_path, "{0}.npy".format(dataset_name))
+    csv_path = os.path.join(save_path, "{0}.csv".format(dataset_name))
     np.save(full_path, numpy_data)
     dataset = pmodels.Dataset(
         project=project,

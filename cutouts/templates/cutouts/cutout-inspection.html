@@ -2,13 +2,27 @@
 
 {% block stylesheets %}
 {% load static %}
+    <!-- include Aladin Lite CSS file in the head section of your page -->
+    <link rel="stylesheet" href="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
     <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'som/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'cutouts/style.css' %}">
 {% endblock %}
 {% block javascript %}
 {% endblock %}
-<div class="content">
+
 {% block content %}
     {% include 'pinkproject/side_menu.html' %}
-    <p>Ladies and Gentleman, this is cutout number {{ cutout.id }}</p>
+    <div class="content cutout-view">
+        <p class="subheadline">Inspect {{ som.dataset.dataset_name }} # {{ cutout.index }} with Aladin Lite.</p>
+
+
+
+    <!-- insert this snippet where you want Aladin Lite viewer to appear and after the loading of jQuery -->
+    <div id="aladin-lite-div" style="width:70vh;height:70vh;"></div>
+    <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        var aladin = A.aladin('#aladin-lite-div', {survey: "P/DSS2/color", fov:0.05, target: "8 11 31.9 -48 43 14.5"});
+    </script>
+    </div>
 {% endblock %}
-<div class="content"

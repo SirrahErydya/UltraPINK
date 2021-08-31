@@ -255,6 +255,10 @@ textarea {
     cursor: pointer;
 }
 
+.shadowbox {
+    background-color: rgba(0,0,0,0.5);
+}
+
 .footer {
     position: relative;
     height: 60px;
