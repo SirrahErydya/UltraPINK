@@ -203,29 +203,16 @@ textarea {
     text-align: center;
 }
 
-.btn {
+.btn, .btn:focus {
     background-color: hotpink;
 }
 
 .btn:hover {
     background-color: deeppink;
 }
-.action-button {
-    padding: 15px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    border-style: none;
-    min-width: 200px;
-    background-color: hotpink;
-    color: white;
-    text-align: center;
-    font-family: Verdana, Arial, sans-serif;
-    cursor: pointer;
-}
 
-.action-button:hover, .active-action-button{
-    background-color: deeppink;
-}
+
+
 
 
 .tooltip {

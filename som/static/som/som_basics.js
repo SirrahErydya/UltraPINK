@@ -3,6 +3,7 @@
  */
 
 var tool_selected = 'tool-selected';
+var active_class = 'tool-active';
 var csrf_token_name = "csrfmiddlewaretoken";
 var selected_prototypes = [];
 var selected_cutouts = [];
@@ -30,6 +31,15 @@ function select_tool(id, grid_path) {
         hide_info_panels();
     }
     tool.classList.add(tool_selected)
+}
+
+function toggle(id) {
+    element = document.getElementById(id);
+    if(element.classList.contains(active_class)) {
+        element.classList.remove(active_class);
+    } else {
+        element.classList.add(active_class);
+    }
 }
 
 function click_image(html_id, db_id, is_proto) {
@@ -116,22 +126,6 @@ function select_multiple(img, db_id, selected_class) {
     }
 }
 
-
-// Set Aladin Lite snippet coordinates
-function go_to_aladin(i) {
-    // Open loc.txt, parse RA and Dec and goto these coordinates
-    // Each prototype has its own directory and each directory contains
-    // a file loc.txt that contains the coordinates to the first few best
-    // matching sources to this prototype.
-    $.get('website/prototype' + proto_x + '_' + proto_y + '_0/loc.txt', function(data) {
-        var line = data.split("\n")[i];
-        var ra = line.split(';')[0];
-        var dec = line.split(';')[1];
-        console.log(ra, dec); // Uncomment to write coordinates to console
-        aladin.gotoRaDec(ra,dec);
-        aladin.setFov(12/60);
-                   }, 'text');
-}
 
 function show_best_fits(som_id) {
     var input_field = document.getElementById('input-cutouts');
@@ -225,10 +219,18 @@ function create_cutout_images(best_fits, protos, outlier_case) {
         dec = best_fits[i].dec;
         id = best_fits[i].db_id;
         img_container.innerHTML +=
-            "<div class='cutout-img' id='cutout"+id+"' onclick='click_image("+id+",  false)'>"+
-            "<a href='/cutouts/cutout-view/"+project_id+"/"+som_id+"/"+id+"'>"+
-            "<img src='" + url + "' alt='cutout" + i + "'><a/>" +
+            "<div class='cutout-img' id='cutout"+id+"' onclick='on_cutout_click("+id+")'>"+
+            "<img src='" + url + "' alt='cutout" + i + "'>" +
             "</div>";
+    }
+}
+
+function on_cutout_click(cutout_id) {
+    var inspect = document.getElementById('inspect-cutout');
+    if(inspect.classList.contains(active_class)) {
+        request_page('/cutouts/cutout-view', [project_id, som_id, cutout_id]);
+    } else {
+        click_image(cutout_id, false);
     }
 }
 
@@ -240,27 +242,6 @@ function close_cutout_modal() {
     modal.style.display = "none";
     som_container.style.display = 'grid';
     selected_cutouts = []
-}
-
-function open_aladin(path, idx) {
-    $.get(path+'loc.txt', function(data) {
-        var line = data.split("\n")[idx];
-        var ra = line.split(';')[0];
-        var dec = line.split(';')[1];
-        console.log(ra, dec); // Uncomment to write coordinates to console
-        aladin.gotoRaDec(ra,dec);
-        aladin.setFov(12/60);
-                   }, 'text');
-}
-
-function show_in_aladin(ra, dec, div_id) {
-    var aladin = A.aladin(div_id,
-            {showFullscreenControl: false, // Hide fullscreen controls
-            showGotoControl: false, // Hide go-to controls
-            showFrame: false, //Hide frame 'J2000' enzo
-            showLayersControl : false,});
-    aladin.gotoRaDec(ra,dec);
-    aladin.setFov(12/60);
 }
 
 function magnify(img_path) {

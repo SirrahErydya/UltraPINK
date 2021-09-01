@@ -13,9 +13,18 @@
         <img src="{% static 'main/icons/error.png' %}" onclick="close_cutout_modal()"/>
     </div>
     <div id="modal-header"></div>
-    <a href="{% url 'cutouts:cutout_view' project_id=current.id som_id=active_som.id cutout_id=1 %})">
-        <button id="inspect-cutout" class="btn">Inspect selected image</button>
-        </a>
+        <div class="row modal-options">
+            <div class="tooltip col s1">
+                {% if active_som.dataset.csv_path %}
+                    <i id="inspect-cutout" class=" material-icons" onclick="toggle(this.id)">search</i>
+                    <span class="tooltiptext">Inspect with Aladin</span>
+                {% else %}
+                    <i id="inspect-cutout" class="material-icons disabled">search</i>
+                    <span class="tooltiptext">Can't inspect cutouts: No location data is given</span>
+                {% endif %}
+            </div>
+        </div>
+
     <div id="cutouts" class="cutouts">
     </div>
     <div class="row">

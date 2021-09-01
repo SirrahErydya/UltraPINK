@@ -9,6 +9,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'cutouts/style.css' %}">
 {% endblock %}
 {% block javascript %}
+    {% load static %}
+    <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static 'cutouts/aladin_interface.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -17,12 +20,53 @@
         <p class="subheadline">Inspect {{ som.dataset.dataset_name }} # {{ cutout.index }} with Aladin Lite.</p>
 
 
-
-    <!-- insert this snippet where you want Aladin Lite viewer to appear and after the loading of jQuery -->
-    <div id="aladin-lite-div" style="width:70vh;height:70vh;"></div>
-    <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
-    <script type="text/javascript">
-        var aladin = A.aladin('#aladin-lite-div', {survey: "P/DSS2/color", fov:0.05, target: "8 11 31.9 -48 43 14.5"});
-    </script>
+        <div class="row">
+            <div class="col s6">
+                <!-- insert this snippet where you want Aladin Lite viewer to appear and after the loading of jQuery -->
+                <div id="aladin-lite-div" style="width:70vh;height:70vh;"></div>
+            </div>
+            <div class="col s3">
+                <form id="aladin-control" onsubmit="return aladin_window()">
+                    <p>Right ascension</p>
+                    <div class="row">
+                        <div class="input-field col s4">
+                            <input id="raH" type="text" value="{{ loc.raH }}">
+                            <label for="raH">Hour</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="raM" type="text" value="{{ loc.raM }}">
+                            <label for="raM">Minute</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="raS" type="text" value="{{ loc.raS }}">
+                            <label for="raS">Second</label>
+                        </div>
+                    </div>
+                    <p>Declination</p>
+                    <div class="row">
+                        <div class="input-field col s4">
+                            <input id="decD" type="text" value="{{ loc.decD }}">
+                            <label for="decD">Degree</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="decM" type="text" value="{{ loc.decM }}">
+                            <label for="decM">Minute</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="decS" type="text" value="{{ loc.decS }}">
+                            <label for="decS">Second</label>
+                        </div>
+                    </div>
+                    <input class='btn' type="submit" value="Go!"/>
+                    <button class="btn" onclick="reset_position({{ loc.raH }}, {{ loc.raM }}, {{ loc.raS }},
+                                                                {{ loc.decD }}, {{ loc.decM }}, {{ loc.decS }})">
+                        Return to object position
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
+    <script>
+        aladin_window()
+    </script>
 {% endblock %}

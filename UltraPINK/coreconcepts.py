@@ -286,6 +286,5 @@ class CcEvent(object):
 
 
 class CcGranularity:
-    def __init__(self):
-        pass
-        # TODO: cell_size_x, cell_size_y
+    def get_fov(self):
+        raise NotImplementedError('fov')

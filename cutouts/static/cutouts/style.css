@@ -8,3 +8,29 @@
     padding-right: 5%;
     min-height: calc(100vh - 110px);
 }
+
+.cutout-view .subheadline {
+    margin-bottom: 10px;
+}
+
+#aladin-control .input-field input[type=text]:focus + label,
+#aladin-control .input-field textarea:focus + label {
+    color: deeppink;
+}
+
+#aladin-control .input-field input[type=text]:focus,
+.input-field input[type=text].valid {
+     border-bottom: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+#aladin-control .input-field textarea:focus {
+     border: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+#aladin-control p{
+    margin-bottom: 5px;
+}
+
+
