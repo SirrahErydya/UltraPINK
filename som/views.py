@@ -135,7 +135,7 @@ def get_best_fits_to_protos(request, som_id, n_fits=10):
         proto = get_protos_from_db(protos)[0]
         distances = get_distances(som_model, proto)
         best_indices = np.argsort(distances)[:n_fits]
-        data_points = list(map(lambda idx: DataPoint.objects.get(dataset=som_model.dataset, index=idx), best_indices))
+        data_points = list(map(lambda idx: DataPoint.objects.get(som=som_model, index=idx), best_indices))
     else:
         raise NotImplementedError("No multiple prototype selection for this time")
     json_points = []
@@ -170,7 +170,7 @@ def get_outliers(request, som_id, n_fits=10):
     distances = get_distances(som_model)
     worst_distances = np.max(distances, axis=1)
     worst_indices = np.argsort(-worst_distances)[:n_fits]
-    data_points = list(map(lambda idx: DataPoint.objects.get(dataset=som_model.dataset, index=idx), worst_indices))
+    data_points = list(map(lambda idx: DataPoint.objects.get(som=som_model, index=idx), worst_indices))
     json_outliers = [outlier.to_json() for outlier in data_points]
     return JsonResponse({'best_fits':  json_outliers, 'success': True})
 

@@ -3,7 +3,7 @@ from django.template import loader
 from pinkproject.models import Project
 from som.models import SOM, DataPoint
 import csv
-from . import aladin_ops as ao
+from . import cutout_spatial as cs
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -23,16 +23,13 @@ def cutout_view(request, project_id, som_id, cutout_id):
         if i == cutout.index:
             data = row
     cutout_meta = dict(zip(header, data))
-    # TODO: Generalize identifiers
-    cutout_loc = ao.AladinLocation(cutout_meta['RaH'], cutout_meta['RaM'], cutout_meta['RaS'],
-                                   cutout_meta['DecD'], cutout_meta['DecM'], cutout_meta['DecS'])
+    cutout_obj = cs.create_cutout_obj(cutout_meta, som, cutout)
     context = {
         'current': current_project,
         'projects': Project.objects.all(),
         'som': som,
-        'cutout': cutout,
-        'cutout_meta': cutout_meta,
-        'loc': cutout_loc
+        'cutout': cutout_obj,
+        'cutout_meta': cutout_meta
     }
     return HttpResponse(template.render(context, request))
 

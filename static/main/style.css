@@ -212,7 +212,14 @@ textarea {
 }
 
 
+.button-link  {
+    color: gray;
+}
 
+.button-link:hover {
+    color: deeppink;
+    cursor: pointer;
+}
 
 
 .tooltip {

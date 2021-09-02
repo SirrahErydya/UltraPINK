@@ -6,7 +6,7 @@
           <div class="user-view shadowbox">
               <div class="background">
                   {% if cutout %}
-                    <img src="{{ cutout.image }}">
+                    <img src="{{ cutout.db_obj.image }}">
                   {% elif current.thumbnail %}
                     <img src="{{ current.thumbnail.url }}">
                   {% else %}
@@ -15,7 +15,7 @@
               </div>
               {% if cutout %}
                   <span  class="headline">
-                  Cutout {{ cutout.index }} from dataset {{ som.dataset.dataset_name }}
+                  Cutout {{ cutout.db_obj.index }} from dataset {{ som.dataset.dataset_name }}
                     </span> <br/>
                   <a href="{% url 'pinkproject:project' project_id=current.id som_id=som.id %}">
                       <i class="material-icons">chevron_left</i>

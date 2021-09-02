@@ -63,20 +63,14 @@ class Prototype(models.Model):
 
 class DataPoint(models.Model):
     # Foreign key
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    som = models.ForeignKey(SOM, on_delete=models.CASCADE)
     index = models.IntegerField()
-
-    # Astronomical details
-    ra = models.DecimalField(decimal_places=15, max_digits=20, null=True)
-    dec = models.DecimalField(decimal_places=15, max_digits=20, null=True)
     label = models.ForeignKey(Label, on_delete=models.SET_NULL, null=True)
     image = models.CharField(max_length=200, default="")
+    closest_proto = models.ForeignKey(Prototype, on_delete=models.SET_NULL, null=True)
 
     def to_json(self, proto_dist=None):
         dictionary = {}
-        if self.ra and self.dec:
-            dictionary['ra'] = self.ra
-            dictionary['dec'] = self.ra
         if self.label:
             dictionary['label'] = self.label.to_json()
         else:
@@ -89,7 +83,7 @@ class DataPoint(models.Model):
         return dictionary
 
     class Meta:
-        unique_together = ('dataset', 'index')
+        unique_together = ('som', 'index')
 
 
 

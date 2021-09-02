@@ -5,8 +5,9 @@ function aladin_window() {
     var decD = document.getElementById('decD').value;
     var decM = document.getElementById('decM').value;
     var decS = document.getElementById('decS').value;
+    var survey = document.getElementById('survey').value;
     var aladin = A.aladin('#aladin-lite-div', {
-        survey: "P/DSS2/color",
+        survey: survey,
         fov:0.05,
         target: raH + ' ' + raM + ' ' + raS + ' ' + decD + ' ' + decM + ' ' + decS});
     return false; // To prevent the page reload

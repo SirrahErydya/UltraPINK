@@ -256,13 +256,16 @@ body {
 }
 
 .modal_window {
-    padding: 50px;
     position: absolute;
-    background-color: seashell;
-    color: black;
     width: 80vh;
     left: 25vw;
     margin: 0;
+}
+
+.modal_window, #spatial-modal {
+    padding: 50px;
+    background-color: seashell;
+    color: black;
 }
 
 .modal_window .btn {

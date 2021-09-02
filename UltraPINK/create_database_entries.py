@@ -174,17 +174,19 @@ def save_heatmap(heatmap, path):
     plt.close()
 
 
-def create_datapoint_models(np_data, som, index):
+def create_datapoint_models(np_data, som, index, proto_coords):
     img_link = np_image_link(np_data) # TODO: Non-image data points?
+    proto = smodels.Prototype.objects.get(som=som, x=(proto_coords[0], proto_coords[1]))
     dp = smodels.DataPoint(
         dataset=som.dataset,
         index=index,
-        image=img_link
-        # TODO: Add meta info
+        image=img_link,
+        closest_proto=proto
     )
     try:
         dp.save()
     except IntegrityError:
+        print("Seems like this data point already existed, so I won't create a new model.")
         dp = None
 
 
