@@ -7,6 +7,10 @@ def upload_to_project_folder(instance, file_name):
     return os.path.join("projects", instance.project_name, file_name)
 
 
+def upload_to_dataset_folder(instance, file_name):
+    return os.path.join("projects", instance.project.project_name, instance.dataset_name, file_name)
+
+
 class Project(models.Model):
     project_name = models.CharField(max_length=200)
     description = models.TextField(max_length=2000)
@@ -25,5 +29,5 @@ class Dataset(models.Model):
     description = models.TextField(max_length=2000, default="No description...")
     length = models.IntegerField()
     data_path = models.FileField(upload_to='projects')
-    csv_path = models.FileField(upload_to='projects', default=None)
+    csv_path = models.FileField(upload_to=upload_to_dataset_folder, default=None)
     obj_identifier_key = models.CharField(max_length=200, default="ObjName")

@@ -112,7 +112,7 @@ def map_som(som_model):
                 proto_x -= cols_allowed
                 cols_allowed = int(som_model.som_width - (np.abs(proto_y - np.floor(som_model.som_width / 2))))
         heatmap[proto_y][proto_x] += 1
-        dbe.create_datapoint_models(np_data[i], som_model, i (proto_x, proto_y))
+        dbe.create_datapoint_models(np_data[i], som_model, i, best_proto)
     return map_table, heatmap
 
 

@@ -73,7 +73,7 @@ def create_prototype_models(som_model):
     :param som_model: The SOM database model that belongs to these prototypes
     """
     np_som = np.load(som_model.som_file.path)
-    som_idx = 0 # only relevant for hex-maps
+    som_idx = 0
     for y in range(som_model.som_height):
         for x in range(som_model.som_width):
             if som_model.layout == 'cartesian-2d':
@@ -81,12 +81,14 @@ def create_prototype_models(som_model):
                 img_link = np_image_link(np_img)
                 prototype = smodels.Prototype.objects.create(
                     som = som_model,
+                    index=som_idx,
                     x = x,
                     y = y,
                     z = 1,
                     number_of_fits = 0,
                     image=img_link
                 )
+                som_idx += 1
             elif som_model.layout == 'hexagonal-2d':
                 cols_allowed = int(som_model.som_width - (np.abs(y - np.floor(som_model.som_width / 2))))
                 print(cols_allowed)
@@ -97,6 +99,7 @@ def create_prototype_models(som_model):
                     img_link = np_image_link(np_img, layout=som_model.layout)
                     prototype = smodels.Prototype.objects.create(
                         som=som_model,
+                        index=som_idx,
                         x=q,
                         y=r,
                         z=1,
@@ -174,11 +177,11 @@ def save_heatmap(heatmap, path):
     plt.close()
 
 
-def create_datapoint_models(np_data, som, index, proto_coords):
+def create_datapoint_models(np_data, som, index, proto_idx):
     img_link = np_image_link(np_data) # TODO: Non-image data points?
-    proto = smodels.Prototype.objects.get(som=som, x=(proto_coords[0], proto_coords[1]))
+    proto = smodels.Prototype.objects.get(som=som, index=proto_idx)
     dp = smodels.DataPoint(
-        dataset=som.dataset,
+        som=som,
         index=index,
         image=img_link,
         closest_proto=proto

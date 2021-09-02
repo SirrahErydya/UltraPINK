@@ -42,6 +42,7 @@ class Label(models.Model):
 class Prototype(models.Model):
     som = models.ForeignKey(SOM, on_delete=models.CASCADE)
     label = models.ForeignKey(Label, on_delete=models.SET_NULL, null=True)
+    index = models.IntegerField()
     x = models.IntegerField()
     y = models.IntegerField()
     z = models.IntegerField()

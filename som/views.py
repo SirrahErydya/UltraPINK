@@ -131,17 +131,21 @@ def get_protos(request):
 def get_best_fits_to_protos(request, som_id, n_fits=10):
     som_model = SOM.objects.get(id=som_id)
     protos = json.loads(request.body)['protos']
+    distance_file = np.load(som_model.mapping_file)
     if len(protos) == 1:
         proto = get_protos_from_db(protos)[0]
-        distances = get_distances(som_model, proto)
-        best_indices = np.argsort(distances)[:n_fits]
-        data_points = list(map(lambda idx: DataPoint.objects.get(som=som_model, index=idx), best_indices))
+        # Todo: Something is off here...
+        # distances = get_distances(som_model, proto)
+        # best_indices = np.argsort(distances)[:n_fits]
+        data_points = DataPoint.objects.filter(som_id=som_model, closest_proto=proto)
+        point_indices = [p.index for p in data_points]
+        distances = distance_file[point_indices, proto.index]
     else:
         raise NotImplementedError("No multiple prototype selection for this time")
     json_points = []
     upper = n_fits if len(distances) > n_fits else len(distances)
     for i in range(upper):
-        json_points.append(data_points[i].to_json(distances[best_indices[i]]))
+        json_points.append(data_points[i].to_json(distances[i]))
     return JsonResponse({'best_fits': json_points, "success": True})
 
 
