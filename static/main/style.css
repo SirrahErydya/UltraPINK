@@ -96,11 +96,14 @@ body {
 .card .card-image {
     height: 200px;
     overflow: hidden;
+    object-fit: cover;
+    background-color: rgba(0,0,0,1);
 }
 
-.card .card-image {
-    object-fit: cover;
+.card .card-image img {
+    opacity: 0.5;
 }
+
 
 .card h2 {
     margin-bottom: 5px;

@@ -109,10 +109,10 @@
                             <div class="col s3">
                                 <b>Position:</b>
                             </div>
-                            <div class="col s3">
+                            <div class="col s4">
                                 <p>RAJ200 = {{ cutout.location.raH }}h{{ cutout.location.raM }}m{{ cutout.location.raS }}s
                             </div>
-                            <div class="col s3">
+                            <div class="col s4">
                                 <p>DECJ200 = {{ cutout.location.decD }}&deg;{{ cutout.location.raM }}&apos;{{ cutout.location.raS }}&apos;&apos;</p>
                             </div>
                         </div>
@@ -141,6 +141,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <form id="spatial-form" onsubmit="return request_spatial_cutouts({{ cutout.db_obj.id }})">{% csrf_token %}
+                                <div class="input-field col s3">
+                                     <input id='number_cutouts' type="text" name="number_cutouts"
+                                            value='10' maxlength="5"/>
+                                     <label for="number_cutouts" class="active">No. of cutouts</label>
+                                </div>
+                                <div class="col s3">
+                                    <input class="btn" type="submit" value="Show"/>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+                <hr/>
+                <div id="cutout-container">
+
                 </div>
 
             </div>

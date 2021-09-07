@@ -1,8 +1,44 @@
 from UltraPINK import coreconcepts as cc
 import numpy as np
+from som import models
+import csv
+
+
+def cutout_distsort(cutout_obj, som):
+    all_db_cutouts = models.DataPoint.objects.filter(som=som)
+    cutouts_sorted = []
+    # Mergesort or something. Idk, I'm not efficient
+    for db_cutout in all_db_cutouts:
+        if db_cutout.id == cutout_obj.db_obj.id:
+            continue
+        cutout_meta = get_cutout_meta(som, db_cutout)
+        current_cutout = create_cutout_obj(cutout_meta, som, db_cutout)
+        distance = cutout_obj.location.distance(current_cutout.location)
+        if len(cutouts_sorted) == 0:
+            cutouts_sorted = [current_cutout]
+        elif distance < cutout_obj.location.distance(cutouts_sorted[0].location):
+            cutouts_sorted.insert(0, current_cutout)
+        else:
+            i = 1
+            while i < len(cutouts_sorted) and cutout_obj.location.distance(cutouts_sorted[i].location) < distance:
+                i += 1
+            if i < len(cutouts_sorted):
+                cutouts_sorted.insert(i, current_cutout)
+            else:
+                cutouts_sorted.append(current_cutout)
+    return cutouts_sorted
+
+
+def get_cutout_meta(som, cutout):
+    data_lut = list(csv.reader(open(som.dataset.csv_path.path), delimiter=' '))
+    header = data_lut[0]
+    data = data_lut[cutout.index+1]
+    return dict(zip(header, data))
 
 
 def create_cutout_obj(cutout_meta, som, cutout):
+    ra = cutout_meta[som.dataset.obj_ra_key]
+    dec = cutout_meta[som.dataset.obj_dec_key]
     cutout_loc = AladinLocation(cutout_meta['RaH'], cutout_meta['RaM'], cutout_meta['RaS'],
                                 cutout_meta['DecD'], cutout_meta['DecM'], cutout_meta['DecS'])
     # TODO: Not sure if on demand generation of Cutout Objects is a good idea
@@ -19,12 +55,12 @@ class AladinLocation(cc.CcLocation):
         Aladin takes spherical J200 coordinates. To simplify transformations and prevent format issues,
         we save each decimal individually
         """
-        self.raH = raH
-        self.raM = raM
-        self.raS = raS
-        self.decD = decD
-        self.decM = decM
-        self.decS = decS
+        self.raH = float(raH)
+        self.raM = float(raM)
+        self.raS = float(raS)
+        self.decD = float(decD)
+        self.decM = float(decM)
+        self.decS = float(decS)
 
     def distance(self, ground):
         """
@@ -33,10 +69,10 @@ class AladinLocation(cc.CcLocation):
         :param ground: The other location
         :return: The spherical distance in degrees
         """
-        l_ra = self.raH * (np.pi/12.) + self.raM * (np.pi/720.) + self.raS * (np.pi/43200.)
-        l_dec = self.decD * (np.pi/180.) + self.decM * (np.pi/10800) + self.decS * (np.pi/648000)
-        g_ra = ground.raH * (np.pi/12.) + ground.raM * (np.pi/720.) + ground.raS * (np.pi/43200.)
-        g_dec = ground.decD * (np.pi / 180.) + ground.decM * (np.pi / 10800) + ground.decS * (np.pi / 648000)
+        l_ra = self.raH * (np.pi/12) + self.raM * (np.pi/720) + self.raS * (np.pi/43200)
+        l_dec = self.decD * (np.pi/180) + self.decM * (np.pi/10800) + self.decS * (np.pi/648000)
+        g_ra = ground.raH * (np.pi/12) + ground.raM * (np.pi/720) + ground.raS * (np.pi/43200)
+        g_dec = ground.decD * (np.pi / 180) + ground.decM * (np.pi / 10800) + ground.decS * (np.pi / 648000)
         return np.arccos(np.sin(l_dec) * np.sin(g_dec) + np.cos(l_dec) * np.cos(g_dec) * np.cos(l_ra-g_ra)) * (180./np.pi)
 
     def is_at(self, ground):
@@ -62,6 +98,16 @@ class AladinLocation(cc.CcLocation):
         No usage so far
         """
         pass
+
+    def to_dict(self):
+        dictionary = {}
+        dictionary['raH'] = self.raH
+        dictionary['raM'] = self.raM
+        dictionary['raS'] = self.raS
+        dictionary['decD'] = self.decD
+        dictionary['decD'] = self.decM
+        dictionary['decD'] = self.decS
+        return dictionary
 
 
 class CutoutObj(cc.CcObject):
@@ -94,6 +140,13 @@ class CutoutObj(cc.CcObject):
 
     def identity(self, obj):
         return self.db_obj.id == obj.db_obj.id
+
+    def to_dict(self):
+        dictionary = {}
+        dictionary['identifier'] = self.identifier
+        dictionary['location'] = self.location.to_dict()
+        dictionary['db_obj'] = self.db_obj.to_json()
+        return dictionary
 
 
 class FoV(cc.CcGranularity):

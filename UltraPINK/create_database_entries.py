@@ -194,7 +194,7 @@ def create_datapoint_models(np_data, som, index, proto_idx):
 
 
 def np_image_link(np_img, layout='cartesian-2d'):
-    pil_image = Image.fromarray(np_img * 255)
+    pil_image = Image.fromarray(np_img*255)
     pil_image = pil_image.convert('L')
     img = pil_image
     if layout == 'hexagonal-2d':

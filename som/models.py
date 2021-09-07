@@ -79,6 +79,7 @@ class DataPoint(models.Model):
         dictionary['index'] = self.index
         dictionary['url'] = self.image
         dictionary['db_id'] = self.id
+        dictionary['closest_proto'] = self.closest_proto.to_json()
         if proto_dist:
             dictionary['distance'] = proto_dist
         return dictionary

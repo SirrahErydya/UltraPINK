@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from pinkproject.models import Project
 from som.models import SOM, DataPoint
@@ -14,15 +14,8 @@ def cutout_view(request, project_id, som_id, cutout_id):
     current_project = Project.objects.get(id=project_id)
     som = SOM.objects.get(id=som_id)
     cutout = DataPoint.objects.get(id=cutout_id)
-    data_lut = csv.reader(open(som.dataset.csv_path.path), delimiter=' ')
-    header = []
-    data = []
-    for (i, row) in enumerate(data_lut):
-        if i == 0:
-            header = row
-        if i == cutout.index:
-            data = row
-    cutout_meta = dict(zip(header, data))
+    cutout_meta = cs.get_cutout_meta(som, cutout)
+
     cutout_obj = cs.create_cutout_obj(cutout_meta, som, cutout)
     context = {
         'current': current_project,
@@ -32,4 +25,21 @@ def cutout_view(request, project_id, som_id, cutout_id):
         'cutout_meta': cutout_meta
     }
     return HttpResponse(template.render(context, request))
+
+
+def get_related_cutouts(request, cutout_id, n_cutouts=10):
+    cutout = DataPoint.objects.get(id=cutout_id)
+    som = cutout.som
+    cutout_meta = cs.get_cutout_meta(som, cutout)
+    cutout_obj = cs.create_cutout_obj(cutout_meta, som, cutout)
+
+    closest_cutouts = cs.cutout_distsort(cutout_obj, som)
+    json_cutouts = []
+    n = n_cutouts if len(closest_cutouts) > n_cutouts else len(closest_cutouts)
+    for i in range(n):
+        json_cut = closest_cutouts[i].to_dict()
+        json_cut['distance'] = cutout_obj.location.distance(closest_cutouts[i].location)
+        json_cutouts.append(json_cut)
+    return JsonResponse({'closest_cuts': json_cutouts, "success": True})
+
 

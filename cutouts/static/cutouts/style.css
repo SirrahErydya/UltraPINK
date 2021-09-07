@@ -14,11 +14,13 @@
 }
 
 #aladin-control .input-field input[type=text]:focus + label,
+#spatial-form .input-field input[type=text]:focus + label,
 #aladin-control .input-field textarea:focus + label {
     color: deeppink;
 }
 
 #aladin-control .input-field input[type=text]:focus,
+#spatial-form .input-field input[type=text]:focus,
 .input-field input[type=text].valid {
      border-bottom: 1px solid deeppink;
      box-shadow: 0 1px 0 0 deeppink;
@@ -27,6 +29,10 @@
 #aladin-control .input-field textarea:focus {
      border: 1px solid deeppink;
      box-shadow: 0 1px 0 0 deeppink;
+}
+
+#spatial-form .input-field , #spatial-form .btn{
+    margin-top: 20px;
 }
 
 #aladin-control p{
