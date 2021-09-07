@@ -2,6 +2,7 @@ from UltraPINK import coreconcepts as cc
 import numpy as np
 from som import models
 import csv
+from astropy import coordinates as ac
 
 
 def cutout_distsort(cutout_obj, som):
@@ -39,8 +40,7 @@ def get_cutout_meta(som, cutout):
 def create_cutout_obj(cutout_meta, som, cutout):
     ra = cutout_meta[som.dataset.obj_ra_key]
     dec = cutout_meta[som.dataset.obj_dec_key]
-    cutout_loc = AladinLocation(cutout_meta['RaH'], cutout_meta['RaM'], cutout_meta['RaS'],
-                                cutout_meta['DecD'], cutout_meta['DecM'], cutout_meta['DecS'])
+    cutout_loc = AladinLocation(ra, dec)
     # TODO: Not sure if on demand generation of Cutout Objects is a good idea
     identifier = "Unknown"
     if cutout_meta.keys().__contains__(som.dataset.obj_identifier_key):
@@ -50,17 +50,16 @@ def create_cutout_obj(cutout_meta, som, cutout):
 
 
 class AladinLocation(cc.CcLocation):
-    def __init__(self, raH, raM, raS, decD, decM, decS):
+    def __init__(self, ra, dec):
         """
         Aladin takes spherical J200 coordinates. To simplify transformations and prevent format issues,
-        we save each decimal individually
+        we wrap the AstropyCoordinate
         """
-        self.raH = float(raH)
-        self.raM = float(raM)
-        self.raS = float(raS)
-        self.decD = float(decD)
-        self.decM = float(decM)
-        self.decS = float(decS)
+
+        self.coord = ac.SkyCoord(ra, dec)
+        self.ra = self.coord.ra.hms
+        self.dec = self.coord.dec.dms
+        self.ra_str, self.dec_str = self.coord.to_string('hmsdms').split(" ")
 
     def distance(self, ground):
         """
@@ -69,11 +68,7 @@ class AladinLocation(cc.CcLocation):
         :param ground: The other location
         :return: The spherical distance in degrees
         """
-        l_ra = self.raH * (np.pi/12) + self.raM * (np.pi/720) + self.raS * (np.pi/43200)
-        l_dec = self.decD * (np.pi/180) + self.decM * (np.pi/10800) + self.decS * (np.pi/648000)
-        g_ra = ground.raH * (np.pi/12) + ground.raM * (np.pi/720) + ground.raS * (np.pi/43200)
-        g_dec = ground.decD * (np.pi / 180) + ground.decM * (np.pi / 10800) + ground.decS * (np.pi / 648000)
-        return np.arccos(np.sin(l_dec) * np.sin(g_dec) + np.cos(l_dec) * np.cos(g_dec) * np.cos(l_ra-g_ra)) * (180./np.pi)
+        return self.coord.separation(ground.coord)
 
     def is_at(self, ground):
         """
@@ -101,12 +96,8 @@ class AladinLocation(cc.CcLocation):
 
     def to_dict(self):
         dictionary = {}
-        dictionary['raH'] = self.raH
-        dictionary['raM'] = self.raM
-        dictionary['raS'] = self.raS
-        dictionary['decD'] = self.decD
-        dictionary['decD'] = self.decM
-        dictionary['decD'] = self.decS
+        dictionary['ra'] = self.ra_str
+        dictionary['dec'] = self.dec_str
         return dictionary
 
 
@@ -135,6 +126,8 @@ class CutoutObj(cc.CcObject):
             return self.location
         elif prop == 'db_obj':
             return self.db_obj
+        elif self.location.coord_dict.__contains__(prop):
+            return self.location.coord_dict[prop]
         else:
             raise ValueError("CutoutObj has no property named {0}".format(prop))
 

@@ -31,30 +31,30 @@
                     <p>Right ascension</p>
                     <div class="row">
                         <div class="input-field col s4">
-                            <input id="raH" type="text" value="{{ cutout.location.raH }}">
+                            <input id="raH" type="text" value="{{ cutout.location.ra.h }}">
                             <label for="raH">Hour</label>
                         </div>
                         <div class="input-field col s4">
-                            <input id="raM" type="text" value="{{ cutout.location.raM }}">
+                            <input id="raM" type="text" value="{{ cutout.location.ra.m }}">
                             <label for="raM">Minute</label>
                         </div>
                         <div class="input-field col s4">
-                            <input id="raS" type="text" value="{{ cutout.location.raS }}">
+                            <input id="raS" type="text" value="{{ cutout.location.ra.s }}">
                             <label for="raS">Second</label>
                         </div>
                     </div>
                     <p>Declination</p>
                     <div class="row">
                         <div class="input-field col s4">
-                            <input id="decD" type="text" value="{{ cutout.location.decD }}">
+                            <input id="decD" type="text" value="{{ cutout.location.dec.d }}">
                             <label for="decD">Degree</label>
                         </div>
                         <div class="input-field col s4">
-                            <input id="decM" type="text" value="{{ cutout.location.decM }}">
+                            <input id="decM" type="text" value="{{ cutout.location.dec.m }}">
                             <label for="decM">Minute</label>
                         </div>
                         <div class="input-field col s4">
-                            <input id="decS" type="text" value="{{ cutout.location.decS }}">
+                            <input id="decS" type="text" value="{{ cutout.location.dec.s }}">
                             <label for="decS">Second</label>
                         </div>
                     </div>
@@ -110,10 +110,10 @@
                                 <b>Position:</b>
                             </div>
                             <div class="col s4">
-                                <p>RAJ200 = {{ cutout.location.raH }}h{{ cutout.location.raM }}m{{ cutout.location.raS }}s
+                                <p>RAJ200 = {{ cutout.location.ra_str}}
                             </div>
                             <div class="col s4">
-                                <p>DECJ200 = {{ cutout.location.decD }}&deg;{{ cutout.location.raM }}&apos;{{ cutout.location.raS }}&apos;&apos;</p>
+                                <p>DECJ200 = {{ cutout.location.dec_str}}</p>
                             </div>
                         </div>
                         <div class="row">

@@ -38,7 +38,7 @@ def get_related_cutouts(request, cutout_id, n_cutouts=10):
     n = n_cutouts if len(closest_cutouts) > n_cutouts else len(closest_cutouts)
     for i in range(n):
         json_cut = closest_cutouts[i].to_dict()
-        json_cut['distance'] = cutout_obj.location.distance(closest_cutouts[i].location)
+        json_cut['distance'] = "%.2f" % cutout_obj.location.distance(closest_cutouts[i].location).degree
         json_cutouts.append(json_cut)
     return JsonResponse({'closest_cuts': json_cutouts, "success": True})
 

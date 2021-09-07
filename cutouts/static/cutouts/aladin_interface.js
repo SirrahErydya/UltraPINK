@@ -53,32 +53,42 @@ function display_cutouts(cutouts) {
     for(var i=0; i<cutouts.length; i++) {
         container.innerHTML +=
             '<div class="row">' +
-                    '<div class="col s2">' +
-                        '<img src="' + cutouts[i].db_obj.url + '"/>' +
-                    '</div>' +
-                    '<div class="col s10">' +
-                        '<p><b>Cutout #' + cutouts[i].db_obj.index + ' (' + cutouts[i].identifier + ')</b></p>' +
-                        '<div class="row">' +
-                            '<div class="col s3">' +
-                                '<b>Position:</b>' +
-                            '</div>' +
-                            '<div class="col s4">'+
-                                '<p>RAJ200 = ' + cutouts[i].location.raH + 'h' + cutouts[i].location.raM + 'm' + cutouts[i].location.raS + 's</p>' +
-                            '</div>' +
-                            '<div class="col s4">' +
-                                '<p>DECJ200 =' + cutouts[i].location.decD + '&deg;' + cutouts[i].location.raM + '&apos;' + cutouts[i].location.raS + '&apos;&apos;</p>' +
-                            '</div>' +
+                '<div class="col s2">' +
+                    '<img src="' + cutouts[i].db_obj.url + '"/>' +
+                '</div>' +
+                '<div class="col s10">' +
+                    '<p><b>Cutout #' + cutouts[i].db_obj.index + ' (' + cutouts[i].identifier + ')</b></p>' +
+                    '<div class="row">' +
+                        '<div class="col s3">' +
+                            '<b>Position:</b>' +
                         '</div>' +
-                        '<div class="row">' +
-                                '<div class="col s3">' +
-                                    '<b>Closest Prototype:</b>' +
-                                '</div>' +
-                                '<div class="col s8">' +
-                                    '<p>' +
-                                        '(' + cutouts[i].db_obj.closest_proto.x +',' + cutouts[i].db_obj.closest_proto.y + ')' +
-                                    '</p>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>';
+                        '<div class="col s4">'+
+                            '<p>RAJ200 = ' + cutouts[i].location.ra + '</p>' +
+                        '</div>' +
+                        '<div class="col s4">' +
+                            '<p>DECJ200 =' + cutouts[i].location.dec + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="row">' +
+                        '<div class="col s3">' +
+                            '<b>Closest Prototype:</b>' +
+                        '</div>' +
+                        '<div class="col s8">' +
+                            '<p>' +
+                                '(' + cutouts[i].db_obj.closest_proto.x +',' + cutouts[i].db_obj.closest_proto.y + ')' +
+                            '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="row">' +
+                        '<div class="col s3">' +
+                            '<b>Distance:</b>' +
+                        '</div>' +
+                        '<div class="col s8">' +
+                            '<p>' +
+                                cutouts[i].distance +  " deg" +
+                            '</p>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
     }
 }
