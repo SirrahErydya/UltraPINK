@@ -16,6 +16,10 @@
 
 {% block content %}
     {% include 'pinkproject/side_menu.html' %}
+    <script>
+        var project_id = '{{ current.id }}';
+        var som_id = '{{ som.id }}';
+    </script>
     <div class="content cutout-view">
         <p class="subheadline">Inspect {{ som.dataset.dataset_name }} # {{ cutout.db_obj.index }}
             ({{ cutout.identifier }}) with Aladin Lite.</p>
@@ -24,7 +28,7 @@
         <div class="row">
             <div class="col s6">
                 <!-- insert this snippet where you want Aladin Lite viewer to appear and after the loading of jQuery -->
-                <div id="aladin-lite-div" style="width:70vh;height:70vh;"></div>
+                <div id="aladin-lite-div"></div>
             </div>
             <div class="col s3">
                 <form id="aladin-control" onsubmit="return aladin_window()">

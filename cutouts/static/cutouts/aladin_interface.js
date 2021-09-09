@@ -54,7 +54,8 @@ function display_cutouts(cutouts) {
         container.innerHTML +=
             '<div class="row">' +
                 '<div class="col s2">' +
-                    '<img src="' + cutouts[i].db_obj.url + '"/>' +
+                    '<a href="/cutouts/cutout-view/' + project_id + '/' + som_id + '/' + cutouts[i].db_obj.db_id + '">' +
+                    '<img src="' + cutouts[i].db_obj.url + '"/></a>' +
                 '</div>' +
                 '<div class="col s10">' +
                     '<p><b>Cutout #' + cutouts[i].db_obj.index + ' (' + cutouts[i].identifier + ')</b></p>' +

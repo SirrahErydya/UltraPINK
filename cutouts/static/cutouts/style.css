@@ -13,6 +13,11 @@
     margin-bottom: 10px;
 }
 
+#aladin-lite-div {
+    width: 100%;
+    height: 70vh;
+}
+
 #aladin-control .input-field input[type=text]:focus + label,
 #spatial-form .input-field input[type=text]:focus + label,
 #aladin-control .input-field textarea:focus + label {
@@ -45,6 +50,15 @@
 
 #spatial-modal .row {
     margin: 0;
+}
+
+#spatial-modal hr {
+    margin-bottom: 20px;
+}
+
+#cutout-container a{
+    line-height: initial;
+    height: auto;
 }
 
 
