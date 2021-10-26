@@ -26,3 +26,9 @@ function loading_screen() {
     loader = document.getElementById('loading-wrapper');
     loader.style.display = "block";
 }
+
+// Reach label selection to label input
+function SelectionToInput(event) {
+   label_input = document.getElementById('label');
+   label_input.value = event.target.value;
+}

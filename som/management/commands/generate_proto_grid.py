@@ -6,7 +6,7 @@ from matplotlib import image as mpimg
 from matplotlib import gridspec as gridspec
 from django.conf import settings
 import os
-
+from UltraPINK import create_database_entries as dbe
 
 class Command(BaseCommand):
     help = 'Generate protoype map'
@@ -16,16 +16,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         som_model = SOM.objects.get(id=options['som_id'])
-        prototypes = Prototype.objects.filter(som=som_model).order_by('y', 'x')
-        print(prototypes)
-        figure = plt.figure(figsize=(som_model.som_width, som_model.som_height), frameon=False)
-        grid = gridspec.GridSpec(som_model.som_width, som_model.som_height)
-        grid.update(wspace=0.05, hspace=0.05)
-        i = 0
-        for prototype in prototypes:
-            axis = plt.subplot(grid[i])
-            axis.set_axis_off()
-            axis.imshow(mpimg.imread(prototype.image.path))
-            i += 1
-        plt.subplots_adjust(wspace=0, hspace=0)
-        figure.savefig(os.path.join(settings.MEDIA_ROOT, 'prototypes', som_model.training_dataset_name, 'protos.png'))
+        dbe.save_prototype_grid(som_model, os.path.join(settings.MEDIA_ROOT, 'protos.png'))

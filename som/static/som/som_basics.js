@@ -3,35 +3,43 @@
  */
 
 var tool_selected = 'tool-selected';
-var som_img_size = 100;
+var active_class = 'tool-active';
 var csrf_token_name = "csrfmiddlewaretoken";
 var selected_prototypes = [];
 var selected_cutouts = [];
 var label_colors = {};
 
 
-function select_tool(id) {
+function select_tool(id, grid_path) {
     var som_container = document.getElementById('som-container');
     var selected_tools = document.getElementsByClassName(tool_selected);
     var tool = document.getElementById(id);
     for(var i=0; i<selected_tools.length; i++) {
         if(selected_tools[i].id == 'magnifier') {
-            som_container.removeEventListener("mousedown", magnify);
-            som_container.removeEventListener("mouseup", remove_magnifier);
+            remove_magnifier();
         } else if(selected_tools[i].id == 'zoom') {
-            som_container.removeEventListener('wheel', zoom_som);
-            som_container.style.backgroundSize = '100%';
-            som_img_size = 100
+            remove_zoom(som_container);
+            som_container.style.transform = "scale(1) translate(0px, 0px)";
+            show_info_panels();
         }
         selected_tools[i].classList.remove(tool_selected);
     }
     if(id == "magnifier") {
-        som_container.addEventListener("mousedown", magnify);
-        som_container.addEventListener("mouseup", remove_magnifier);
+        magnify(grid_path);
     } else if(id == "zoom") {
-        som_container.addEventListener('wheel', zoom_som);
+        zoom_som(som_container);
+        hide_info_panels();
     }
     tool.classList.add(tool_selected)
+}
+
+function toggle(id) {
+    element = document.getElementById(id);
+    if(element.classList.contains(active_class)) {
+        element.classList.remove(active_class);
+    } else {
+        element.classList.add(active_class);
+    }
 }
 
 function click_image(html_id, db_id, is_proto) {
@@ -73,12 +81,35 @@ function select_single(img, db_id, selected_class) {
     }
 }
 
+function show_hover_preview(hovered) {
+    if(selected_prototypes.length !== 1) {
+        var proto_container = document.getElementById('prototype-enlargement');
+        img = document.getElementById(hovered);
+        proto_container.innerHTML = '';
+        proto_container.appendChild(img.cloneNode(true));
+    }
+}
+
 function show_selection_info(selected, element_id) {
      selection_info = document.getElementById(element_id);
-     selection_info.innerHTML = '<h3>Selected: Prototype ('+ selected.x + ',' +  selected.y +')</h3>';
+     selection_info.innerHTML = '<p class="subheadline">Selected: Prototype ('+ selected.x + ',' +  selected.y +')</p>';
      label = selected.label === '' ?  "Unlabeled" : selected.label.name;
      selection_info.innerHTML += '<p><b>Label: </b>'+ label + '</p>';
  }
+
+function show_info_panels() {
+    var info_text = document.getElementById('som-info');
+    info_text.style.display = "block";
+    var proto_container = document.getElementById('prototype-enlargement');
+    proto_container.style.display = "block";
+}
+
+function hide_info_panels() {
+    var info_text = document.getElementById('som-info');
+    info_text.style.display = "none";
+    var proto_container = document.getElementById('prototype-enlargement');
+    proto_container.style.display = "none";
+}
 
 
 function select_multiple(img, db_id, selected_class) {
@@ -95,22 +126,6 @@ function select_multiple(img, db_id, selected_class) {
     }
 }
 
-
-// Set Aladin Lite snippet coordinates
-function go_to_aladin(i) {
-    // Open loc.txt, parse RA and Dec and goto these coordinates
-    // Each prototype has its own directory and each directory contains
-    // a file loc.txt that contains the coordinates to the first few best
-    // matching sources to this prototype.
-    $.get('website/prototype' + proto_x + '_' + proto_y + '_0/loc.txt', function(data) {
-        var line = data.split("\n")[i];
-        var ra = line.split(';')[0];
-        var dec = line.split(';')[1];
-        console.log(ra, dec); // Uncomment to write coordinates to console
-        aladin.gotoRaDec(ra,dec);
-        aladin.setFov(12/60);
-                   }, 'text');
-}
 
 function show_best_fits(som_id) {
     var input_field = document.getElementById('input-cutouts');
@@ -153,7 +168,7 @@ function request_prototypes(proto_ids) {
 
 // Open a popup with the best fits for a prototype
 function request_cutouts(url, data) {
-    cutout_view()
+    cutout_view();
     var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
     outlier_case = data.trim() === '';
     $.ajaxSetup({
@@ -188,12 +203,12 @@ function create_cutout_images(best_fits, protos, outlier_case) {
     var proto_label_button2 = document.getElementById("label-all-cutouts-proto");
     var export_outliers_button = document.getElementById("export-outliers");
     if(outlier_case) {
-        modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" images that fit the least to any of the prototypes.</h1>";
+        modal_header.innerHTML = "<p>These are the "+ best_fits.length +" images that fit the least to any of the prototypes.</p>";
         proto_label_button1.style.display = 'none';
         proto_label_button2.style.display = 'none';
         export_outliers_button.style.display = 'inline';
     } else {
-        modal_header.innerHTML = "<h1>These are the "+ best_fits.length +" best matching images to your choice.</h1>";
+        modal_header.innerHTML = "<p>These are the "+ best_fits.length +" best matching images to your choice.</p>";
         proto_label_button1.style.display = 'inline';
         proto_label_button2.style.display = 'inline';
         export_outliers_button.style.display = 'none';
@@ -204,9 +219,18 @@ function create_cutout_images(best_fits, protos, outlier_case) {
         dec = best_fits[i].dec;
         id = best_fits[i].db_id;
         img_container.innerHTML +=
-            "<div class='cutout-img' id='cutout"+id+"' onclick='click_image("+id+",  false)'>"+
+            "<div class='cutout-img' id='cutout"+id+"' onclick='on_cutout_click("+id+")'>"+
             "<img src='" + url + "' alt='cutout" + i + "'>" +
             "</div>";
+    }
+}
+
+function on_cutout_click(cutout_id) {
+    var inspect = document.getElementById('inspect-cutout');
+    if(inspect.classList.contains(active_class)) {
+        request_page('/cutouts/cutout-view', [project_id, som_id, cutout_id]);
+    } else {
+        click_image(cutout_id, false);
     }
 }
 
@@ -220,44 +244,24 @@ function close_cutout_modal() {
     selected_cutouts = []
 }
 
-function open_aladin(path, idx) {
-    $.get(path+'loc.txt', function(data) {
-        var line = data.split("\n")[idx];
-        var ra = line.split(';')[0];
-        var dec = line.split(';')[1];
-        console.log(ra, dec); // Uncomment to write coordinates to console
-        aladin.gotoRaDec(ra,dec);
-        aladin.setFov(12/60);
-                   }, 'text');
-}
-
-function show_in_aladin(ra, dec, div_id) {
-    var aladin = A.aladin(div_id,
-            {showFullscreenControl: false, // Hide fullscreen controls
-            showGotoControl: false, // Hide go-to controls
-            showFrame: false, //Hide frame 'J2000' enzo
-            showLayersControl : false,});
-    aladin.gotoRaDec(ra,dec);
-    aladin.setFov(12/60);
-}
-
-function magnify(event) {
-    zoom = 10;
+function magnify(img_path) {
+    zoom = 5;
     var glass, w, h, bw;
 
     container = document.getElementById('som-container');
 
     /* Create magnifier glass: */
     glass = document.getElementById('magnify-window');
-    pos = getCursorPos(event);
-    glass.style.display = 'block';
-    glass.style.backgroundImage = container.style.backgroundImage;
+    glass.style.backgroundImage = "url('" + img_path + "')";
+    glass.style.display = "block";
     glass.style.backgroundRepeat = "no-repeat";
-    glass.style.backgroundSize = 100 * zoom + '%';
+    glass.style.backgroundSize = (container.scrollWidth * zoom) + "px " + (container.scrollHeight * zoom) + "px";
+
 
     /* Set background properties for the magnifier glass: */
     w = glass.offsetWidth / 2;
     h = glass.offsetHeight / 2;
+    bw = 1; // Border width
 
     /* Execute a function when someone moves the magnifier glass over the image: */
     glass.addEventListener("mousemove", moveMagnifier);
@@ -267,6 +271,7 @@ function magnify(event) {
     glass.addEventListener("touchmove", moveMagnifier);
     container.addEventListener("touchmove", moveMagnifier);
 
+
     function moveMagnifier(e) {
         var pos, x, y;
         /* Prevent any other actions that may occur when moving over the image */
@@ -275,15 +280,20 @@ function magnify(event) {
         pos = getCursorPos(e);
         x = pos.x;
         y = pos.y;
-        glass_left = (x-5);
-        glass_top = (y-5);
+        /* Prevent the magnifier glass from being positioned outside the image: */
+        container_bb = container.getBoundingClientRect();
+        if (x > container_bb.right - (w )) {x = container_bb.right - (w );}
+        if (x < container_bb.left + (w )) {x = container_bb.left + (w );}
+        if (y > container_bb.bottom - (h )) {y = container_bb.bottom - (h );}
+        if (y < container_bb.top + (h )) {y = container_bb.top + (h );}
+        glass_left = (x-w);
+        glass_top = (y-h);
         glass.style.left = glass_left + "px";
         glass.style.top =  glass_top + "px";
         /* Display what the magnifier glass "sees": */
-        container_bb = container.getBoundingClientRect();
-        bg_x = container_bb.left - x;
-        bg_y = container_bb.top - y;
-        glass.style.backgroundPosition = (bg_x * (zoom/4)) + "px " +  (bg_y * (zoom/4)) + "px";
+        glass.style.backgroundPosition = "-" + (((x-container_bb.left) * zoom) - w + bw) + "px -" +
+            (((y-container_bb.top) * zoom) - h + bw) + "px";
+
     }
 
     function getCursorPos(e) {
@@ -295,25 +305,57 @@ function magnify(event) {
     
 }
 
-function remove_magnifier(event) {
+function remove_magnifier() {
     glass = document.getElementById('magnify-window');
     glass.style.display = 'none';
 }
 
-function zoom_som(event) {
-    container = document.getElementById('som-container');
-
-    var e_delta = (event.deltaY || -event.wheelDelta || event.detail);
-    var delta =  e_delta && ((e_delta >> 10) || 1) || 0;
-    console.log(delta);
+function zoom_som(container) {
     var scale = 1;
-    if(delta < 0) {
-        scale += 0.1
-    } else {
-        scale -= 0.1
+    var point_x = 0;
+    var point_y = 0;
+    var start = { x: 0, y: 0 };
+    var panning = false;
+
+    function set_transform() {
+        container.style.transform = "translate(" + point_x + "px, " + point_y + "px) scale(" + scale + ")";
     }
-    som_img_size = som_img_size * scale;
-    container.style.backgroundSize = som_img_size * scale + '%';
+
+    container.onmousedown = function (e) {
+        e.preventDefault();
+        start = { x: e.clientX - point_x, y: e.clientY - point_y };
+        panning = true;
+    };
+
+    container.onmouseup = function (e) {
+        panning = false;
+    };
+
+    container.onmousemove = function (e) {
+        e.preventDefault();
+        if (!panning) {
+          return;
+        }
+        point_x = (e.clientX - start.x);
+        point_y = (e.clientY - start.y);
+        set_transform();
+    };
+
+
+    container.onwheel = function (e) {
+        e.preventDefault();
+        var delta = (e.wheelDelta ? e.wheelDelta : -e.deltaY);
+        (delta > 0) ? (scale *= 1.2) : (scale /= 1.2);
+        set_transform();
+    }
+
+
+}
+
+function remove_zoom(container) {
+    container.onwheel = [];
+    container.onmousedown = [];
+    container.onmousemove = [];
 }
 
 function apply_label(data, label) {
@@ -403,7 +445,7 @@ function proto_color(proto_id, r, g, b, view) {
     img = document.getElementById(proto_id);
     proto = img.parentElement;
     if(view === 'proto') {
-        proto.style.backgroundColor = 'rgba(255,255,255,1)';
+        proto.style.backgroundColor = 'rgba(255,255,255,0)';
     } else if(view === 'heatmap') {
         proto.style.backgroundColor = 'rgba(255,255,255,0)';
     } else if(view === 'labels') {

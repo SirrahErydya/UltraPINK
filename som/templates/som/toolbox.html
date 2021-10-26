@@ -1,122 +1,189 @@
-<button class="collapsible active" id="coll_tb" onclick="collapse(this.id, 'toolbox')">Tool Box</button>
 <div id="toolbox" style="display: grid;">
     {% load static %}
-    <h3>Inspection:</h3>
-    <div class="inspection-tools">
-        <div class="tooltip">
-            <i id="pointer" class="tool-selected material-icons" onclick="select_tool(this.id)">mouse</i>
-            <span class="tooltiptext">Select</span>
-        </div>
-        <div class="tooltip">
-            <i id="selection" class="material-icons" onclick="select_tool(this.id)">select_all</i>
-            <span class="tooltiptext">Select multiple</span>
-        </div>
-        <div class="tooltip">
-            <i id="zoom" class="material-icons" onclick="select_tool(this.id)">zoom_out_map</i>
-            <span class="tooltiptext">Zoom into map</span>
-        </div>
-        <div class="tooltip">
-            <i id="magnifier" class="material-icons" onclick="select_tool(this.id)">zoom_in</i>
-            <span class="tooltiptext">Magnify</span>
-        </div>
-        <div></div><div></div>
-        <div class="tooltip">
-            <i id="prototype_button" class="view-selected material-icons"
-               onclick="request_page(
-                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="proto" %}', [])">
-                photo_library</i>
-            <span class="tooltiptext">Prototype View</span>
-        </div>
-        {%  if active_som.heatmap %}
-        <div class="tooltip">
-            <i id="heatmap_button" class="material-icons"
-               onclick="request_page(
-                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="heatmap" %}', [])">
-                photo_filter</i>
-            <span class="tooltiptext">Heatmap View</span>
-        </div>
-        {% endif %}
-        <div class="tooltip">
-            <i id="labels_button" class="material-icons"
-               onclick="request_page(
-                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="labels" %}', [])">
-                local_offer</i>
-            <span class="tooltiptext">Label View</span>
-        </div>
-        <div></div><div></div>
-        {% if active_som.histogram %}
-        <div class="tooltip">
-            <i id='hist-button' class="material-icons" onclick="toggle_histogram(this)">insert_chart</i>
-            <span class="tooltiptext">See histogram</span>
-        </div>
-        {% endif %}
-    </div>
-
-    <h3>Operations:</h3>
-    <div class="edit-tools">
-    {% if active_som.mapping_generated %}
-        {% csrf_token %}
-        <div class="input-grid">
-            <div class="toolbox-input input-grid">
-                <label for="input-cutouts">Show best fits:</label>
-                <input id='input-cutouts' type="text" name="n_fits" value='10'/>
-            </div>
-            <div class="tooltip">
-                <i class="material-icons" onclick="show_best_fits({{ active_som.id }})">view_module</i>
-                <span class="tooltiptext">Show closest dataset entries to selection</span>
-            </div>
-            <div class="toolbox-input input-grid">
-                <label for="input-outliers">Show outliers:</label>
-                <input id='input-outliers' type="text" name="n_outliers" value='10'/>
-            </div>
-             <div class="tooltip">
-                 <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
-                <span class="tooltiptext">Show outliers</span>
-            </div>
-            <div class="toolbox-input">
-                <input id=label type="text" list="labels" value="Apply Label...."/>
-                <datalist id="labels">
-                  {%  for label in labels %}
-                    <option>{{ label.name }}</option>
-                  {% endfor %}
-                </datalist>
-            </div>
-            <div class="tooltip">
-                <i class="material-icons" onclick="label_protos()">local_offer</i>
-                <span class="tooltiptext">Apply labels</span>
-            </div>
-        </div>
-    {% else %}
-        <p>The datapoints in {{ dataset.dataset_name }} are not yet mapped to the map prototypes.
-            Would you like to do so now?</p>
-        <button class="action-button" onclick="loading_screen();request_page('{% url 'som:map_protos' som_id=active_som.id %}', [])">
-            Map datapoints</button>
-    {% endif %}
-    </div>
-
-    <h3>Export operations:</h3>
-    <div class="export-tools">
-        <div class="tooltip">
-            <i class="material-icons" onclick="export_catalog('{{ current.project_name }}', {})">file_download</i>
-            <span class="tooltiptext">Export catalog as csv</span>
-        </div>
-        <div class="tooltip">
-            <img id="export" src="{% static 'main/icons/topcat.png' %}"
-            onclick="//todo">
-            <span class="tooltiptext">Export Topcat project</span>
-        </div>
-        <div class="tooltip">
-            <i class="material-icons" onclick="//todo">photo_library</i>
-            <span class="tooltiptext">Download Prototype map</span>
-        </div>
-        <div class="tooltip">
-            <i class="material-icons" onclick="//todo">photo_filter</i>
-            <span class="tooltiptext">Download heat map</span>
-        </div>
-        <div class="tooltip">
-            <i class="material-icons" onclick="//todo">insert_chart</i>
-            <span class="tooltiptext">Download histogram</span>
-        </div>
-    </div>
+    <li>
+        <ul class="collapsible collapsible-accordion">
+            <li class="active">
+                <a class="collapsible-header">Inspection<i class="material-icons">arrow_drop_down</i></a>
+                <div class="collapsible-body">
+                    <div class="inspection-tools">
+                        <div class="tooltip">
+                            <i id="pointer" class="tool-selected material-icons" onclick="select_tool(this.id, null)">mouse</i>
+                            <span class="tooltiptext">Select</span>
+                        </div>
+                        <div class="tooltip">
+                            <i id="selection" class="material-icons" onclick="select_tool(this.id, null)">select_all</i>
+                            <span class="tooltiptext">Select multiple</span>
+                        </div>
+                        <div class="tooltip">
+                            <i id="zoom" class="material-icons" onclick="select_tool(this.id, null)">zoom_out_map</i>
+                            <span class="tooltiptext">Zoom into map</span>
+                        </div>
+                        <div class="tooltip">
+                            <i id="magnifier" class="material-icons" onclick="select_tool(this.id, '{{ active_som.proto_grid.url }}')">zoom_in</i>
+                            <span class="tooltiptext">Magnify</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <ul class="collapsible collapsible-accordion">
+            <li class="active">
+                <a class="collapsible-header">View<i class="material-icons">arrow_drop_down</i></a>
+                <div class="collapsible-body">
+                    <div class="inspection-tools">
+                        <div class="tooltip">
+                            <i id="prototype_button" class="view-selected material-icons"
+                               onclick="request_page(
+                                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="proto" %}', [])">
+                                photo_library</i>
+                            <span class="tooltiptext">Prototype View</span>
+                        </div>
+                        {%  if active_som.heatmap %}
+                        <div class="tooltip">
+                            <i id="heatmap_button" class="material-icons"
+                               onclick="request_page(
+                                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="heatmap" %}', [])">
+                                photo_filter</i>
+                            <span class="tooltiptext">Heatmap View</span>
+                        </div>
+                        {% endif %}
+                        <div class="tooltip">
+                            <i id="labels_button" class="material-icons"
+                               onclick="request_page(
+                                   '{% url 'pinkproject:project' project_id=current.id som_id=active_som.id view="labels" %}', [])">
+                                local_offer</i>
+                            <span class="tooltiptext">Label View</span>
+                        </div>
+                        {% if active_som.histogram %}
+                        <div class="tooltip">
+                            <i id='hist-button' class="material-icons" onclick="toggle_histogram(this)">insert_chart</i>
+                            <span class="tooltiptext">See histogram</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <ul class="collapsible collapsible-accordion">
+            <li class="active">
+                <a class="collapsible-header">Operations<i class="material-icons">arrow_drop_down</i></a>
+                <div class="collapsible-body">
+                    <div class="edit-tools">
+                    {% if active_som.mapping_generated %}
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="toolbox-input input-field">
+                                    <input id='input-cutouts' type="text" name="n_fits" value='10'/>
+                                    <label for="input-cutouts">Show best fits:</label>
+                                </div>
+                            </div>
+                            <div class="col s2">
+                                <div class="tooltip operation-button">
+                                    <i class="material-icons" onclick="show_best_fits({{ active_som.id }})">view_module</i>
+                                    <span class="tooltiptext">Show closest dataset entries to selection</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="toolbox-input input-field">
+                                    <input id='input-outliers' type="text" name="n_outliers" value='10'/>
+                                    <label for="input-outliers">Show outliers:</label>
+                                </div>
+                            </div>
+                            <div class="col s2">
+                                 <div class="tooltip operation-button">
+                                     <i class="material-icons" onclick="show_outliers({{ active_som.id }})">widgets</i>
+                                    <span class="tooltiptext">Show outliers</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s10">
+                                <div class="toolbox-input input-field">
+                                    <select id="label-select" name="label-select" onchange="SelectionToInput(event)">
+                                        <option value="" disabled selected>Choose label...</option>
+                                        {%  for label in labels %}
+                                            <option>{{ label.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="label-select">Choose label from existing...</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="toolbox-input input-field">
+                                    <input id="label" name="label-input" type="text" value="Label..."/>
+                                    <label for="label">Apply label</label>
+                                </div>
+                            </div>
+                            <div class="col s2">
+                                <div class="tooltip operation-button">
+                                    <i class="material-icons" onclick="label_protos()">local_offer</i>
+                                    <span class="tooltiptext">Apply labels</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p>No operations are available since the datapoints in {{ dataset.dataset_name }} are not yet mapped to the map prototypes.
+                            Would you like to do so now?</p>
+                        <button class="btn" onclick="loading_screen();request_page('{% url 'som:map_protos' som_id=active_som.id %}', [])">
+                            Map datapoints</button>
+                    {% endif %}
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <ul class="collapsible collapsible-accordion">
+            <li class="active">
+                <a class="collapsible-header">Export<i class="material-icons">arrow_drop_down</i></a>
+                <div class="collapsible-body">
+                    <div class="export-tools">
+                        <div class="tooltip">
+                            <i class="material-icons" onclick="export_catalog('{{ current.project_name }}', {})">file_download</i>
+                            <span class="tooltiptext">Export catalog as csv</span>
+                        </div>
+                        <div class="tooltip">
+                            <img id="export" src="{% static 'main/icons/topcat.png' %}"
+                            onclick="//todo">
+                            <span class="tooltiptext">Export Topcat project</span>
+                        </div>
+                        <div class="tooltip">
+                            <i class="material-icons" onclick="//todo">photo_library</i>
+                            <span class="tooltiptext">Download Prototype map</span>
+                        </div>
+                        <div class="tooltip">
+                            <i class="material-icons" onclick="//todo">photo_filter</i>
+                            <span class="tooltiptext">Download heat map</span>
+                        </div>
+                        <div class="tooltip">
+                            <i class="material-icons" onclick="//todo">insert_chart</i>
+                            <span class="tooltiptext">Download histogram</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </li>
 </div>
+
+<script>
+    // Initialize collapsible (uncomment the lines below if you use the dropdown variation)
+    document.addEventListener('DOMContentLoaded', function () {
+        var collapsibleElems = document.querySelectorAll('.collapsible');
+        var collapsibleInstances = M.Collapsible.init(collapsibleElems);
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+  });
+</script>
 

@@ -13,17 +13,23 @@
     <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     {% load static %}
     <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
-    <script>var prototypes = '{{ prototypes }}';</script>
+    <script>
+        var prototypes = '{{ prototypes }}';
+        var project_id = '{{ current.id }}';
+        var som_id = '{{ active_som.id }}';
+    </script>
     <script type="text/javascript" src="{% static 'som/view_functions.js' %}"></script>
     <script type="text/javascript" src="{% static 'som/som_basics.js' %}"></script>
 {% endblock %}
 {% block content %}
-    <div class="som-page">
-    {% include 'pinkproject/side_menu.html' %}
-    {% if active_som %}
-        {% include 'som/som.html' %}
-    {% else %}
-        {% include 'som/no_som.html' %}
-    {% endif %}
+    <div class="content som-view">
+        <div class="som-page">
+        {% include 'pinkproject/side_menu.html' %}
+        {% if active_som %}
+            {% include 'som/som.html' %}
+        {% else %}
+            {% include 'som/no_som.html' %}
+        {% endif %}
+        </div>
     </div>
 {% endblock %}

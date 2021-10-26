@@ -1,46 +1,64 @@
 
-.create-project {
-    background-color: mistyrose;
-    margin-left: 20%;
-    margin-right: 20%;
-    padding: 50px;
+.create-project textarea {
+    margin-top: 10px;
+    background-color: white;
+    width: 100%;
 }
 
+.create-project label {
+    vertical-align: bottom;
+}
+
+#create-project-form .input-field input[type=text]:focus + label,
+#create-project-form .input-field textarea:focus + label {
+    color: deeppink;
+}
+
+#create-project-form .input-field input[type=text]:focus,
+.input-field input[type=text].valid {
+     border-bottom: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+#create-project-form .input-field textarea:focus {
+     border: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+
 #create-project-form {
+    margin-top: 30px;
 }
 
 .project-lander {
-    text-align: center;
-    margin-left: 25vw;
     position: relative;
-    margin-top: 50px;
+    left: 20vw;
+    width: 80vw;
+    padding-left: 5%;
+    padding-right: 5%;
     min-height: calc(100vh - 110px);
     height: 100%;
 }
 
-.project-lander .card {
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-bottom: 50px;
-    text-align: center;
-}
+
 
 .project-lander .card ul {
     padding: 5px;
 }
 
+
 .dataset-overview {
     margin-top: 20px;
     margin-bottom: 20px;
     display: grid;
-    margin-left: 100px;
-    grid-gap: 5px;
+    grid-gap: 30px;
     grid-template-columns: repeat(3, 33%);
 }
 
 .dataset-overview .card {
     margin: 0;
     width: auto;
+    color: black;
 }
 
 .dataset-overview .add-som-button, .remove-som-button, .remove-ds-button {
@@ -63,6 +81,15 @@
     color: deeppink;
 }
 
+.card-action {
+    font-size: 16pt;
+}
+
+.card-action .row {
+    margin-bottom: 0px;
+}
+
+
 .remove-ds-button {
     float: right;
 }
@@ -84,104 +111,43 @@
     padding-bottom: 15px;
 }
 
-.input-grid {
-    margin-top: 50px;
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(2, 12em);
-    grid-template-rows: repeat(2, auto);
-    margin-bottom: 50px;
-}
-
-.side-menu {
-    position: fixed;
-    float: left;
-    padding: 0px 25px 15px 50px;
+.sidenav {
+    background-color: seashell;
     width: 20vw;
-    min-height: 100vh;
-    height: 100%;
-    background-color: pink;
-    z-index: 3;
 }
 
-.side-menu input {
-    width: 30px;
-    margin-left: 10px;
-    margin-right:10px;
-    border: none;
-    padding: 2px;
-    background-color: lavenderblush;
+.sidenav .background {
+    object-fit: cover;
 }
 
-.collapsible {
-    font-family: Verdana, Arial, sans-serif;
+.sidenav .background img {
     width: 100%;
-    font-size: 15pt;
-    margin-top: 15px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    background-color: palevioletred;
+}
+
+.sidenav .user-view {
+    padding-top: 30%;
     color: white;
-    cursor: pointer;
-    border: none;
+    padding-bottom: 10px;
 }
 
-.collapsible:hover {
-    background-color: deeppink;
+.sidenav .user-view .headline {
+    font-size: 16pt;
+    font-weight: bold;
 }
 
-#datasets, #toolbox {
-    padding: 15px;
-    background-color: mistyrose;
+.sidenav p {
+    padding: 0 32px;
+    line-height: 1.4;
 }
 
-#datasets {
-    padding: 25px;
-    display: none;
+.sidenav .user-view a {
+    padding-right: 30px;
+    color: white;
+}
+.sidenav .user-view a:hover {
+    color: deeppink;
 }
 
-#datasets h2 {
-    padding-bottom: 20px;
-}
-
-#datasets ul {
-    padding-top: 20px;
-    padding-bottom: 30px;
-}
-
-#datasets ul li {
-    list-style: none;
-}
-
-#datasets .action-button{
-    width: 120px;
-}
-
-.project-lander .export-tools {
-    padding-top: 25px;
-}
-.project-lander .export-tools i {
-    font-size: 64px;
-    opacity: 0.5;
-}
-
-.project-lander .export-tools .tooltip {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-
-.project-lander .export-tools i:hover {
-    opacity: 1;
-}
-
-
-.dataset-overview .project-container li {
-    text-align: right;
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    grid-template-rows: repeat(2, auto);
-}
 
 #loading-wrapper {
     background-color: white;

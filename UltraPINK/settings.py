@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'cutouts.apps.CutoutsConfig',
     'pinkproject.apps.PinkprojectConfig',
     'som.apps.SomConfig',
     'django.contrib.admin',

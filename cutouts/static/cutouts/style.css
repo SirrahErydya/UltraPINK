@@ -1,0 +1,64 @@
+
+.cutout-view {
+    position: relative;
+    left: 20vw;
+    width: 80vw;
+    padding-top: 0;
+    padding-left: 5%;
+    padding-right: 5%;
+    min-height: calc(100vh - 110px);
+}
+
+.cutout-view .subheadline {
+    margin-bottom: 10px;
+}
+
+#aladin-lite-div {
+    width: 100%;
+    height: 70vh;
+}
+
+#aladin-control .input-field input[type=text]:focus + label,
+#spatial-form .input-field input[type=text]:focus + label,
+#aladin-control .input-field textarea:focus + label {
+    color: deeppink;
+}
+
+#aladin-control .input-field input[type=text]:focus,
+#spatial-form .input-field input[type=text]:focus,
+.input-field input[type=text].valid {
+     border-bottom: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+#aladin-control .input-field textarea:focus {
+     border: 1px solid deeppink;
+     box-shadow: 0 1px 0 0 deeppink;
+}
+
+#spatial-form .input-field , #spatial-form .btn{
+    margin-top: 20px;
+}
+
+#aladin-control p{
+    margin-bottom: 5px;
+}
+
+#spatial-modal img {
+    width: 100%;
+}
+
+#spatial-modal .row {
+    margin: 0;
+}
+
+#spatial-modal hr {
+    margin-bottom: 20px;
+}
+
+#cutout-container a{
+    line-height: initial;
+    height: auto;
+}
+
+

@@ -6,23 +6,33 @@
     <link rel="icon" href="{% static 'main/Logo/icon.png' %}">
     <!-- materialize sheet for icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
     {% block stylesheets %}<!-- Additional sheets added in subpages -->{% endblock %}
+    <!-- Compiled and minified JavaScript -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script type="text/javascript" src="{% static 'main/basic_functions.js' %}"></script>
     {% block javascript %}<!-- Additional scripts added in subpages -->{% endblock %}
     <title>{% block title %}UltraPINK{% endblock %}</title>
 </head>
 <body>
-    <div class="navbar">
-    {% block navbar %}
-        <ul>
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-            <li><a href="{% url 'pinkproject:create_project' %}">New project</a></li>
-            <li><a href="{% url 'all_projects' %}">All projects</a></li>
-        </ul>
+    {% block banner %}
     {% endblock %}
-    </div>
+    {% block navbar %}
+    <nav id="nav">
+        <div class="nav-wrapper">
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'pinkproject:create_project' %}">New project</a></li>
+                <li><a href="{% url 'all_projects' %}">All projects</a></li>
+            </ul>
+        </div>
+    </nav>
+    {% endblock %}
     {% block content %}{% endblock %}
     <div class="footer">
     {% block footer %}
@@ -34,5 +44,24 @@
         </ul>
     {% endblock %}
     </div>
+    <script>
+        // When the user scrolls the page, execute myFunction
+        window.onscroll = function() {fix_header()};
+
+        // Get the header
+        var header = document.getElementById("nav");
+
+        // Get the offset position of the navbar
+        var sticky = header.offsetTop;
+
+        // Add the sticky class to the header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+        function fix_header() {
+          if (window.pageYOffset > sticky) {
+            header.classList.add("sticky");
+          } else {
+            header.classList.remove("sticky");
+          }
+        }
+    </script>
 </body>
 </html>

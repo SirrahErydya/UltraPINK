@@ -20,6 +20,7 @@ class SOM(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     heatmap = models.ImageField(default=None, null=True)
     histogram = models.ImageField(default=None, null=True)
+    proto_grid = models.ImageField(default=None, null=True)
 
 
 class Label(models.Model):
@@ -41,6 +42,7 @@ class Label(models.Model):
 class Prototype(models.Model):
     som = models.ForeignKey(SOM, on_delete=models.CASCADE)
     label = models.ForeignKey(Label, on_delete=models.SET_NULL, null=True)
+    index = models.IntegerField()
     x = models.IntegerField()
     y = models.IntegerField()
     z = models.IntegerField()
@@ -62,20 +64,14 @@ class Prototype(models.Model):
 
 class DataPoint(models.Model):
     # Foreign key
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    som = models.ForeignKey(SOM, on_delete=models.CASCADE)
     index = models.IntegerField()
-
-    # Astronomical details
-    ra = models.DecimalField(decimal_places=15, max_digits=20, null=True)
-    dec = models.DecimalField(decimal_places=15, max_digits=20, null=True)
     label = models.ForeignKey(Label, on_delete=models.SET_NULL, null=True)
     image = models.CharField(max_length=200, default="")
+    closest_proto = models.ForeignKey(Prototype, on_delete=models.SET_NULL, null=True)
 
     def to_json(self, proto_dist=None):
         dictionary = {}
-        if self.ra and self.dec:
-            dictionary['ra'] = self.ra
-            dictionary['dec'] = self.ra
         if self.label:
             dictionary['label'] = self.label.to_json()
         else:
@@ -83,12 +79,13 @@ class DataPoint(models.Model):
         dictionary['index'] = self.index
         dictionary['url'] = self.image
         dictionary['db_id'] = self.id
+        dictionary['closest_proto'] = self.closest_proto.to_json()
         if proto_dist:
             dictionary['distance'] = proto_dist
         return dictionary
 
     class Meta:
-        unique_together = ('dataset', 'index')
+        unique_together = ('som', 'index')
 
 
 

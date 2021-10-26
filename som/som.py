@@ -23,14 +23,20 @@ def train(data, som_dim, layout, number_of_rotations, epochs):
     :param epochs: Training epochs
     :return: A trained SOM object
     """
+    print(pink.__version__)
     neuron_dim = int(data.shape[1] / math.sqrt(2.0) * 2.0)
     euclid_dim = int(data.shape[1] * math.sqrt(2.0) / 2.0)
     width, height, depth = som_dim
     if layout == 'cartesian-2d':
         np_som = np.zeros((int(width), int(height), neuron_dim, neuron_dim)).astype(np.float32)
+    elif layout == 'hexagonal-2d':
+        #@ Todo: Only for square-shaped 2D hex soms
+        radius = (int(width) - 1) / 2
+        number_of_neurons = int(int(width) * int(height) - radius * (radius + 1))
+        np_som = np.random.rand(number_of_neurons, neuron_dim, neuron_dim).astype(np.float32)
     else:
-        raise NotImplementedError("Only cartesian layouts by now")
-    som = pink.SOM(np_som, neuron_layout=layout)
+        raise AttributeError("Invalid layout: {0}".format(layout))
+    som = pink.SOM(np_som, som_layout=layout)
 
     trainer = pink.Trainer(som, number_of_rotations=int(number_of_rotations), euclidean_distance_dim=euclid_dim,
                            distribution_function=pink.GaussianFunctor(1.1, 0.2))
@@ -75,14 +81,17 @@ def import_som(project, dataset_name, som_binfile, mapping_binfile, data_binfile
 
 
 def map_som(som_model):
-    np_som = np.load(som_model.som_file.path)
-    np_data = np.load(som_model.dataset.data_path.path)
+    np_som = np.load(som_model.som_file.path, allow_pickle=True)
+    np_data = np.load(som_model.dataset.data_path.path, allow_pickle=True)
     euclidean_dim = int(np_data.shape[1] * math.sqrt(2.0) / 2.0)
     layout = som_model.layout
     som = pink.SOM(np_som, som_layout=layout)
     mapper = pink.Mapper(som, euclidean_distance_dim=euclidean_dim)
     map_table = np.zeros((np_data.shape[0], np_som.shape[0]*np_som.shape[1]))
     heatmap = np.zeros((np_som.shape[0], np_som.shape[1]))
+    if layout == 'hexagonal-2d':
+        map_table = np.zeros((np_data.shape[0], np_som.shape[0]))
+        heatmap = np.zeros((som_model.som_width, som_model.som_width))
     for i in tqdm(range(np_data.shape[0])):
         point = np_data[i].astype(np.float32)
         if point.max() > 1:
@@ -90,10 +99,20 @@ def map_som(som_model):
         distances, _ = mapper(pink.Data(point))
         map_table[i] = distances
         best_proto = np.argmin(distances)
-        proto_x = best_proto % np_som.shape[1]
-        proto_y = int((best_proto - proto_x)/np_som.shape[0])
+        if layout == 'cartesian-2d':
+            proto_x = best_proto % np_som.shape[1]
+            proto_y = int((best_proto - proto_x) / np_som.shape[0])
+
+        elif layout == 'hexagonal-2d':
+            proto_x = best_proto % som_model.som_width
+            proto_y = int((best_proto - proto_x) / som_model.som_width)
+            cols_allowed = int(som_model.som_width - (np.abs(proto_y - np.floor(som_model.som_width / 2))))
+            while proto_x >= cols_allowed:
+                proto_y += 1
+                proto_x -= cols_allowed
+                cols_allowed = int(som_model.som_width - (np.abs(proto_y - np.floor(som_model.som_width / 2))))
         heatmap[proto_y][proto_x] += 1
-        dbe.create_datapoint_models(np_data[i], som_model, i)
+        dbe.create_datapoint_models(np_data[i], som_model, i, best_proto)
     return map_table, heatmap
 
 
@@ -104,7 +123,7 @@ def get_data(data):
     """
     file_ending = data.name.split('.')[-1]
     if file_ending == 'npy':
-        data = np.load(data)
+        data = np.load(data, allow_pickle=True)
         np.random.shuffle(data)
         data = np.squeeze(data)
     else:

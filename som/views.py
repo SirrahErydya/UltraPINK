@@ -23,7 +23,8 @@ def som(request, som_id, view='proto'):
             'active_som': active_som,
             'prototypes': prototypes,
             'labels': labels,
-            'view': view
+            'view': view,
+            'half_som_width': int(active_som.som_width / 2)
         }
         return HttpResponse(template.render(context, request))
     raise FileNotFoundError("SOM not found.")
@@ -85,7 +86,14 @@ def save_som(request, project_id, dataset_id=None):
         pink_som = train(dataset, (width, height, depth), layout, rotations, epochs)
     else:
         raise FileNotFoundError("No files to train or import are SOM are provided.")
-    som_model = dbe.create_som_model(som_name, pink_som, dataset_model)
+    som_model = dbe.create_som_model(som_name, pink_som, (width, height, depth), dataset_model)
+
+    # Save proto grid
+    save_path = os.path.join('projects', som_model.dataset.project.project_name, "soms", som_model.som_name)
+    grid_path = os.path.join(save_path, "proto_grid.png")
+    dbe.save_prototype_grid(som_model, grid_path)
+    som_model.proto_grid.name = grid_path
+    som_model.save()
     return redirect('pinkproject:project', project_id=project_id, som_id=som_model.id)
 
 
@@ -94,11 +102,17 @@ def map_prototypes(request, som_id):
     save_path = os.path.join('projects', som_model.dataset.project.project_name, "soms", som_model.som_name)
     mapping, heatmap = map_som(som_model)
     np.save(os.path.join(save_path, "mapping.npy"), mapping)
+
+    # Save heatmap
     heatmap_path = os.path.join(save_path, "heatmap.png")
     dbe.save_heatmap(heatmap, heatmap_path)
+
+    # Save histrogram
     bmu_distances = np.min(mapping, axis=1)
     hist_path = os.path.join(save_path, 'histogram.png')
     dbe.plot_histogram(bmu_distances, hist_path)
+
+    # Update path links in model
     som_model.mapping_file = os.path.join(save_path, "mapping.npy")
     som_model.heatmap.name = heatmap_path
     som_model.histogram.name = hist_path
@@ -117,17 +131,21 @@ def get_protos(request):
 def get_best_fits_to_protos(request, som_id, n_fits=10):
     som_model = SOM.objects.get(id=som_id)
     protos = json.loads(request.body)['protos']
+    distance_file = np.load(som_model.mapping_file)
     if len(protos) == 1:
         proto = get_protos_from_db(protos)[0]
-        distances = get_distances(som_model, proto)
-        best_indices = np.argsort(distances)[:n_fits]
-        data_points = list(map(lambda idx: DataPoint.objects.get(dataset=som_model.dataset, index=idx), best_indices))
+        # Todo: Something is off here...
+        # distances = get_distances(som_model, proto)
+        # best_indices = np.argsort(distances)[:n_fits]
+        data_points = DataPoint.objects.filter(som_id=som_model, closest_proto=proto)
+        point_indices = [p.index for p in data_points]
+        distances = distance_file[point_indices, proto.index]
     else:
         raise NotImplementedError("No multiple prototype selection for this time")
     json_points = []
     upper = n_fits if len(distances) > n_fits else len(distances)
     for i in range(upper):
-        json_points.append(data_points[i].to_json(distances[best_indices[i]]))
+        json_points.append(data_points[i].to_json(distances[i]))
     return JsonResponse({'best_fits': json_points, "success": True})
 
 
@@ -156,7 +174,7 @@ def get_outliers(request, som_id, n_fits=10):
     distances = get_distances(som_model)
     worst_distances = np.max(distances, axis=1)
     worst_indices = np.argsort(-worst_distances)[:n_fits]
-    data_points = list(map(lambda idx: DataPoint.objects.get(dataset=som_model.dataset, index=idx), worst_indices))
+    data_points = list(map(lambda idx: DataPoint.objects.get(som=som_model, index=idx), worst_indices))
     json_outliers = [outlier.to_json() for outlier in data_points]
     return JsonResponse({'best_fits':  json_outliers, 'success': True})
 

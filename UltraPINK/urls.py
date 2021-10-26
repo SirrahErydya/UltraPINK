@@ -25,6 +25,7 @@ urlpatterns = [
     path('all_projects', views.all_projects, name="all_projects"),
     path('pinkproject/', include('pinkproject.urls')),
     path('som/', include('som.urls')),
+    path('cutouts/', include('cutouts.urls')),
     path('admin/', admin.site.urls),
 ]
 
