@@ -41,6 +41,8 @@ function request_spatial_cutouts(cutout_id) {
         success: function (data) {
             if (data.success) {
                 display_cutouts(data.closest_cuts);
+            } else {
+                alert("Error during cutout request")
             }
         }
       });

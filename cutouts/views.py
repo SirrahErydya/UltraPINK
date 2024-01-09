@@ -28,6 +28,7 @@ def cutout_view(request, project_id, som_id, cutout_id):
 
 
 def get_related_cutouts(request, cutout_id, n_cutouts=10):
+    print("On my way to gather cutouts")
     cutout = DataPoint.objects.get(id=cutout_id)
     som = cutout.som
     cutout_meta = cs.get_cutout_meta(som, cutout)
@@ -40,6 +41,8 @@ def get_related_cutouts(request, cutout_id, n_cutouts=10):
         json_cut = closest_cutouts[i].to_dict()
         json_cut['distance'] = "%.2f" % cutout_obj.location.distance(closest_cutouts[i].location).degree
         json_cutouts.append(json_cut)
+
+    print("Done!")
     return JsonResponse({'closest_cuts': json_cutouts, "success": True})
 
 

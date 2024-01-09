@@ -3,7 +3,7 @@ import numpy as np
 from som import models
 import csv
 from astropy import coordinates as ac
-
+from astropy.units import UnitsError
 
 def cutout_distsort(cutout_obj, som):
     all_db_cutouts = models.DataPoint.objects.filter(som=som)
@@ -55,10 +55,15 @@ class AladinLocation(cc.CcLocation):
         Aladin takes spherical J200 coordinates. To simplify transformations and prevent format issues,
         we wrap the AstropyCoordinate
         """
-
-        self.coord = ac.SkyCoord(ra, dec)
+        try:
+            self.coord = ac.SkyCoord(ra, dec)
+        except UnitsError:
+            self.coord = ac.SkyCoord(ra, dec, unit='deg')
         self.ra = self.coord.ra.hms
         self.dec = self.coord.dec.dms
+        self.decD = self.dec.d
+        self.decM = np.abs(self.dec.m)
+        self.decS = np.abs(self.dec.s)
         self.ra_str, self.dec_str = self.coord.to_string('hmsdms').split(" ")
 
     def distance(self, ground):

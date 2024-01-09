@@ -31,5 +31,5 @@ class Dataset(models.Model):
     data_path = models.FileField(upload_to='projects')
     csv_path = models.FileField(upload_to=upload_to_dataset_folder, default=None)
     obj_identifier_key = models.CharField(max_length=200, default="ObjName")
-    obj_ra_key = models.CharField(max_length=200, default="RAJ200")
-    obj_dec_key = models.CharField(max_length=200, default="DECJ200")
+    obj_ra_key = models.CharField(max_length=200, default="RAJ2000")
+    obj_dec_key = models.CharField(max_length=200, default="DECJ2000")
