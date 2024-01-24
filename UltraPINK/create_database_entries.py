@@ -14,6 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import gridspec as gridspec
 from matplotlib import image as mpimg
+from urllib.request import urlopen
 import csv
 
 
@@ -127,7 +128,7 @@ def save_prototype_grid(som_model, path):
             axis = plt.subplot(grid[i])
             axis.set_axis_off()
             axis.set_aspect('equal')
-            axis.imshow(mpimg.imread(prototype.image), cmap='gray')
+            axis.imshow(Image.open(urlopen(prototype.image)), cmap='gray')
             i += 1
         plt.subplots_adjust(wspace=0.0, hspace=0.0)
         figure.savefig(path)
