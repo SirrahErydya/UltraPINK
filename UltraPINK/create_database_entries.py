@@ -76,40 +76,46 @@ def create_prototype_models(som_model):
     np_som = np.load(som_model.som_file.path)
     save_path = os.path.join('projects', som_model.dataset.project.project_name, "soms", som_model.som_name, 'protos')
     som_idx = 0
-    for y in range(som_model.som_height):
-        for x in range(som_model.som_width):
-            if som_model.layout == 'cartesian-2d':
-                np_img = np_som[y][x]
-                img_link = np_image_link(np_img, som_model.layout)
-                prototype = smodels.Prototype.objects.create(
-                    som = som_model,
-                    index=som_idx,
-                    x = x,
-                    y = y,
-                    z = 1,
-                    number_of_fits = 0,
-                    image=img_link
-                )
-                som_idx += 1
-            elif som_model.layout == 'hexagonal-2d':
-                cols_allowed = int(som_model.som_width - (np.abs(y - np.floor(som_model.som_width / 2))))
-                print(cols_allowed)
-                if x < cols_allowed and som_idx < np_som.shape[0]:
-                    q = np.abs(int(y - np.floor(som_model.som_width / 2))) + x
-                    r = y
-                    np_img = np_som[som_idx]
+    for z in range(som_model.som_depth):
+        for y in range(som_model.som_height):
+            for x in range(som_model.som_width):
+                if som_model.layout.startswith('cartesian'):
+                    if som_model.layout == 'cartesian-2d':
+                        np_img = np_som[y][x]
+                    elif som_model.layout == 'cartesian-3d':
+                        np_img = np_som[y][x][z]
+                    else:
+                        raise ValueError("Corrupted SOM layout")
                     img_link = np_image_link(np_img, som_model.layout)
                     prototype = smodels.Prototype.objects.create(
-                        som=som_model,
+                        som = som_model,
                         index=som_idx,
-                        x=q,
-                        y=r,
-                        z=1,
-                        number_of_fits=0,
+                        x = x,
+                        y = y,
+                        z = z,
+                        number_of_fits = 0,
                         image=img_link
                     )
-                    som_idx +=1
-    print("...done.")
+                    som_idx += 1
+                elif som_model.layout == 'hexagonal-2d':
+                    cols_allowed = int(som_model.som_width - (np.abs(y - np.floor(som_model.som_width / 2))))
+                    print(cols_allowed)
+                    if x < cols_allowed and som_idx < np_som.shape[0]:
+                        q = np.abs(int(y - np.floor(som_model.som_width / 2))) + x
+                        r = y
+                        np_img = np_som[som_idx]
+                        img_link = np_image_link(np_img, som_model.layout)
+                        prototype = smodels.Prototype.objects.create(
+                            som=som_model,
+                            index=som_idx,
+                            x=q,
+                            y=r,
+                            z=z,
+                            number_of_fits=0,
+                            image=img_link
+                        )
+                        som_idx +=1
+        print("...done.")
 
 
 def save_prototype_grid(som_model, path):

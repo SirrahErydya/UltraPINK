@@ -27,13 +27,21 @@ def train(data, som_dim, layout, number_of_rotations, epochs):
     neuron_dim = int(data.shape[1] / math.sqrt(2.0) * 2.0)
     euclid_dim = int(data.shape[1] * math.sqrt(2.0) / 2.0)
     width, height, depth = som_dim
-    if layout == 'cartesian-2d':
-        np_som = np.zeros((int(width), int(height), neuron_dim, neuron_dim)).astype(np.float32)
-    elif layout == 'hexagonal-2d':
+    if layout == 'cartesian':
+        if int(depth) > 1:
+            np_som = np.zeros((int(width), int(height), int(depth), neuron_dim, neuron_dim)).astype(np.float32)
+            layout = 'cartesian-3d'
+        else:
+            np_som = np.zeros((int(width), int(height), neuron_dim, neuron_dim)).astype(np.float32)
+            layout = 'cartesian-2d'
+    elif layout == 'hexagonal':
         #@ Todo: Only for square-shaped 2D hex soms
+        if depth != 1:
+            raise ValueError("3D hexagonal maps are currently not supported.")
         radius = (int(width) - 1) / 2
         number_of_neurons = int(int(width) * int(height) - radius * (radius + 1))
         np_som = np.random.rand(number_of_neurons, neuron_dim, neuron_dim).astype(np.float32)
+        layout = 'hexagonal-2d'
     else:
         raise AttributeError("Invalid layout: {0}".format(layout))
     som = pink.SOM(np_som, som_layout=layout)

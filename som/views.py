@@ -81,7 +81,7 @@ def save_som(request, project_id, dataset_id=None):
 
     if som_binfile and mapping_binfile:
         # pink_som = import_som(project_model, dataset_name, som_binfile, mapping_binfile, dataset, csv_file)
-        raise NotImplementedError("Import of SOMS is currently not implemented")
+        raise NotImplementedError("Import of SOMs is currently not implemented")
     elif width and height and depth and layout and rotations and epochs:
         pink_som = train(dataset, (width, height, depth), layout, rotations, epochs)
     else:
