@@ -1,0 +1,121 @@
+<div id="loading-wrapper" style="display: none;">
+    <div class="loader"></div>
+    <p>Generate mapping... Grab a coffee, this may take a while ;)</p>
+</div>
+{% if active_som.layout == 'hexagonal-2d' %}
+    {% include 'som/hex_som.html' %}
+{% else %}
+    {% include 'som/cart_som.html' %}
+{% endif %}
+<div class="modal modal_window" id="modal-window" style="display: none">
+    {% load static %}
+    <div class="icon">
+        <img src="{% static 'main/icons/error.png' %}" onclick="close_cutout_modal()"/>
+    </div>
+    <div id="modal-header"></div>
+        <div class="row modal-options">
+            <div class="tooltip col s1">
+                {% if active_som.dataset.catalog_path %}
+                    <i id="inspect-cutout" class=" material-icons" onclick="toggle(this.id)">search</i>
+                    <span class="tooltiptext">Inspect with Aladin</span>
+                {% else %}
+                    <i id="inspect-cutout" class="material-icons disabled">search</i>
+                    <span class="tooltiptext">Can't inspect cutouts: No location data is given</span>
+                {% endif %}
+            </div>
+        </div>
+
+    <div id="cutouts" class="cutouts">
+    </div>
+    <div class="row">
+        <div class="col s8">
+            <div class="input-field">
+                <input style="width:300px" id='cutout-label' type="text" value='Label...'/>
+                <label for="cutout-label">Label</label>
+            </div>
+        </div>
+        <div class="col s4">
+            <button id="label-cutouts" class="btn"
+                    onclick="label_selected_cutouts(false)">Label</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s4">
+            <button id="label-all-cutouts" class="btn"
+                    onclick="label_all_cutouts(false)">Label all</button>
+        </div>
+        <div class="col s4">
+            <button id="label-cutouts-proto" class="btn"
+                    onclick="label_selected_cutouts(true)">Apply proto label</button>
+        </div>
+        <div class="col s4">
+            <button id="label-all-cutouts-proto" class="btn"
+                    onclick="label_all_cutouts(true)">Proto label to all</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s4">
+            <button id="export-outliers" class="btn"
+                    onclick="export_outliers()">Export outliers</button>
+        </div>
+    </div>
+
+</div>
+<div class="som-info" id="som-info">
+    <table id="info-table">
+        <tr>
+            <th>Dataset:</th>
+            <td>{{ active_som.dataset.dataset_name }}</td>
+        </tr>
+        <tr>
+            <th>Dataset length:</th>
+            <td>{{ active_som.dataset.length }}</td>
+        </tr>
+        <tr>
+            <th>Neurons:</th>
+            <td>{{ active_som.number_of_neurons }}</td>
+        </tr>
+        <tr>
+            <th>Width:</th>
+            <td>{{ active_som.som_width|floatformat:0 }}</td>
+        </tr>
+        <tr>
+            <th>Height:</th>
+            <td>{{ active_som.som_height|floatformat:0 }}</td>
+        </tr>
+        <tr>
+            <th>Depth:</th>
+            <td>{{ active_som.som_depth|floatformat:0 }}</td>
+        </tr>
+    </table>
+    <br/>
+    <div id="label-legend">
+        <p class="subheadline">Labels</p><br/>
+        {% if labels %}
+        <div class="label-legend" style="grid-template-rows: repeat({{ labels|length}}, auto)">
+        {% for label in labels %}
+            {{ label.name }}:
+            <div class="square"
+                 style="background-color: rgb({{ label.color_r }},{{ label.color_g }},{{ label.color_b }});"></div>
+        {% endfor %}
+        </div>
+        {% else %}
+            <i>No labels in this SOM</i>
+        {% endif %}
+    </div>
+    <div id="histogram">
+        <p class="subheadline">Map Histogram</p>
+        {% if active_som.histogram %}
+            <img src="{{ active_som.histogram.url }}"/>
+        {% endif %}
+    </div>
+    <div class="proto-preview">
+        <div id="prototype-enlargement"></div>
+        <div id="proto-info"></div>
+    </div>
+</div>
+{% if active_som.heatmap %}
+<script>
+    view("{{ view }}", "{{ active_som.heatmap.url }}");
+</script>
+{% endif %}

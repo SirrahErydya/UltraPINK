@@ -1,3 +1,4 @@
+projects/
 
 # Created by https://www.gitignore.io/api/python,django,pycharm
 # Edit at https://www.gitignore.io/?templates=python,django,pycharm
@@ -10,6 +11,7 @@ __pycache__/
 local_settings.py
 db.sqlite3
 media
+migrations
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.

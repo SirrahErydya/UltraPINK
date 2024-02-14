@@ -1,0 +1,184 @@
+{% extends "main/base.html" %}
+
+{% block stylesheets %}
+{% load static %}
+    <!-- include Aladin Lite CSS file in the head section of your page -->
+    <link rel="stylesheet" href="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
+    <link rel="stylesheet" type="text/css" href="{% static 'pinkproject/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'som/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'cutouts/style.css' %}">
+{% endblock %}
+{% block javascript %}
+    {% load static %}
+    <script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static 'cutouts/aladin_interface.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    {% include 'pinkproject/side_menu.html' %}
+    <script>
+        var project_id = '{{ current.id }}';
+        var som_id = '{{ som.id }}';
+    </script>
+    <div class="content cutout-view">
+        <p class="subheadline">Inspect {{ som.dataset.dataset_name }} # {{ cutout.db_obj.index }}
+            ({{ cutout.identifier }}) with Aladin Lite.</p>
+
+
+        <div class="row">
+            <div class="col s6">
+                <!-- insert this snippet where you want Aladin Lite viewer to appear and after the loading of jQuery -->
+                <div id="aladin-lite-div"></div>
+            </div>
+            <div class="col s3">
+                <form id="aladin-control" onsubmit="return aladin_window()">
+                    <p>Right ascension</p>
+                    <div class="row">
+                        <div class="input-field col s4">
+                            <input id="raH" type="text" value="{{ cutout.location.ra.h }}">
+                            <label for="raH">Hour</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="raM" type="text" value="{{ cutout.location.ra.m }}">
+                            <label for="raM">Minute</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="raS" type="text" value="{{ cutout.location.ra.s }}">
+                            <label for="raS">Second</label>
+                        </div>
+                    </div>
+                    <p>Declination</p>
+                    <div class="row">
+                        <div class="input-field col s4">
+                            {% if cutout.location.decD >= 0 %}
+                                <input id="decD" type="text" value="+{{ cutout.location.decD }}">
+                            {% else %}
+                                <input id="decD" type="text" value="{{ cutout.location.decD }}">
+                            {% endif %}
+                            <label for="decD">Degree</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="decM" type="text" value="{{ cutout.location.decM }}">
+                            <label for="decM">Minute</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="decS" type="text" value="{{ cutout.location.decS }}">
+                            <label for="decS">Second</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <select id='survey' name="survey">
+                                <option value="P/Fermi/color">Fermi colored</option>
+                                <option value="P/GALEXGR6/AIS/color">GALEX AIS colored</option>
+                                <option value="P/DSS2/color">DSS colored</option>
+                                <option value="P/DSS2/red">DSS2 red</option>
+                                <option value="P/SDSS9/color" selected>SDSS9 color</option>
+                                <option value="P/Mellinger/color">Mellinger color</option>
+                                <option value="P/2MASS/color">2MASS color</option>
+                                <option value="P/allWISE/color">allWISE color</option>
+                                <option value="P/IRIS/color">IRIS color</option>
+                                <option value="P/GLIMPSE360/color">GLIMPSE360 color</option>
+                                <option value="P/SPITZER/color">SPITZER color</option>
+                                <option value="P/AKARI/FIS/color">AKARI FIS color</option>
+                                <option value="P/Finkbeiner">Finkbeiner Halpha</option>
+                                <option value="P/DECaLS/DR3/color">DECaLS DR3 color</option>
+                                <option value="P/DECaPS/DR1/color">DECaPS DR1 color</option>
+                                <option value="P/PanSTARRS/DR1/color/z/zg/g">PanSTARRS DR1 color</option>
+                                <option value="P/PanSTARRS/DR1/g">PanSTARRS DR1 g</option>
+                                <option value="P/PanSTARRS/DR1/z">PanSTARRS DR1 z</option>
+                                <option value="P/SWIFT_BAT_FLUX">SWIFT_BAT_FLUX</option>
+                                <option value="P/VTSS/Ha">VTSS Halpha</option>
+                                <option value="P/XMM/PN/colored">XMM PN colored</option>
+                            </select>
+                            <label for="survey">Survey:</label>
+                        </div>
+                    </div>
+                    <input class='btn' type="submit" value="Go!"/>
+                    <button class="btn"
+                            onclick="reset_position({{ cutout.location.ra.h }}, {{ cutout.location.ra.m }}, {{ cutout.location.ra.s }},
+                                                    {{ cutout.location.decD }}, {{ cutout.location.decM }}, {{ cutout.location.decS }})">
+                        Return to object position
+                    </button>
+                </form>
+                <a class="button-link modal-trigger" href="#spatial-modal"><i class="material-icons">gps_not_fixed</i>Compare to spatially close objects</a>
+            </div>
+        </div>
+        <div id="spatial-modal" class="modal">
+            <div class="modal-content">
+                <h4>Compare this cutout to nearby objects from the dataset</h4>
+                <div class="row">
+                    <div class="col s2">
+                        <img src="{{ cutout.db_obj.image }}"/>
+                    </div>
+                    <div class="col s10">
+                        <p><b>Object {{ cutout.identifier }} ({{ cutout.db_obj.index }}th entry from dataset {{ som.dataset.dataset_name }})</b></p>
+                        <div class="row">
+                            <div class="col s3">
+                                <b>Position:</b>
+                            </div>
+                            <div class="col s4">
+                                <p>RAJ200 = {{ cutout.location.ra_str}}
+                            </div>
+                            <div class="col s4">
+                                <p>DECJ200 = {{ cutout.location.dec_str}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <b>Label:</b>
+                            </div>
+                            <div class="col s8">
+                                <p>
+                                    {% if cutout.db_obj.label %}
+                                        {{ cutout.db_obj.label.name }}
+                                    {% else %}
+                                        Unlabeled
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                                <div class="col s3">
+                                    <b>Closest Prototype:</b>
+                                </div>
+                                <div class="col s8">
+                                    <p>
+                                        ({{ cutout.db_obj.closest_proto.x }},{{ cutout.db_obj.closest_proto.y }})
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <form id="spatial-form" onsubmit="return request_spatial_cutouts({{ cutout.db_obj.id }})">{% csrf_token %}
+                                <div class="input-field col s3">
+                                     <input id='number_cutouts' type="text" name="number_cutouts"
+                                            value='10' maxlength="5"/>
+                                     <label for="number_cutouts" class="active">No. of cutouts</label>
+                                </div>
+                                <div class="col s3">
+                                    <input class="btn" type="submit" value="Show"/>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+                <hr/>
+                <div id="cutout-container">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        aladin_window();
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems, options);
+      });
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems, options);
+          });
+    </script>
+{% endblock %}
